@@ -1,8 +1,9 @@
 databaseChangeLog:
   - changeSet:
       id: 0001-catalogos
-      author: equipo
+      author: Nicolas
       changes:
+
 
         - createTable:
             tableName: categoria
@@ -18,7 +19,6 @@ databaseChangeLog:
               - column: { name: codigo, type: VARCHAR(64), constraints: { nullable: false, unique: true } }
               - column: { name: nombre, type: VARCHAR(200), constraints: { nullable: false } }
               - column: { name: categoria_id, type: BIGINT }
-              - column: { name: unidad_medida, type: VARCHAR(20), defaultValue: "'UN'", constraints: { nullable: false } }
               - column: { name: costo, type: "NUMERIC(14,2)", defaultValueNumeric: 0, constraints: { nullable: false } }
               - column: { name: precio, type: "NUMERIC(14,2)", defaultValueNumeric: 0, constraints: { nullable: false } }
               - column: { name: stock_minimo, type: "NUMERIC(14,3)", defaultValueNumeric: 0, constraints: { nullable: false } }
@@ -31,3 +31,38 @@ databaseChangeLog:
             referencedColumnNames: id
             onUpdate: CASCADE
             onDelete: SET NULL
+
+
+        - createTable:
+            tableName: detalle_producto
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: producto_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true       # asegura 1:1
+              - column:
+                  name: descripcion
+                  type: VARCHAR(250)
+              - column:
+                  name: unidad_medida
+                  type: VARCHAR(20)
+                  defaultValue: "UN"
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: detalle_producto
+            baseColumnNames: producto_id
+            constraintName: fk_detalle_producto_producto
+            referencedTableName: producto
+            referencedColumnNames: id
+            onDelete: CASCADE

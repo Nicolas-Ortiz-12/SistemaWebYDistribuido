@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0006-add-clientes2
+      author: Carlos
+      context: data
+      changes:
+        - insert:
+            tableName: cliente
+            columns:
+                - column: { name: nombre,   value: "Ferretería El Tornillo" }
+                - column: { name: ruc,      value: "80054321-0" }
+                - column: { name: telefono, value: "+595 981 111 222" }
+                - column: { name: correo,   value: "ventas@eltornillo.com.py" }
+                - column: { name: direccion,value: "Ruta 2 Km 15, Capiatá" }
+      rollback:
+        - delete:
+            tableName: cliente
+            where: ruc IN ('80012345-6','80054321-0','80111222-3','80133777-9','80099887-5','80222444-1','80333555-2','80444666-3')
