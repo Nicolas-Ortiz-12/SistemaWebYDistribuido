@@ -1,4 +1,4 @@
-package com.distri.proyectodistri.model.base;
+package com.distri.proyectodistri.entities.base;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

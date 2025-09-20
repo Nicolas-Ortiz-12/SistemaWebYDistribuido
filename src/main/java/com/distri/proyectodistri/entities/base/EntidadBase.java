@@ -1,9 +1,12 @@
-package com.distri.proyectodistri.model.base;
+package com.distri.proyectodistri.entities.base;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @MappedSuperclass
 public abstract class EntidadBase {
 

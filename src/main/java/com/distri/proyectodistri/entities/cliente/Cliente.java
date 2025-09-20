@@ -1,6 +1,6 @@
-package com.distri.proyectodistri.model.cliente;
+package com.distri.proyectodistri.entities.cliente;
 
-import com.distri.proyectodistri.model.base.Persona;
+import com.distri.proyectodistri.entities.base.Persona;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
