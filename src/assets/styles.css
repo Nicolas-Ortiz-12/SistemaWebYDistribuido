@@ -1,0 +1,271 @@
+:root {
+    --teal: #0f9d95;
+    /* barra superior */
+    --bg: #f5f7fb;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --accent: #2563eb;
+    /* botones */
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"
+}
+
+.topbar {
+    height: 64px;
+    background: var(--teal);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 12px;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .08)
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    letter-spacing: .3px
+}
+
+.brand svg {
+    width: 26px;
+    height: 26px
+}
+
+.layout {
+    display: flex;
+    min-height: calc(100vh - 64px)
+}
+
+aside {
+    width: 280px;
+    background: white;
+    border-right: 1px solid var(--border);
+    padding: 22px 18px
+}
+
+main {
+    flex: 1;
+    padding: 22px 26px
+}
+
+.profile {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 22px
+}
+
+.avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e0f2f1, #b2dfdb);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    color: #0e766e
+}
+
+.profile h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px
+}
+
+.profile p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px
+}
+
+.nav {
+    margin-top: 10px
+}
+
+.nav h4 {
+    margin: 10px 0 6px 10px;
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .08em
+}
+
+.nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: #374151;
+    text-decoration: none;
+    margin: 4px 0
+}
+
+.nav a svg {
+    width: 18px;
+    height: 18px
+}
+
+.nav a:hover {
+    background: #f3f4f6
+}
+
+.nav a.router-link-active {
+    background: #e6fffb;
+    color: #0e766e;
+    font-weight: 600
+}
+
+.card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .03)
+}
+
+.card-header {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
+
+.card-body {
+    padding: 18px
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer
+}
+
+.btn svg {
+    width: 18px;
+    height: 18px
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px
+}
+
+.input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px
+}
+
+.input input {
+    border: none;
+    outline: none;
+    width: 100%
+}
+
+.input svg {
+    width: 18px;
+    height: 18px;
+    color: var(--muted)
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0
+}
+
+thead th {
+    background: #f8fafc;
+    text-align: left;
+    padding: 12px 12px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: #475569
+}
+
+tbody td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px
+}
+
+tbody tr:hover {
+    background: #fafafa
+}
+
+.td-right {
+    text-align: right
+}
+
+.chip {
+    display: inline-block;
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    color: #1d4ed8;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px
+}
+
+.icon-btn {
+    background: #eef2ff;
+    border: 1px solid #e5e7eb;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    cursor: pointer
+}
+
+.icon-btn svg {
+    width: 18px;
+    height: 18px;
+    color: #4338ca
+}
+
+.icon-btn.danger {
+    background: #ffe4e6;
+    border-color: #fecdd3;
+}
+
+.icon-btn.danger svg {
+    color: #be123c;
+}
+
+@media (max-width:980px) {
+    aside {
+        display: none
+    }
+
+    .filters {
+        grid-template-columns: 1fr
+    }
+}
