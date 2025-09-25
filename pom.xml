@@ -80,19 +80,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- (Opcional) H2 para tests con perfil test
-        <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-          <scope>test</scope>
-        </dependency>
-        -->
+
     </dependencies>
 
     <build>
-
         <plugins>
-            <!-- Generador OpenAPI -->
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
@@ -101,16 +93,16 @@
                     <execution>
                         <id>generate-openapi-models</id>
                         <phase>generate-sources</phase>
-                        <goals><goal>generate</goal></goals>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/api/ferreteria-api.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <modelPackage>com.distri.proyectodistri.dto</modelPackage>
-                            <globalProperties>
-                                <models>true</models>
-                                <apis>false</apis>
-                                <supportingFiles>false</supportingFiles>
-                            </globalProperties>
+                            <generateModels>true</generateModels>
+                            <generateApis>false</generateApis>
+                            <generateSupportingFiles>false</generateSupportingFiles>
                             <configOptions>
                                 <useJakartaEe>true</useJakartaEe>
                                 <dateLibrary>java8</dateLibrary>
@@ -171,7 +163,7 @@
                         <configuration>
                             <classifier>dto</classifier>
                             <includes>
-                                <include>com/distri/proyectodistri/dto/**</include>
+                                <include>com/Distri/ProyectoDistri/dto/**</include>
                             </includes>
                         </configuration>
                     </execution>
@@ -184,8 +176,8 @@
                         <configuration>
                             <classifier>domain</classifier>
                             <includes>
-                                <include>com/distri/proyectodistri/domain/**</include>
-                                <include>com/distri/proyectodistri/repository/**</include>
+                                <include>com/Distri/ProyectoDistri/domain/**</include>
+                                <include>com/Distri/ProyectoDistri/repository/**</include>
                             </includes>
                         </configuration>
                     </execution>
