@@ -152,7 +152,7 @@ components:
               items:
                 $ref: '#/components/schemas/RolDTO'
           required: [usuario, nombreCompleto]
-      description: No expone la contraseña por seguridad.
+
 
     # ================== VENTAS ==================
     VentaDetalleDTO:
@@ -286,3 +286,128 @@ components:
               items:
                 $ref: '#/components/schemas/CompraDetalleDTO'
           required: [proveedorId, fechaEmision, estado, total]
+
+
+    # ---- Compra (ingreso por factura)
+    CompraDetalleRequestDTO:
+      type: object
+      properties:
+        productoId: { type: integer, format: int64 }
+        cantidad: { type: number, format: double }
+        costoUnitario: { type:
+          number, format: double }
+        tasaIva: { type: number, format: double, default: 10 }
+      required: [ productoId, cantidad, costoUnitario ]
+
+    CompraRequestDTO:
+      type: object
+      properties:
+        proveedorId: { type: integer, format: int64 }
+        warehouseId: { type: integer, format: int64 }
+        serie: { type: string, maxLength: 20, nullable: true }
+        numero: { type: string, maxLength: 40, nullable: true }
+        fechaEmision: { type:
+          string, format: date }
+        detalles:
+          type: array
+          items: { $ref: '#/components/schemas/CompraDetalleRequestDTO' }
+      required: [ proveedorId, warehouseId, fechaEmision, detalles ]
+
+    CompraDetalleResponseDTO:
+      allOf:
+        - type: object
+          properties:
+            productoId: { type: integer, format: int64 }
+            cantidad: { type: number, format: double }
+            costoUnitario: { type:
+              number, format: double }
+            tasaIva: { type: number, format: double }
+            subtotalLinea: { type:
+              number, format: double }
+            totalLinea: { type: number, format: double }
+
+    CompraResponseDTO:
+      allOf:
+        - $ref: '#/components/schemas/BaseDTO'
+        - type: object
+          properties:
+            proveedorId: { type: integer, format: int64 }
+            warehouseId: { type: integer, format: int64 }
+            serie: { type: string, maxLength: 20, nullable: true }
+            numero: { type: string, maxLength: 40, nullable: true }
+            fechaEmision: { type:
+              string, format: date }
+            estado: { type: string, default: "CONFIRMADO" }
+            currency: { type: string, maxLength: 3, default: "PYG" }
+            subtotal: { type: number, format: double }
+            iva: { type: number, format: double }
+            total: { type: number, format: double }
+            creadoEn: { type: string, format: date-time }
+            detalles:
+              type: array
+              items: { $ref: '#/components/schemas/CompraDetalleResponseDTO' }
+          required: [ proveedorId, warehouseId, fechaEmision, total ]
+
+    # ---- Venta / Facturación
+    VentaDetalleRequestDTO:
+      type: object
+      properties:
+        productoId: { type: integer, format: int64 }
+        cantidad: { type: number, format: double }
+        precioUnitario: { type:
+          number, format: double }
+        tasaIva: { type: number, format: double, default: 10 }
+      required: [ productoId, cantidad, precioUnitario ]
+
+    VentaRequestDTO:
+      type: object
+      properties:
+        clienteId: { type: integer, format: int64, nullable: true }
+        warehouseId: { type:
+          integer, format: int64 }
+        serie: { type: string, maxLength: 20, nullable: true }
+        numero: { type: string, maxLength: 40, nullable: true }
+        fechaVenta: { type: string, format: date-time }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/VentaDetalleRequestDTO' }
+      required: [ warehouseId, fechaVenta, items ]
+
+    VentaDetalleResponseDTO:
+      type: object
+      properties:
+        productoId: { type: integer, format: int64 }
+        cantidad: { type: number, format: double }
+        precioUnitario: { type:
+          number, format: double }
+        tasaIva: { type: number, format: double }
+        subtotalLinea: { type: number, format: double }
+        totalLinea: { type: number, format: double }
+
+    VentaResponseDTO:
+      allOf:
+        - $ref: '#/components/schemas/BaseDTO'
+        - type: object
+          properties:
+            clienteId: { type: integer, format: int64, nullable: true }
+            warehouseId: { type:
+              integer, format: int64 }
+            serie: { type: string, maxLength: 20, nullable: true }
+            numero: { type: string, maxLength: 40, nullable: true }
+            fechaVenta: { type: string, format: date-time }
+            estado: { type: string, default: "CONFIRMADO" }
+            currency: { type: string, maxLength: 3, default: "PYG" }
+            subtotal: { type: number, format: double }
+            iva: { type: number, format: double }
+            total: { type: number, format: double }
+            creadoPorId: { type:
+              integer, format:
+                int64, nullable: true }
+            items:
+              type: array
+              items: { $ref: '#/components/schemas/VentaDetalleResponseDTO' }
+          required: [ warehouseId, fechaVenta, total ]
+
+
+
+

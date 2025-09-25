@@ -12,107 +12,115 @@
 
     <groupId>com.Distri</groupId>
     <artifactId>ProyectoDistri</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
     <name>ProyectoDistri</name>
     <description>ProyectoDistri</description>
 
     <properties>
         <java.version>21</java.version>
-        <!-- ajusta si usas otra versión disponible en tu repo local -->
         <springdoc.version>2.6.0</springdoc.version>
-        <openapi.generator.version>7.6.0</openapi.generator.version>
+        <openapi.generator.version>7.2.0</openapi.generator.version>
+        <lombok.version>1.18.38</lombok.version>
     </properties>
 
     <dependencies>
+        <!-- Spring base -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-        </dependency>
-
+        <!-- DB -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
 
+        <!-- Utilidades -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- .env -->
         <dependency>
             <groupId>me.paulschwarz</groupId>
             <artifactId>spring-dotenv</artifactId>
             <version>3.0.0</version>
         </dependency>
 
-        <!-- Swagger UI (springdoc) -->
+        <!-- OpenAPI UI -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
 
+        <!-- JavaTime para DTOs con fechas (OffsetDateTime/LocalDate) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- (Opcional) H2 para tests con perfil test
+        <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+          <scope>test</scope>
+        </dependency>
+        -->
     </dependencies>
 
     <build>
+
         <plugins>
+            <!-- Generador OpenAPI -->
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.2.0</version>
+                <version>${openapi.generator.version}</version>
                 <executions>
                     <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
+                        <id>generate-openapi-models</id>
+                        <phase>generate-sources</phase>
+                        <goals><goal>generate</goal></goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/api/ferreteria-api.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <modelPackage>com.distri.proyectodistri.dto</modelPackage>
-                            <!-- Generar modelos + utilidades (incluye JSON.java) -->
-                            <generateModels>true</generateModels>
-                            <generateApis>false</generateApis>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-
+                            <globalProperties>
+                                <models>true</models>
+                                <apis>false</apis>
+                                <supportingFiles>false</supportingFiles>
+                            </globalProperties>
                             <configOptions>
                                 <useJakartaEe>true</useJakartaEe>
                                 <dateLibrary>java8</dateLibrary>
                                 <openApiNullable>false</openApiNullable>
-
                                 <useJacksonXml>true</useJacksonXml>
                             </configOptions>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
-
-
-
             <!-- Agrega el código generado al classpath de compilación -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -134,7 +142,7 @@
                 </executions>
             </plugin>
 
-            <!-- Lombok / compilación -->
+            <!-- Compilación Java (con Lombok si lo usás en tu código) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -151,7 +159,41 @@
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>dto-jar</id>
+                        <phase>package</phase>
+                        <goals><goal>jar</goal></goals>
+                        <configuration>
+                            <classifier>dto</classifier>
+                            <includes>
+                                <include>com/distri/proyectodistri/dto/**</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+
+
+                    <execution>
+                        <id>domain-jar</id>
+                        <phase>package</phase>
+                        <goals><goal>jar</goal></goals>
+                        <configuration>
+                            <classifier>domain</classifier>
+                            <includes>
+                                <include>com/distri/proyectodistri/domain/**</include>
+                                <include>com/distri/proyectodistri/repository/**</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!-- Spring Boot: produce el jar ejecutable -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -167,13 +209,13 @@
         </plugins>
     </build>
 
-    <!-- versión de lombok usada por el compiler plugin -->
+    <!-- Gestión central de versión de Lombok (usada por el compiler plugin) -->
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.38</version>
+                <version>${lombok.version}</version>
                 <scope>compile</scope>
             </dependency>
         </dependencies>
