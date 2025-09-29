@@ -1,4 +1,4 @@
-package com.distri.proyectodistri.entities.base;
+package com.distri.proyectodistri.apis.entities.base;
 
 import jakarta.persistence.*;
 import lombok.Data;

@@ -1,7 +1,7 @@
-package com.distri.proyectodistri.entities.compra;
+package com.distri.proyectodistri.apis.entities.venta;
 
-import com.distri.proyectodistri.entities.base.EntidadBase;
-import com.distri.proyectodistri.entities.inventario.Producto;
+import com.distri.proyectodistri.apis.entities.base.EntidadBase;
+import com.distri.proyectodistri.apis.entities.inventario.Producto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,14 +12,14 @@ import java.math.BigDecimal;
 @Setter
 @Entity
 @Table(
-        name = "compra_detalle",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"compra_id", "producto_id"})
+        name = "venta_detalle",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"venta_id", "producto_id"})
 )
-public class CompraDetalle extends EntidadBase {
+public class VentaDetalle extends EntidadBase {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "compra_id", nullable = false)
-    private Compra compra;
+    @JoinColumn(name = "venta_id", nullable = false)
+    private Venta venta;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "producto_id", nullable = false)
@@ -28,8 +28,8 @@ public class CompraDetalle extends EntidadBase {
     @Column(nullable = false, precision = 14, scale = 3)
     private BigDecimal cantidad;
 
-    @Column(name = "costo_unitario", nullable = false, precision = 14, scale = 2)
-    private BigDecimal costoUnitario;
+    @Column(name = "precio_unitario", nullable = false, precision = 14, scale = 2)
+    private BigDecimal precioUnitario;
 
     @Column(name = "tasa_iva", nullable = false, precision = 5, scale = 2)
     private BigDecimal tasaIva = BigDecimal.valueOf(10);

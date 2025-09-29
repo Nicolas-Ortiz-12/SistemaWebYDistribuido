@@ -1,6 +1,6 @@
-package com.distri.proyectodistri.entities.seguridad;
+package com.distri.proyectodistri.apis.entities.seguridad;
 
-import com.distri.proyectodistri.entities.base.EntidadBase;
+import com.distri.proyectodistri.apis.entities.base.EntidadBase;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

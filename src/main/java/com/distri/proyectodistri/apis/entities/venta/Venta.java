@@ -1,8 +1,8 @@
-package com.distri.proyectodistri.entities.venta;
+package com.distri.proyectodistri.apis.entities.venta;
 
-import com.distri.proyectodistri.entities.base.EntidadBase;
-import com.distri.proyectodistri.entities.cliente.Cliente;
-import com.distri.proyectodistri.entities.seguridad.Usuario;
+import com.distri.proyectodistri.apis.entities.base.EntidadBase;
+import com.distri.proyectodistri.apis.entities.cliente.Cliente;
+import com.distri.proyectodistri.apis.entities.seguridad.Usuario;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,7 +1,7 @@
-package com.distri.proyectodistri.entities.compra;
+package com.distri.proyectodistri.apis.entities.compra;
 
-import com.distri.proyectodistri.entities.base.EntidadBase;
-import com.distri.proyectodistri.entities.cliente.Proveedor;
+import com.distri.proyectodistri.apis.entities.base.EntidadBase;
+import com.distri.proyectodistri.apis.entities.cliente.Proveedor;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
