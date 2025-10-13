@@ -1,12 +1,12 @@
 :root {
     --teal: #0f9d95;
-    /* barra superior */
+    
     --bg: #f5f7fb;
     --text: #1f2937;
     --muted: #6b7280;
     --border: #e5e7eb;
     --accent: #2563eb;
-    /* botones */
+    
 }
 
 * {

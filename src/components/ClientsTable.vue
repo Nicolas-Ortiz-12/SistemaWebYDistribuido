@@ -3,25 +3,24 @@
         <table>
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Nombre</th>
-                    <th>Correo electrónico</th>
+                    <th>RUC</th>
                     <th>Teléfono</th>
+                    <th>Correo electrónico</th>
                     <th>Dirección</th>
-                    <th class="td-right">Importe comprado</th>
-                    <th class="td-right">Importe pagado</th>
-                    <th class="td-right">Importe debido</th>
                     <th>Editar</th>
                 </tr>
             </thead>
+
             <tbody>
-                <tr v-for="c in rows" :key="c.email">
-                    <td><a href="#" class="chip">{{ c.nombre }}</a></td>
-                    <td>{{ c.email }}</td>
+                <tr v-for="c in rows" :key="c.id">
+                    <td>{{ c.id }}</td>
+                    <td>{{ c.nombre }}</td>
+                    <td>{{ c.ruc }}</td>
                     <td>{{ c.telefono }}</td>
+                    <td>{{ c.correo }}</td>
                     <td>{{ c.direccion }}</td>
-                    <td class="td-right">{{ money(c.comprado) }}</td>
-                    <td class="td-right">{{ money(c.pagado) }}</td>
-                    <td class="td-right">{{ money(c.comprado - c.pagado) }}</td>
                     <td>
                         <button class="icon-btn" title="Editar" @click="$emit('edit', c)">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -31,12 +30,20 @@
                         </button>
                     </td>
                 </tr>
+
+                <!-- Mostrar si no hay registros -->
+                <tr v-if="!rows || rows.length === 0">
+                    <td colspan="7" style="text-align:center;color:var(--muted);padding:16px;">
+                        No hay clientes registrados.
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
 </template>
 
-
 <script setup>
-defineProps({ rows: { type: Array, default: () => [] }, money: { type: Function, required: true } })
+defineProps({
+    rows: { type: Array, default: () => [] }
+})
 </script>
