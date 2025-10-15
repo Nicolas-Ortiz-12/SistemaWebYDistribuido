@@ -1,31 +1,32 @@
 <template>
     <section class="card">
         <div class="card-header">
-            <h2 style="margin:0;font-size:18px">Nueva compra (ingreso por factura)</h2>
-            <RouterLink class="btn" to="/productos/lista">Ver stock</RouterLink>
+            <h2 style="margin:0;font-size:18px">Compras / Facturación de compras</h2>
+            <RouterLink class="btn" to="/existencias/stock">Ver stock</RouterLink>
         </div>
 
         <div class="card-body">
             <!-- Encabezado -->
             <div class="filters" style="margin-bottom:16px">
+                <!-- Proveedor -->
                 <label class="input">
-                    <span style="white-space:nowrap">Proveedor</span>
-                    <select v-model.number="form.supplier_id" style="border:none;outline:none;width:100%">
+                    <span>Proveedor</span>
+                    <select v-model.number="compra.proveedorId" style="border:none;outline:none;width:100%">
                         <option :value="0" disabled>Selecciona proveedor</option>
-                        <option v-for="(s, idx) in suppliersWithId" :key="s.id" :value="s.id">{{ s.nombre }}</option>
+                        <option v-for="p in proveedores" :key="p.id" :value="p.id">{{ p.nombre }}</option>
                     </select>
                 </label>
-                <label class="input">
-                    <span>Serie</span>
-                    <input v-model="form.series" placeholder="F001" />
-                </label>
+
+                <!-- Número de comprobante -->
                 <label class="input">
                     <span>Número</span>
-                    <input v-model="form.number" placeholder="000123" />
+                    <input v-model.trim="compra.numero" placeholder="000456" />
                 </label>
+
+                <!-- Fecha de emisión -->
                 <label class="input">
-                    <span>Fecha</span>
-                    <input type="date" v-model="form.issue_date" />
+                    <span>Fecha emisión</span>
+                    <input type="date" v-model="compra.fechaEmision" />
                 </label>
             </div>
 
@@ -45,21 +46,23 @@
                     <tbody>
                         <tr v-for="(it, i) in items" :key="i">
                             <td>
-                                <select v-model.number="it.product_id" style="width:100%">
+                                <select v-model.number="it.productoId" style="width:100%" @change="seedFromCatalog(i)">
                                     <option :value="0" disabled>Selecciona producto</option>
-                                    <option v-for="p in products" :key="p.id" :value="p.id">{{ p.sku }} — {{ p.nombre }}
+                                    <option v-for="p in productos" :key="p.id" :value="p.id">
+                                        {{ p.codigo || p.sku || ('#' + p.id) }} — {{ p.nombre }}
                                     </option>
                                 </select>
                             </td>
                             <td class="td-right">
-                                <input type="number" min="0" step="0.001" v-model.number="it.qty" style="width:100%" />
-                            </td>
-                            <td class="td-right">
-                                <input type="number" min="0" step="0.01" v-model.number="it.unit_cost"
+                                <input type="number" min="0" step="0.001" v-model.number="it.cantidad"
                                     style="width:100%" />
                             </td>
                             <td class="td-right">
-                                <input type="number" min="0" step="0.01" v-model.number="it.tax_rate"
+                                <input type="number" min="0" step="0.01" v-model.number="it.costoUnitario"
+                                    style="width:100%" />
+                            </td>
+                            <td class="td-right">
+                                <input type="number" min="0" step="0.01" v-model.number="it.tasaIva"
                                     style="width:100%" />
                             </td>
                             <td class="td-right">{{ money(lineTotal(it)) }}</td>
@@ -79,56 +82,167 @@
             <!-- Totales -->
             <div style="display:flex;justify-content:flex-end;gap:18px;margin-top:12px;flex-wrap:wrap">
                 <div>Subtotal: <strong>{{ money(subtotal) }}</strong></div>
-                <div>IVA: <strong>{{ money(tax) }}</strong></div>
+                <div>IVA: <strong>{{ money(iva) }}</strong></div>
                 <div>Total: <strong>{{ money(total) }}</strong></div>
             </div>
 
             <!-- Acciones -->
             <div style="display:flex;gap:10px;margin-top:16px">
-                <button class="btn" @click="saveDraft">Guardar borrador</button>
-                <button class="btn" @click="confirmPurchase">Confirmar ingreso</button>
+                <button class="btn" :disabled="loading" @click="guardarBorrador">Guardar borrador</button>
+                <button class="btn" :disabled="loading" @click="confirmarCompra">
+                    <span v-if="!loading">Confirmar compra</span>
+                    <span v-else>Enviando…</span>
+                </button>
             </div>
+
+            <div v-if="error" class="error" style="margin-top:10px">{{ error }}</div>
+            <div v-if="okMsg" class="chip" style="margin-top:10px">{{ okMsg }}</div>
         </div>
     </section>
 </template>
 
 <script setup>
-import { reactive, ref, computed } from 'vue'
-import { warehouses } from '../../data/warehouses.js'
-import { productsCatalog as products } from '../../data/products_catalog.js'
-import { suppliers as suppliersRaw } from '../../data/suppliers.js'
+import { reactive, ref, computed, onMounted } from 'vue'
+
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8080').replace(/\/+$/, '')
+
 
 const today = new Date().toISOString().slice(0, 10)
-const form = reactive({ supplier_id: 0, warehouse_id: 0, series: '', number: '', issue_date: today })
+const compra = reactive({
+    proveedorId: 0,
+    numero: '',
+    fechaEmision: today, 
+})
 
-// añade ids a los proveedores si tu dataset anterior no los tenía
-const suppliersWithId = suppliersRaw.map((s, i) => ({ id: i + 1, nombre: s.nombre || s.name || s.email || `Proveedor ${i + 1}` }))
+const items = ref([{ productoId: 0, cantidad: 0, costoUnitario: 0, tasaIva: 10 }])
 
-const items = ref([{ product_id: 0, qty: 0, unit_cost: 0, tax_rate: 10 }])
+const proveedores = ref([])
+const productos = ref([])
 
-function addItem() { items.value.push({ product_id: 0, qty: 0, unit_cost: 0, tax_rate: 10 }) }
-function removeItem(i) { items.value.splice(i, 1) }
+const loading = ref(false)
+const error = ref('')
+const okMsg = ref('')
 
-const lineTotal = (it) => (it.qty || 0) * (it.unit_cost || 0) - 0 // sin descuento
-const subtotal = computed(() => items.value.reduce((a, it) => a + (it.qty || 0) * (it.unit_cost || 0), 0))
-const tax = computed(() => items.value.reduce((a, it) => a + ((it.qty || 0) * (it.unit_cost || 0)) * (it.tax_rate || 0) / 100, 0))
-const total = computed(() => subtotal.value + tax.value)
 
-const money = v => new Intl.NumberFormat('es-PY', { style: 'currency', currency: 'PYG' }).format(v)
+const money = v => new Intl.NumberFormat('es-PY', { style: 'currency', currency: 'PYG' }).format(Number(v) || 0)
+const lineTotal = it => (it.cantidad || 0) * (it.costoUnitario || 0)
+const subtotal = computed(() => items.value.reduce((a, it) => a + (it.cantidad || 0) * (it.costoUnitario || 0), 0))
+const iva = computed(() =>
+    items.value.reduce((a, it) => {
+        const base = (it.cantidad || 0) * (it.costoUnitario || 0)
+        return a + base * ((it.tasaIva || 0) / 100)
+    }, 0)
+)
+const total = computed(() => subtotal.value + iva.value)
+
+
+function addItem() {
+    items.value.push({ productoId: 0, cantidad: 0, costoUnitario: 0, tasaIva: 10 })
+}
+function removeItem(i) {
+    items.value.splice(i, 1)
+}
+
+function seedFromCatalog(i) {
+    const it = items.value[i]
+    const p = productos.value.find(x => x.id === it.productoId)
+    if (p) {
+        const costo = Number.isFinite(p.costo) ? p.costo : (Number.isFinite(p.precio) ? p.precio : 0)
+        it.costoUnitario = costo
+        if (Number.isFinite(p.tasaIva)) it.tasaIva = p.tasaIva
+    }
+}
+
 
 function validate() {
-    if (!form.supplier_id) return alert('Selecciona un proveedor')
-    if (!form.warehouse_id) return alert('Selecciona un depósito')
-    if (!form.series || !form.number) return alert('Serie y número de factura son obligatorios')
-    if (!items.value.length) return alert('Agrega al menos un ítem')
+    error.value = ''
+    okMsg.value = ''
+    if (!compra.proveedorId) { error.value = 'Selecciona un proveedor.'; return false }
+    if (!compra.numero?.trim()) { error.value = 'Número de comprobante es obligatorio.'; return false }
+    if (!compra.fechaEmision) { error.value = 'Fecha de emisión es obligatoria.'; return false }
+    if (!items.value.length) { error.value = 'Agrega al menos un ítem.'; return false }
     for (const it of items.value) {
-        if (!it.product_id) return alert('Selecciona el producto en todos los ítems')
-        if ((it.qty || 0) <= 0) return alert('Cantidad debe ser > 0')
-        if ((it.unit_cost || 0) < 0) return alert('Costo unitario no puede ser negativo')
+        if (!it.productoId) { error.value = 'Selecciona el producto en todos los ítems.'; return false }
+        if ((it.cantidad || 0) <= 0) { error.value = 'Cantidad debe ser > 0.'; return false }
+        if ((it.costoUnitario || 0) < 0) { error.value = 'Costo unitario no puede ser negativo.'; return false }
     }
     return true
 }
 
-function saveDraft() { if (validate()) alert('Borrador guardado (mock)') }
-function confirmPurchase() { if (validate()) alert('Compra confirmada: se generarían entradas de stock (mock)') }
+
+async function fetchProveedores() {
+    const resp = await fetch(`${API_URL}/proveedores/0/50`)
+    if (!resp.ok) throw new Error('No se pudieron cargar proveedores')
+    const data = await resp.json()
+    proveedores.value = Array.isArray(data?.content) ? data.content : (Array.isArray(data) ? data : [])
+}
+
+async function fetchProductos() {
+    const resp = await fetch(`${API_URL}/productos/0/50`)
+    if (!resp.ok) throw new Error('No se pudieron cargar productos')
+    const data = await resp.json()
+    productos.value = Array.isArray(data?.content) ? data.content : (Array.isArray(data) ? data : [])
+}
+
+/** ---------- API: POST /compras ---------- **/
+async function confirmarCompra() {
+    if (!validate()) return
+    loading.value = true
+    error.value = ''
+    okMsg.value = ''
+
+    try {
+        const payload = {
+            proveedorId: compra.proveedorId,
+            numero: compra.numero.trim(),
+            fechaEmision: new Date(compra.fechaEmision).toISOString(),
+            detalles: items.value.map(it => ({
+                productoId: it.productoId,
+                cantidad: it.cantidad,
+                costoUnitario: it.costoUnitario,
+                tasaIva: it.tasaIva,
+            })),
+            
+            subtotal: Number(subtotal.value.toFixed(2)),
+            iva: Number(iva.value.toFixed(2)),
+            total: Number(total.value.toFixed(2)),
+        }
+
+        const resp = await fetch(`${API_URL}/compras`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        })
+        if (!resp.ok) {
+            let msg = `Error HTTP ${resp.status}`
+            try { const d = await resp.json(); if (d?.message) msg = d.message } catch { }
+            throw new Error(msg)
+        }
+
+        await resp.json().catch(() => ({}))
+        okMsg.value = 'Compra registrada correctamente.'
+        // Reset suave
+        items.value = [{ productoId: 0, cantidad: 0, costoUnitario: 0, tasaIva: 10 }]
+        compra.numero = ''
+    } catch (e) {
+        error.value = e.message || 'No se pudo registrar la compra.'
+    } finally {
+        loading.value = false
+    }
+}
+
+
+function guardarBorrador() {
+    if (!validate()) return
+    localStorage.setItem('draft_compra', JSON.stringify({ compra: { ...compra }, items: items.value }))
+    okMsg.value = 'Borrador guardado en este equipo.'
+}
+
+onMounted(async () => {
+    try {
+        await Promise.all([fetchProveedores(), fetchProductos()])
+    } catch (e) {
+        error.value = e.message || 'Error cargando catálogos.'
+    }
+})
 </script>

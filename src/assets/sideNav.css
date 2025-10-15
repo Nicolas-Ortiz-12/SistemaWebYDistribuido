@@ -1,0 +1,42 @@
+
+
+.nav-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #f3f4f6;
+    border: none;
+    width: 100%;
+    text-align: left;
+    color: #374151;
+    font: inherit;
+    cursor: pointer;
+    margin: 6px 0
+}
+
+.nav-group .icon svg {
+    width: 18px;
+    height: 18px
+}
+
+.caret {
+    margin-left: auto;
+    transition: transform .15s ease
+}
+
+.caret.open {
+    transform: rotate(180deg)
+}
+
+.subnav {
+    display: flex;
+    flex-direction: column;
+    margin: 4px 0 10px 30px
+}
+
+.subnav a {
+    padding: 8px 10px;
+    border-radius: 8px
+}

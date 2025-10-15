@@ -5,6 +5,7 @@
                 <tr>
                     <th>Nombre</th>
                     <th>Correo electrónico</th>
+                    <th>Ruc</th>
                     <th>Teléfono</th>
                     <th>Dirección</th>
                     <th>Editar</th>
@@ -14,7 +15,8 @@
             <tbody>
                 <tr v-for="s in rows" :key="s.email">
                     <td><a href="#" class="chip">{{ s.nombre }}</a></td>
-                    <td>{{ s.email }}</td>
+                    <td>{{ s.correo }}</td>
+                    <td>{{ s.ruc }}</td>
                     <td>{{ s.telefono }}</td>
                     <td>{{ s.direccion }}</td>
                     <td>

@@ -1,0 +1,185 @@
+/* === Formularios modales globales === */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 4vh 16px;
+}
+
+.backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(2px);
+    z-index: -1;
+}
+
+/* === Tarjeta del modal === */
+.modal-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid var(--border, #e5e7eb);
+    width: min(640px, 95vw);
+    max-height: 92vh;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Cabecera === */
+.card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border, #e5e7eb);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f9fafb;
+}
+
+.card-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    border-radius: 50%;
+    color: var(--muted, #6b7280);
+    transition: background 0.15s;
+}
+
+.icon-btn:hover {
+    background: #f3f4f6;
+    color: var(--text, #111827);
+}
+
+/* === Cuerpo del formulario === */
+.card-body {
+    padding: 18px;
+    overflow-y: auto;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 720px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* === Inputs === */
+.input {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 10px;
+    padding: 10px 12px;
+    gap: 8px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input input,
+.input select {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+    background: transparent;
+    color: var(--text, #1f2937);
+}
+
+.input input::placeholder {
+    color: var(--muted, #9ca3af);
+}
+
+.input:focus-within {
+    border-color: var(--teal, #0f9d95);
+    box-shadow: 0 0 0 2px rgba(15, 157, 149, 0.2);
+}
+
+/* === Botones === */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent, #2563eb);
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+}
+
+.btn:hover {
+    background: color-mix(in srgb, var(--accent, #2563eb) 85%, white);
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn.ghost {
+    background: transparent;
+    color: var(--accent, #2563eb);
+    border: 1px solid var(--accent, #2563eb);
+}
+
+.btn.ghost:hover {
+    background: rgba(37, 99, 235, 0.1);
+}
+
+/* === Errores === */
+.error {
+    color: #b91c1c;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+.input.invalid {
+    border-color: #f87171 !important;
+}
+
+/* === Scrollbar === */
+.card-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.card-body::-webkit-scrollbar-thumb {
+    background: #e5e7eb;
+    border-radius: 8px;
+}

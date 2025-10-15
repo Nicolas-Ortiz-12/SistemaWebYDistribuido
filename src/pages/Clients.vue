@@ -102,19 +102,27 @@ async function fetchClientes() {
     loading.value = true
     error.value = ''
     try {
-        const url = new URL(`${API_URL}/clientes`)
-        url.searchParams.set('page', page.value)
-        url.searchParams.set('size', size.value)
-        if (q.value?.trim()) url.searchParams.set('q', q.value.trim())
+        const p = page.value            // 0-based (tu UI ya usa 0)
+        const s = size.value
+        const term = q.value?.trim()
 
-        const resp = await fetch(url.toString(), { signal: aborter.signal })
+        // 👉 Usa path variables como en tu Swagger
+        let endpoint = `${API_URL}/clientes/${p}/${s}`
+        if (term) endpoint += `/${encodeURIComponent(term)}`
+
+        const resp = await fetch(endpoint, { signal: aborter.signal })
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
 
         const data = await resp.json()
-        rows.value = Array.isArray(data.content) ? data.content : []
-        totalPages.value = Number.isInteger(data.totalPages) ? data.totalPages : 1
-        totalElements.value = Number.isInteger(data.totalElements) ? data.totalElements : rows.value.length
-        if (Number.isInteger(data.number)) page.value = data.number
+
+        // Soporta Page<ClienteDTO> y, por si acaso, arreglo plano
+        rows.value = Array.isArray(data?.content) ? data.content : (Array.isArray(data) ? data : [])
+        totalPages.value = Number.isInteger(data?.totalPages) ? data.totalPages : 1
+        totalElements.value = Number.isInteger(data?.totalElements) ? data.totalElements : rows.value.length
+
+        // Si el backend devuelve 'number' y 'size', sincronizamos
+        if (Number.isInteger(data?.number)) page.value = data.number
+        if (Number.isInteger(data?.size)) size.value = data.size
     } catch (e) {
         if (e.name !== 'AbortError') {
             console.error(e)

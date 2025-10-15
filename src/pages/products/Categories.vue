@@ -18,11 +18,14 @@
                         <circle cx="11" cy="11" r="8" />
                         <line x1="21" y1="21" x2="16.65" y2="16.65" />
                     </svg>
-                    <input placeholder="Buscar por nombre" v-model="q.nombre" />
+                    <input placeholder="Buscar por nombre" v-model="q.nombre" autocomplete="off" />
                 </label>
             </div>
 
-            <CategoriesTable :rows="pagina" @edit="editar" @remove="eliminar" />
+            <div v-if="error" class="error">{{ error }}</div>
+            <div v-if="loading" class="loading">Cargando…</div>
+
+            <CategoriesTable v-if="!loading" :rows="rows" @edit="editar" @remove="eliminar" />
 
             <div style="margin-top:12px">
                 <Pagination :total="total" v-model:page="page" v-model:pageSize="pageSize" />
@@ -32,43 +35,182 @@
 </template>
 
 <script setup>
-import { reactive, computed, ref, watch } from 'vue'
-import { categories as DATA } from '../../data/categories.js'
+import { reactive, ref, watch, onMounted, onUnmounted } from 'vue'
 import CategoriesTable from '../../components/CategoriesTable.vue'
 import Pagination from '../../components/Pagination.vue'
 
-const q = reactive({ nombre: '' })
-const list = ref([...DATA])
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8080').replace(/\/+$/, '')
 
-// filtro
-const filtradas = computed(() => {
-    const n = q.nombre.toLowerCase()
-    return list.value.filter(c => !n || c.nombre.toLowerCase().includes(n))
-})
-
-// paginación
-const page = ref(1)
-const pageSize = ref(10)
-const total = computed(() => filtradas.value.length)
-const pagina = computed(() => {
-    const start = (page.value - 1) * pageSize.value
-    return filtradas.value.slice(start, start + pageSize.value)
-})
-
-// resetear a la página 1 cuando cambie el filtro o la cantidad de filas
-watch(() => [q.nombre, list.value.length], () => { page.value = 1 })
-
-function editar(c) {
-    const nuevo = prompt('Editar nombre de la categoría:', c.nombre)
-    if (nuevo && nuevo.trim()) c.nombre = nuevo.trim()
+function buildQuery(params = {}) {
+    const u = new URLSearchParams()
+    Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined && v !== null && String(v).trim() !== '') u.set(k, v)
+    })
+    const s = u.toString()
+    return s ? `?${s}` : ''
 }
-function eliminar(c) {
-    if (confirm(`¿Eliminar la categoría "${c.nombre}"?`)) {
-        list.value = list.value.filter(x => x !== c)
+
+const categoriaApi = {
+    async listPaged({ page, size, q }) {
+        // Tu Swagger: GET /categorias/{page}/{size} con q opcional
+        const path = `${API_URL}/categorias/${page}/${size}${buildQuery({ q })}`
+        const resp = await fetch(path)
+        if (!resp.ok) throw await normalizeHttpError(resp)
+        return resp.json()
+    },
+    async create({ nombre }) {
+        const resp = await fetch(`${API_URL}/categorias`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre })
+        })
+        if (!resp.ok) throw await normalizeHttpError(resp)
+        return resp.json?.() ?? null
+    },
+    async update(id, payload) {
+        const resp = await fetch(`${API_URL}/categorias/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        if (!resp.ok) throw await normalizeHttpError(resp)
+        return resp.json?.() ?? null
+    },
+    async remove(id) {
+        const resp = await fetch(`${API_URL}/categorias/${id}`, { method: 'DELETE' })
+        if (!resp.ok) throw await normalizeHttpError(resp)
+        return true
     }
 }
-function nuevaCategoria() {
+
+// Convierte HTTP error → Error con mensaje del backend si viene en JSON {message: "..."} o {error: "..."}
+async function normalizeHttpError(resp) {
+    let msg = `HTTP ${resp.status}`
+    try {
+        const data = await resp.json()
+        msg = data?.message || data?.error || msg
+    } catch (_) { /* ignore */ }
+    const err = new Error(msg)
+    err.status = resp.status
+    return err
+}
+
+
+const q = reactive({ nombre: '' })
+
+// Paginación (UI 1-based; backend 0-based)
+const page = ref(1)
+const pageSize = ref(10)
+
+// Datos
+const rows = ref([])
+const total = ref(0)
+const loading = ref(false)
+const error = ref('')
+
+// Control de abort/debounce
+let aborter = null
+let debounceId = null
+
+async function fetchCategorias() {
+    if (aborter) aborter.abort()
+    aborter = new AbortController()
+
+    loading.value = true
+    error.value = ''
+    try {
+        const p0 = Math.max(0, page.value - 1)
+        const s = pageSize.value
+        const data = await categoriaApi.listPaged({
+            page: p0,
+            size: s,
+            q: q.nombre?.trim() || undefined
+        })
+
+        // Soporta Page<> de Spring y arreglo plano
+        rows.value = Array.isArray(data?.content) ? data.content : (Array.isArray(data) ? data : [])
+        total.value = Number.isInteger(data?.totalElements)
+            ? data.totalElements
+            : rows.value.length
+
+        if (Number.isInteger(data?.number)) page.value = data.number + 1
+        if (Number.isInteger(data?.size)) pageSize.value = data.size
+    } catch (e) {
+        if (e.name !== 'AbortError') {
+            console.error(e)
+            error.value = typeof e?.message === 'string' ? e.message : 'No se pudo cargar la lista de categorías.'
+        }
+    } finally {
+        loading.value = false
+    }
+}
+
+// Debounce de búsqueda → vuelve a página 1
+watch(() => q.nombre, () => {
+    page.value = 1
+    clearTimeout(debounceId)
+    debounceId = setTimeout(fetchCategorias, 350)
+})
+
+// Cambios de página/tamaño
+watch([page, pageSize], () => {
+    clearTimeout(debounceId)
+    debounceId = setTimeout(fetchCategorias, 0)
+})
+
+onMounted(fetchCategorias)
+onUnmounted(() => {
+    clearTimeout(debounceId)
+    if (aborter) aborter.abort()
+})
+
+
+async function nuevaCategoria() {
     const nombre = prompt('Nombre de la nueva categoría:')
-    if (nombre && nombre.trim()) list.value.unshift({ nombre: nombre.trim() })
+    if (!nombre || !nombre.trim()) return
+    try {
+        loading.value = true
+        await categoriaApi.create({ nombre: nombre.trim() })
+        await fetchCategorias()
+    } catch (e) {
+        console.error(e)
+        error.value = typeof e?.message === 'string' ? e.message : 'No se pudo crear la categoría.'
+    } finally {
+        loading.value = false
+    }
+}
+
+async function editar(c) {
+    const nuevo = prompt('Editar nombre de la categoría:', c.nombre)
+    if (!nuevo || !nuevo.trim()) return
+    try {
+        loading.value = true
+        await categoriaApi.update(c.id, { ...c, nombre: nuevo.trim() })
+        await fetchCategorias()
+    } catch (e) {
+        console.error(e)
+        error.value = typeof e?.message === 'string' ? e.message : 'No se pudo actualizar la categoría.'
+    } finally {
+        loading.value = false
+    }
+}
+
+async function eliminar(c) {
+    if (!confirm(`¿Eliminar la categoría "${c.nombre}"?`)) return
+    try {
+        loading.value = true
+        await categoriaApi.remove(c.id)
+        // Mantener página coherente si borras el último de la página
+        if (rows.value.length === 1 && page.value > 1) {
+            page.value = page.value - 1
+        } else {
+            await fetchCategorias()
+        }
+    } catch (e) {
+        console.error(e)
+        error.value = typeof e?.message === 'string' ? e.message : 'No se pudo eliminar la categoría.'
+    } finally {
+        loading.value = false
+    }
 }
 </script>

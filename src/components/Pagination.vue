@@ -21,6 +21,7 @@
 </template>
 
 <script setup>
+import "../assets/pagination.css"
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -46,51 +47,3 @@ function onSize(e) {
 }
 </script>
 
-<style scoped>
-.pager {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.pager-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #374151;
-  font-size: 14px;
-}
-
-.pager-size select {
-  margin-left: 6px;
-  padding: 6px 8px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: #fff;
-}
-
-.pager-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn {
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: #fff;
-  cursor: pointer;
-}
-
-.btn[disabled] {
-  opacity: .5;
-  cursor: not-allowed;
-}
-
-.page-indicator {
-  color: #374151;
-  font-size: 14px;
-}
-</style>

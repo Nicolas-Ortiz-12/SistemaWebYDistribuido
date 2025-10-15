@@ -10,65 +10,164 @@
                 Proveedor nuevo
             </button>
         </div>
+
         <div class="card-body">
             <div class="filters">
                 <label class="input">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                    <input placeholder="Nombre" v-model="q.nombre" />
+                    <input placeholder="Buscar por nombre" v-model="q" autocomplete="off" />
                 </label>
-                <label class="input">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M4 4h16v16H4z" />
-                        <path d="M22 6l-10 7L2 6" />
-                    </svg>
-                    <input placeholder="Correo electrónico" v-model="q.correo" />
-                </label>
-                <label class="input">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path
-                            d="M22 16.92V21a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3 5.18 2 2 0 0 1 5 3h4.09a2 2 0 0 1 2 1.72c.12.81.3 1.6.57 2.35a2 2 0 0 1-.45 2.11L10.91 10.91a16 16 0 0 0 6.18 6.18l1.73-1.73a2 2 0 0 1 2.11-.45c.75.27 1.54.45 2.35.57A2 2 0 0 1 22 16.92z" />
-                    </svg>
-                    <input placeholder="Teléfono" v-model="q.telefono" />
+
+                <label class="input" style="max-width:160px">
+                    <select v-model.number="size" :disabled="loading" class="select" title="Items por página">
+                        <option :value="10">10 por página</option>
+                        <option :value="20">20 por página</option>
+                        <option :value="50">50 por página</option>
+                    </select>
                 </label>
             </div>
 
+            <div v-if="error" class="error">{{ error }}</div>
+            <div v-if="loading" class="loading">Cargando…</div>
 
-            <SuppliersTable :rows="filtrados" @edit="editar" @remove="eliminar" />
+            <div class="table-wrap">
+                <SuppliersTable v-if="!loading" :rows="rows" @edit="editar" @remove="eliminar" />
+            </div>
+
+            <div class="pager" v-if="totalPages > 1">
+                <button class="btn" :disabled="page === 0 || loading" @click="goFirst">«</button>
+                <button class="btn" :disabled="page === 0 || loading" @click="prev">Anterior</button>
+                <span>Página {{ page + 1 }} de {{ totalPages }} ({{ totalElements }} total)</span>
+                <button class="btn" :disabled="page >= totalPages - 1 || loading" @click="next">Siguiente</button>
+                <button class="btn" :disabled="page >= totalPages - 1 || loading" @click="goLast">»</button>
+            </div>
         </div>
     </section>
+
+    <!-- Modal Crear -->
+    <ProveedorForm v-if="showCreate" @close="onCloseForm" @saved="onSavedProveedor" />
+
+   
+    <ProveedorEditForm v-if="showEdit" :proveedor="proveedorSeleccionado" @close="onCloseEdit"
+        @updated="onUpdatedProveedor" />
 </template>
 
-
 <script setup>
-import { reactive, computed, ref } from 'vue'
-import { suppliers as DATA } from '../data/suppliers.js'
+import { ref, watch, onMounted } from 'vue'
 import SuppliersTable from '../components/SuppliersTable.vue'
+import ProveedorForm from '../components/ProveedorForm.vue'
+import ProveedorEditForm from '../components/ProveedorEditForm.vue'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
 
-const q = reactive({ nombre: '', correo: '', telefono: '' })
-const list = ref([...DATA])
+const q = ref('')
+const page = ref(0)
+const size = ref(10)
+const totalPages = ref(0)
+const totalElements = ref(0)
+const rows = ref([])
+const loading = ref(false)
+const error = ref('')
+const showCreate = ref(false)
+const showEdit = ref(false)
+const proveedorSeleccionado = ref(null) 
 
+let aborter = null
+let debounceId = null
 
-const filtrados = computed(() => {
-    const n = q.nombre.toLowerCase()
-    const e = q.correo.toLowerCase()
-    const t = q.telefono.toLowerCase()
-    return list.value.filter(s =>
-        (!n || s.nombre.toLowerCase().includes(n)) &&
-        (!e || s.email.toLowerCase().includes(e)) &&
-        (!t || s.telefono.toLowerCase().includes(t))
-    )
-})
-
-
-function editar(s) { alert('Editar: ' + s.nombre) }
-function eliminar(s) {
-    if (confirm(`¿Eliminar proveedor "${s.nombre}"?`)) {
-        list.value = list.value.filter(x => x.email !== s.email)
+function normalizeProveedor(p = {}) {
+    return {
+        id: p.id ?? null,
+        nombre: p.nombre ?? '',
+        ruc: p.ruc ?? '',
+        telefono: p.telefono ?? '',
+        correo: p.correo ?? '',
+        direccion: p.direccion ?? '',
+        activo: p.activo ?? true
     }
 }
-function nuevoProveedor() { alert('Crear nuevo proveedor') }
+
+async function fetchProveedores() {
+    if (aborter) aborter.abort()
+    aborter = new AbortController()
+    loading.value = true
+    error.value = ''
+
+    try {
+        const p = page.value      
+        const s = size.value
+        const term = q.value?.trim()
+
+        let endpoint = `${API_URL}/proveedores/${p}/${s}`
+        if (term) endpoint += `/${encodeURIComponent(term)}`
+
+        const resp = await fetch(endpoint, { signal: aborter.signal })
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
+
+        const data = await resp.json()
+
+        
+        const content = Array.isArray(data?.content) ? data.content : (Array.isArray(data) ? data : [])
+        rows.value = content.map(normalizeProveedor)
+        totalPages.value = Number.isInteger(data?.totalPages) ? data.totalPages : 1
+        totalElements.value = Number.isInteger(data?.totalElements) ? data.totalElements : rows.value.length
+
+        if (Number.isInteger(data?.number)) page.value = data.number
+        if (Number.isInteger(data?.size)) size.value = data.size
+    } catch (e) {
+        if (e.name !== 'AbortError') {
+            console.error(e)
+            error.value = 'No se pudieron cargar los proveedores.'
+        }
+    } finally {
+        loading.value = false
+    }
+}
+
+watch(q, () => {
+    page.value = 0
+    clearTimeout(debounceId)
+    debounceId = setTimeout(fetchProveedores, 350)
+})
+
+watch([page, size], () => {
+    clearTimeout(debounceId)
+    debounceId = setTimeout(fetchProveedores, 0)
+})
+
+onMounted(fetchProveedores)
+
+// Navegación
+function prev() { if (page.value > 0) page.value-- }
+function next() { if (page.value < totalPages.value - 1) page.value++ }
+function goFirst() { page.value = 0 }
+function goLast() { page.value = Math.max(0, totalPages.value - 1) }
+
+// Crear
+function nuevoProveedor() { showCreate.value = true }
+function onCloseForm() { showCreate.value = false }
+function onSavedProveedor() { showCreate.value = false; fetchProveedores() }
+
+// Eliminar
+async function eliminar(p) {
+    if (!confirm(`¿Eliminar proveedor "${p.nombre}"?`)) return
+    try {
+        const resp = await fetch(`${API_URL}/proveedores/${p.id}`, { method: 'DELETE' })
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
+        fetchProveedores()
+    } catch (e) {
+        console.error(e)
+        alert('Error al eliminar proveedor')
+    }
+}
+
+function editar(p) {
+    proveedorSeleccionado.value = p
+    showEdit.value = true
+}
+function onCloseEdit() { showEdit.value = false }
+function onUpdatedProveedor() {
+    showEdit.value = false
+    fetchProveedores()
+}
 </script>

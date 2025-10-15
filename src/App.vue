@@ -1,13 +1,13 @@
 <template>
-<div>
-<TopBar />
-<div class="layout">
-<SideNav />
-<main>
-<RouterView />
-</main>
-</div>
-</div>
+    <div>
+        <TopBar />
+        <div class="layout">
+            <SideNav />
+            <main>
+                <RouterView />
+            </main>
+        </div>
+    </div>
 </template>
 
 
