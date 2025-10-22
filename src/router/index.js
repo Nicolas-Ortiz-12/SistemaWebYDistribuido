@@ -12,6 +12,8 @@ import InventoryLayout from '../pages/inventory/InventoryLayout.vue'
 import NewPurchase from '../pages/inventory/NewPurchase.vue'
 import Sales from '../pages/inventory/Sales.vue'
 
+import Reports from '../pages/reports/Reports.vue'
+
 export default createRouter({
     history: createWebHistory(),
     routes: [
@@ -37,8 +39,8 @@ export default createRouter({
             ]
         },
 
+        { path: '/reportes', name: 'reportes', component: Reports },
         { path: '/usuarios', component: Dashboard },
-        { path: '/reportes', component: Dashboard },
         { path: '/configuracion', component: Dashboard },
     ]
 })

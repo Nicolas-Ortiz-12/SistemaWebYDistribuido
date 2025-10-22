@@ -75,7 +75,7 @@ async function fetchProductos() {
     }
 }
 
-// ========= PAGINACIÓN =========
+
 function siguiente() {
     if (page.value < totalPages.value - 1) page.value++
 }
@@ -89,7 +89,7 @@ function ultimo() {
     page.value = totalPages.value - 1
 }
 
-// ========= WATCHERS =========
+
 watch(busqueda, () => {
     page.value = 0
     clearTimeout(debounceId)
@@ -103,7 +103,8 @@ onUnmounted(() => {
     clearTimeout(debounceId)
 })
 
-// ========= CRUD =========
+
+
 async function editarProducto(p) {
     const nombre = prompt("Editar nombre:", p.nombre)
     if (!nombre?.trim()) return
