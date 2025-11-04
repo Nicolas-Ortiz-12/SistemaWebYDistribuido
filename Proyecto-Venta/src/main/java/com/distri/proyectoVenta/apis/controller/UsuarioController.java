@@ -1,0 +1,62 @@
+package com.distri.proyectoVenta.apis.controller;
+
+import com.distri.proyectoVenta.apis.service.UsuarioService;
+import com.distri.proyectoVenta.dto.UsuarioCreateDTO;
+import com.distri.proyectoVenta.dto.UsuarioDTO;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@RequestMapping("/usuarios")
+@RequiredArgsConstructor
+public class UsuarioController {
+
+    private final UsuarioService service;
+
+    // -------- LISTAR --------
+    @GetMapping({"/{page}/{size}",
+            "/{page}/{size}/{q}"})
+    public ResponseEntity<Page<UsuarioDTO>> list(
+            @PathVariable int page ,
+            @PathVariable int size,
+            @PathVariable(required = false) String q
+    ) {
+        return ResponseEntity.ok(service.list(q, page, size));
+    }
+
+    // -------- OBTENER --------
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioDTO> get(@PathVariable Long id) {
+        return ResponseEntity.ok(service.get(id));
+    }
+
+    // -------- CREAR --------
+    @PostMapping
+    public ResponseEntity<UsuarioDTO> create(@Valid @RequestBody UsuarioCreateDTO in) {
+        var dto = service.create(in);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    }
+
+
+    // -------- ACTUALIZAR --------
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioDTO> update(
+            @PathVariable Long id,
+            @Validated @RequestBody UsuarioDTO body
+    ) {
+        return ResponseEntity.ok(service.update(id, body));
+    }
+
+    // -------- ELIMINAR --------
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}

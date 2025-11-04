@@ -1,0 +1,608 @@
+2025-11-04T16:40:40.312-03:00  INFO 13284 --- [main] c.d.p.ProyectoDistriApplication          : Starting ProyectoDistriApplication using Java 24 with PID 13284 (C:\Users\Usuario\IdeaProjects\Distri\SistemaWebYDistribuido\ProyectoDistri\target\classes started by Usuario in C:\Users\Usuario\IdeaProjects\Distri\SistemaWebYDistribuido\ProyectoDistri)
+2025-11-04T16:40:40.316-03:00  INFO 13284 --- [main] c.d.p.ProyectoDistriApplication          : No active profile set, falling back to 1 default profile: "default"
+2025-11-04T16:40:41.089-03:00  INFO 13284 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-04T16:40:41.238-03:00  INFO 13284 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 142 ms. Found 7 JPA repository interfaces.
+2025-11-04T16:40:41.387-03:00  INFO 13284 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=eb0b12d4-b538-3e5a-a3ab-d49b06425bbb
+2025-11-04T16:40:41.710-03:00  INFO 13284 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8082 (http)
+2025-11-04T16:40:41.724-03:00  INFO 13284 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-04T16:40:41.724-03:00  INFO 13284 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-11-04T16:40:41.786-03:00  INFO 13284 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-04T16:40:41.787-03:00  INFO 13284 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1430 ms
+2025-11-04T16:40:41.910-03:00  INFO 13284 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-04T16:40:44.042-03:00  INFO 13284 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4751cd3
+2025-11-04T16:40:44.043-03:00  INFO 13284 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-04T16:40:45.354-03:00  INFO 13284 --- [main] liquibase.database                       : Set default schema name to public
+2025-11-04T16:40:46.456-03:00  INFO 13284 --- [main] liquibase.changelog                      : Reading from public.databasechangelog
+2025-11-04T16:40:48.556-03:00  INFO 13284 --- [main] liquibase.ui                             : Database is up to date, no changesets to execute
+2025-11-04T16:40:48.749-03:00  INFO 13284 --- [main] liquibase.changelog                      : Reading from public.databasechangelog
+2025-11-04T16:40:48.957-03:00  INFO 13284 --- [main] liquibase.util                           : UPDATE SUMMARY
+2025-11-04T16:40:48.957-03:00  INFO 13284 --- [main] liquibase.util                           : Run:                          0
+2025-11-04T16:40:48.957-03:00  INFO 13284 --- [main] liquibase.util                           : Previously run:              21
+2025-11-04T16:40:48.957-03:00  INFO 13284 --- [main] liquibase.util                           : Filtered out:                 0
+2025-11-04T16:40:48.957-03:00  INFO 13284 --- [main] liquibase.util                           : -------------------------------
+2025-11-04T16:40:48.957-03:00  INFO 13284 --- [main] liquibase.util                           : Total change sets:           21
+2025-11-04T16:40:48.958-03:00  INFO 13284 --- [main] liquibase.util                           : Update summary generated
+2025-11-04T16:40:48.959-03:00  INFO 13284 --- [main] liquibase.command                        : Command execution complete
+2025-11-04T16:40:50.733-03:00  INFO 13284 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-04T16:40:50.778-03:00  INFO 13284 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-11-04T16:40:50.808-03:00  INFO 13284 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-04T16:40:51.063-03:00  INFO 13284 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-04T16:40:51.704-03:00  INFO 13284 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.6
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-04T16:40:52.630-03:00  INFO 13284 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-04T16:40:52.633-03:00  INFO 13284 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-04T16:40:53.001-03:00  INFO 13284 --- [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-04T16:40:53.549-03:00  WARN 13284 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-04T16:40:54.965-03:00  INFO 13284 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T16:40:55.984-03:00  INFO 13284 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T16:40:56.000-03:00  INFO 13284 --- [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2025-11-04T16:40:56.031-03:00  WARN 13284 --- [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2025-11-04T16:40:56.071-03:00  INFO 13284 --- [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2025-11-04T16:40:56.098-03:00  INFO 13284 --- [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2025-11-04T16:40:56.102-03:00  INFO 13284 --- [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-11-04T16:40:56.110-03:00  INFO 13284 --- [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2025-11-04T16:40:56.110-03:00  INFO 13284 --- [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2025-11-04T16:40:56.111-03:00  INFO 13284 --- [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2025-11-04T16:40:56.111-03:00  INFO 13284 --- [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2025-11-04T16:40:56.111-03:00  INFO 13284 --- [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2025-11-04T16:40:56.111-03:00  INFO 13284 --- [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2025-11-04T16:40:56.111-03:00  INFO 13284 --- [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2025-11-04T16:40:56.406-03:00  INFO 13284 --- [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2025-11-04T16:40:56.408-03:00  INFO 13284 --- [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2025-11-04T16:40:56.409-03:00  INFO 13284 --- [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2025-11-04T16:40:56.411-03:00  INFO 13284 --- [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1762285256410 with initial instances count: 2
+2025-11-04T16:40:56.414-03:00  INFO 13284 --- [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application UNKNOWN with eureka with status UP
+2025-11-04T16:40:56.414-03:00  INFO 13284 --- [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1762285256414, current=UP, previous=STARTING]
+2025-11-04T16:40:56.416-03:00  INFO 13284 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082: registering service...
+2025-11-04T16:40:56.431-03:00  INFO 13284 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8082 (http) with context path '/'
+2025-11-04T16:40:56.431-03:00  INFO 13284 --- [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8082
+2025-11-04T16:40:56.449-03:00  INFO 13284 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - registration status: 204
+2025-11-04T16:40:57.434-03:00  INFO 13284 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T16:40:57.441-03:00  INFO 13284 --- [main] c.d.p.ProyectoDistriApplication          : Started ProyectoDistriApplication in 18.586 seconds (process running for 20.021)
+2025-11-04T16:41:14.791-03:00  INFO 13284 --- [http-nio-8082-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-04T16:41:14.792-03:00  INFO 13284 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-04T16:41:14.793-03:00  INFO 13284 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-11-04T16:41:14.827-03:00  INFO 13284 --- [http-nio-8082-exec-1] c.d.p.apis.controller.CompraController   : GET /compras page=0 size=10 filtros: proveedorId=null, desde=null, hasta=null
+2025-11-04T16:41:15.029-03:00  INFO 13284 --- [http-nio-8082-exec-1] c.d.p.apis.service.CompraService         : Trayendo lista de compras realizadas pagina=Page request [number: 0, size 10, sort: UNSORTED] por el proveedor con ID=null desde=null hasta=null
+2025-11-04T16:41:15.086-03:00 DEBUG 13284 --- [http-nio-8082-exec-1] org.hibernate.SQL                        : select c1_0.id,c1_0.activo,c1_0.creado_en,c1_0.estado,c1_0.fecha_emision,c1_0.iva,c1_0.numero,c1_0.proveedor_id,c1_0.serie,c1_0.subtotal,c1_0.total from compra c1_0 where (c1_0.activo = true) offset ? rows fetch first ? rows only
+2025-11-04T16:41:15.087-03:00 TRACE 13284 --- [http-nio-8082-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:INTEGER) <- [0]
+2025-11-04T16:41:15.088-03:00 TRACE 13284 --- [http-nio-8082-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (2:INTEGER) <- [10]
+2025-11-04T16:41:15.331-03:00 DEBUG 13284 --- [http-nio-8082-exec-1] c.d.p.apis.service.CompraService         : Cantidad de compras encontradas: 7
+2025-11-04T16:41:15.531-03:00  WARN 13284 --- [http-nio-8082-exec-1] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-11-04T16:44:35.165-03:00  INFO 13284 --- [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application UNKNOWN with eureka with status DOWN
+2025-11-04T16:44:35.166-03:00  INFO 13284 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1762285475166, current=DOWN, previous=UP]
+2025-11-04T16:44:35.166-03:00  INFO 13284 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082: registering service...
+2025-11-04T16:44:35.169-03:00  INFO 13284 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-04T16:44:35.173-03:00  INFO 13284 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - registration status: 204
+2025-11-04T16:44:35.174-03:00  INFO 13284 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-04T16:44:35.180-03:00  INFO 13284 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-04T16:44:35.182-03:00  INFO 13284 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-04T16:44:36.737-03:00  INFO 13284 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-04T16:44:36.738-03:00  INFO 13284 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2025-11-04T16:44:39.739-03:00  INFO 13284 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2025-11-04T16:44:39.744-03:00  INFO 13284 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - deregister  status: 200
+2025-11-04T16:44:39.744-03:00  INFO 13284 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2025-11-04T17:56:31.893-03:00  INFO 2388 --- [main] c.d.p.ProyectoDistriApplication          : Starting ProyectoDistriApplication using Java 24 with PID 2388 (C:\Users\Usuario\IdeaProjects\Distri\SistemaWebYDistribuido\ProyectoDistri\target\classes started by Usuario in C:\Users\Usuario\IdeaProjects\Distri\SistemaWebYDistribuido\ProyectoDistri)
+2025-11-04T17:56:31.894-03:00  INFO 2388 --- [main] c.d.p.ProyectoDistriApplication          : No active profile set, falling back to 1 default profile: "default"
+2025-11-04T17:56:32.702-03:00  INFO 2388 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-04T17:56:32.858-03:00  INFO 2388 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 149 ms. Found 7 JPA repository interfaces.
+2025-11-04T17:56:33.072-03:00  INFO 2388 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a2c9d5b9-d1cd-3ffd-9afc-72582b687f4f
+2025-11-04T17:56:33.451-03:00  INFO 2388 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8082 (http)
+2025-11-04T17:56:33.465-03:00  INFO 2388 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-04T17:56:33.465-03:00  INFO 2388 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-11-04T17:56:33.528-03:00  INFO 2388 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-04T17:56:33.528-03:00  INFO 2388 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1598 ms
+2025-11-04T17:56:33.691-03:00  INFO 2388 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-04T17:56:35.687-03:00  INFO 2388 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@e0847a9
+2025-11-04T17:56:35.688-03:00  INFO 2388 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-04T17:56:36.955-03:00  INFO 2388 --- [main] liquibase.database                       : Set default schema name to public
+2025-11-04T17:56:38.006-03:00  INFO 2388 --- [main] liquibase.changelog                      : Reading from public.databasechangelog
+2025-11-04T17:56:40.030-03:00  INFO 2388 --- [main] liquibase.ui                             : Database is up to date, no changesets to execute
+2025-11-04T17:56:40.219-03:00  INFO 2388 --- [main] liquibase.changelog                      : Reading from public.databasechangelog
+2025-11-04T17:56:40.422-03:00  INFO 2388 --- [main] liquibase.util                           : UPDATE SUMMARY
+2025-11-04T17:56:40.422-03:00  INFO 2388 --- [main] liquibase.util                           : Run:                          0
+2025-11-04T17:56:40.422-03:00  INFO 2388 --- [main] liquibase.util                           : Previously run:              21
+2025-11-04T17:56:40.422-03:00  INFO 2388 --- [main] liquibase.util                           : Filtered out:                 0
+2025-11-04T17:56:40.422-03:00  INFO 2388 --- [main] liquibase.util                           : -------------------------------
+2025-11-04T17:56:40.423-03:00  INFO 2388 --- [main] liquibase.util                           : Total change sets:           21
+2025-11-04T17:56:40.423-03:00  INFO 2388 --- [main] liquibase.util                           : Update summary generated
+2025-11-04T17:56:40.424-03:00  INFO 2388 --- [main] liquibase.command                        : Command execution complete
+2025-11-04T17:56:42.080-03:00  INFO 2388 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-04T17:56:42.126-03:00  INFO 2388 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-11-04T17:56:42.154-03:00  INFO 2388 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-04T17:56:42.408-03:00  INFO 2388 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-04T17:56:43.057-03:00  INFO 2388 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.6
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-04T17:56:43.976-03:00  INFO 2388 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-04T17:56:43.979-03:00  INFO 2388 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-04T17:56:44.348-03:00  INFO 2388 --- [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-04T17:56:44.921-03:00  WARN 2388 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-04T17:56:44.976-03:00  WARN 2388 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 44500760-dea5-4b6e-8859-b94765c30210
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-11-04T17:56:44.984-03:00  INFO 2388 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-11-04T17:56:46.636-03:00  INFO 2388 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T17:56:47.659-03:00  INFO 2388 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T17:56:47.677-03:00  INFO 2388 --- [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2025-11-04T17:56:47.714-03:00  WARN 2388 --- [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2025-11-04T17:56:47.756-03:00  INFO 2388 --- [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2025-11-04T17:56:47.777-03:00  INFO 2388 --- [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2025-11-04T17:56:47.780-03:00  INFO 2388 --- [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-11-04T17:56:47.788-03:00  INFO 2388 --- [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2025-11-04T17:56:47.788-03:00  INFO 2388 --- [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2025-11-04T17:56:47.788-03:00  INFO 2388 --- [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2025-11-04T17:56:47.788-03:00  INFO 2388 --- [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2025-11-04T17:56:47.788-03:00  INFO 2388 --- [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2025-11-04T17:56:47.788-03:00  INFO 2388 --- [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2025-11-04T17:56:47.788-03:00  INFO 2388 --- [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2025-11-04T17:56:48.076-03:00  INFO 2388 --- [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2025-11-04T17:56:48.078-03:00  INFO 2388 --- [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2025-11-04T17:56:48.079-03:00  INFO 2388 --- [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2025-11-04T17:56:48.081-03:00  INFO 2388 --- [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1762289808080 with initial instances count: 3
+2025-11-04T17:56:48.085-03:00  INFO 2388 --- [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application UNKNOWN with eureka with status UP
+2025-11-04T17:56:48.085-03:00  INFO 2388 --- [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1762289808085, current=UP, previous=STARTING]
+2025-11-04T17:56:48.087-03:00  INFO 2388 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082: registering service...
+2025-11-04T17:56:48.102-03:00  INFO 2388 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8082 (http) with context path '/'
+2025-11-04T17:56:48.103-03:00  INFO 2388 --- [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8082
+2025-11-04T17:56:48.120-03:00  INFO 2388 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - registration status: 204
+2025-11-04T17:56:49.106-03:00  INFO 2388 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T17:56:49.113-03:00  INFO 2388 --- [main] c.d.p.ProyectoDistriApplication          : Started ProyectoDistriApplication in 18.774 seconds (process running for 19.831)
+2025-11-04T17:56:56.024-03:00  INFO 2388 --- [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application UNKNOWN with eureka with status DOWN
+2025-11-04T17:56:56.025-03:00  INFO 2388 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1762289816025, current=DOWN, previous=UP]
+2025-11-04T17:56:56.025-03:00  INFO 2388 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082: registering service...
+2025-11-04T17:56:56.026-03:00  INFO 2388 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-04T17:56:56.030-03:00  INFO 2388 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-04T17:56:56.032-03:00  INFO 2388 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - registration status: 204
+2025-11-04T17:56:56.035-03:00  INFO 2388 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-04T17:56:56.037-03:00  INFO 2388 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-04T17:56:56.807-03:00  INFO 2388 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-04T17:56:56.808-03:00  INFO 2388 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2025-11-04T17:56:59.809-03:00  INFO 2388 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2025-11-04T17:56:59.818-03:00  INFO 2388 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - deregister  status: 200
+2025-11-04T17:56:59.818-03:00  INFO 2388 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2025-11-04T17:57:47.806-03:00  INFO 9692 --- [main] c.d.p.ProyectoDistriApplication          : Starting ProyectoDistriApplication using Java 24 with PID 9692 (C:\Users\Usuario\IdeaProjects\Distri\SistemaWebYDistribuido\ProyectoDistri\target\classes started by Usuario in C:\Users\Usuario\IdeaProjects\Distri\SistemaWebYDistribuido\ProyectoDistri)
+2025-11-04T17:57:47.808-03:00  INFO 9692 --- [main] c.d.p.ProyectoDistriApplication          : No active profile set, falling back to 1 default profile: "default"
+2025-11-04T17:57:48.600-03:00  INFO 9692 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-04T17:57:48.754-03:00  INFO 9692 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 145 ms. Found 7 JPA repository interfaces.
+2025-11-04T17:57:48.974-03:00  INFO 9692 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a2c9d5b9-d1cd-3ffd-9afc-72582b687f4f
+2025-11-04T17:57:49.347-03:00  INFO 9692 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8082 (http)
+2025-11-04T17:57:49.360-03:00  INFO 9692 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-04T17:57:49.360-03:00  INFO 9692 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-11-04T17:57:49.423-03:00  INFO 9692 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-04T17:57:49.424-03:00  INFO 9692 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1580 ms
+2025-11-04T17:57:49.577-03:00  INFO 9692 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-04T17:57:51.631-03:00  INFO 9692 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@44ddb518
+2025-11-04T17:57:51.633-03:00  INFO 9692 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-04T17:57:52.895-03:00  INFO 9692 --- [main] liquibase.database                       : Set default schema name to public
+2025-11-04T17:57:53.951-03:00  INFO 9692 --- [main] liquibase.changelog                      : Reading from public.databasechangelog
+2025-11-04T17:57:55.985-03:00  INFO 9692 --- [main] liquibase.ui                             : Database is up to date, no changesets to execute
+2025-11-04T17:57:56.174-03:00  INFO 9692 --- [main] liquibase.changelog                      : Reading from public.databasechangelog
+2025-11-04T17:57:56.385-03:00  INFO 9692 --- [main] liquibase.util                           : UPDATE SUMMARY
+2025-11-04T17:57:56.386-03:00  INFO 9692 --- [main] liquibase.util                           : Run:                          0
+2025-11-04T17:57:56.386-03:00  INFO 9692 --- [main] liquibase.util                           : Previously run:              21
+2025-11-04T17:57:56.386-03:00  INFO 9692 --- [main] liquibase.util                           : Filtered out:                 0
+2025-11-04T17:57:56.386-03:00  INFO 9692 --- [main] liquibase.util                           : -------------------------------
+2025-11-04T17:57:56.386-03:00  INFO 9692 --- [main] liquibase.util                           : Total change sets:           21
+2025-11-04T17:57:56.387-03:00  INFO 9692 --- [main] liquibase.util                           : Update summary generated
+2025-11-04T17:57:56.388-03:00  INFO 9692 --- [main] liquibase.command                        : Command execution complete
+2025-11-04T17:57:58.067-03:00  INFO 9692 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-04T17:57:58.112-03:00  INFO 9692 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-11-04T17:57:58.142-03:00  INFO 9692 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-04T17:57:58.396-03:00  INFO 9692 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-04T17:57:59.045-03:00  INFO 9692 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.6
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-04T17:57:59.957-03:00  INFO 9692 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-04T17:57:59.960-03:00  INFO 9692 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-04T17:58:00.338-03:00  INFO 9692 --- [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-04T17:58:00.933-03:00  WARN 9692 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-04T17:58:00.988-03:00  WARN 9692 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 423001de-85ab-4b7c-bae2-e63c307d5747
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-11-04T17:58:00.995-03:00  INFO 9692 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-11-04T17:58:02.653-03:00  INFO 9692 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T17:58:03.675-03:00  INFO 9692 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T17:58:03.695-03:00  INFO 9692 --- [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2025-11-04T17:58:03.734-03:00  WARN 9692 --- [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2025-11-04T17:58:03.782-03:00  INFO 9692 --- [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2025-11-04T17:58:03.803-03:00  INFO 9692 --- [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2025-11-04T17:58:03.807-03:00  INFO 9692 --- [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-11-04T17:58:03.815-03:00  INFO 9692 --- [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2025-11-04T17:58:03.815-03:00  INFO 9692 --- [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2025-11-04T17:58:03.815-03:00  INFO 9692 --- [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2025-11-04T17:58:03.815-03:00  INFO 9692 --- [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2025-11-04T17:58:03.815-03:00  INFO 9692 --- [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2025-11-04T17:58:03.815-03:00  INFO 9692 --- [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2025-11-04T17:58:03.815-03:00  INFO 9692 --- [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2025-11-04T17:58:04.097-03:00  INFO 9692 --- [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2025-11-04T17:58:04.098-03:00  INFO 9692 --- [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2025-11-04T17:58:04.100-03:00  INFO 9692 --- [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2025-11-04T17:58:04.101-03:00  INFO 9692 --- [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1762289884100 with initial instances count: 3
+2025-11-04T17:58:04.105-03:00  INFO 9692 --- [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application UNKNOWN with eureka with status UP
+2025-11-04T17:58:04.106-03:00  INFO 9692 --- [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1762289884106, current=UP, previous=STARTING]
+2025-11-04T17:58:04.107-03:00  INFO 9692 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082: registering service...
+2025-11-04T17:58:04.122-03:00  INFO 9692 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8082 (http) with context path '/'
+2025-11-04T17:58:04.123-03:00  INFO 9692 --- [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8082
+2025-11-04T17:58:04.140-03:00  INFO 9692 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - registration status: 204
+2025-11-04T17:58:05.126-03:00  INFO 9692 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T17:58:05.133-03:00  INFO 9692 --- [main] c.d.p.ProyectoDistriApplication          : Started ProyectoDistriApplication in 18.75 seconds (process running for 19.438)
+2025-11-04T17:58:35.841-03:00  INFO 9692 --- [http-nio-8082-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-04T17:58:35.841-03:00  INFO 9692 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-04T17:58:35.842-03:00  INFO 9692 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-11-04T17:58:43.056-03:00  INFO 9692 --- [http-nio-8082-exec-2] c.d.p.apis.controller.CompraController   : GET /compras page=0 size=10 filtros: proveedorId=null, desde=null, hasta=null
+2025-11-04T17:58:43.253-03:00  INFO 9692 --- [http-nio-8082-exec-2] c.d.p.apis.service.CompraService         : Trayendo lista de compras realizadas pagina=Page request [number: 0, size 10, sort: UNSORTED] por el proveedor con ID=null desde=null hasta=null
+2025-11-04T17:58:43.307-03:00 DEBUG 9692 --- [http-nio-8082-exec-2] org.hibernate.SQL                        : select c1_0.id,c1_0.activo,c1_0.creado_en,c1_0.estado,c1_0.fecha_emision,c1_0.iva,c1_0.numero,c1_0.proveedor_id,c1_0.serie,c1_0.subtotal,c1_0.total from compra c1_0 where (c1_0.activo = true) offset ? rows fetch first ? rows only
+2025-11-04T17:58:43.309-03:00 TRACE 9692 --- [http-nio-8082-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:INTEGER) <- [0]
+2025-11-04T17:58:43.309-03:00 TRACE 9692 --- [http-nio-8082-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (2:INTEGER) <- [10]
+2025-11-04T17:58:43.550-03:00 DEBUG 9692 --- [http-nio-8082-exec-2] c.d.p.apis.service.CompraService         : Cantidad de compras encontradas: 7
+2025-11-04T17:58:43.747-03:00  WARN 9692 --- [http-nio-8082-exec-2] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-11-04T18:03:03.817-03:00  INFO 9692 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-11-04T18:08:03.818-03:00  INFO 9692 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-11-04T18:13:03.820-03:00  INFO 9692 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-11-04T18:18:03.822-03:00  INFO 9692 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-11-04T18:23:03.824-03:00  INFO 9692 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-11-04T18:27:17.122-03:00  INFO 9692 --- [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application UNKNOWN with eureka with status DOWN
+2025-11-04T18:27:17.122-03:00  INFO 9692 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1762291637122, current=DOWN, previous=UP]
+2025-11-04T18:27:17.122-03:00  INFO 9692 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082: registering service...
+2025-11-04T18:27:17.124-03:00  INFO 9692 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-04T18:27:17.128-03:00  INFO 9692 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-04T18:27:17.130-03:00  INFO 9692 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - registration status: 204
+2025-11-04T18:27:17.134-03:00  INFO 9692 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-04T18:27:17.135-03:00  INFO 9692 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-04T18:27:18.878-03:00  INFO 9692 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-04T18:27:18.879-03:00  INFO 9692 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2025-11-04T18:27:21.881-03:00  INFO 9692 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2025-11-04T18:27:21.886-03:00  INFO 9692 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - deregister  status: 200
+2025-11-04T18:27:21.887-03:00  INFO 9692 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2025-11-04T18:36:13.554-03:00  INFO 15444 --- [main] c.d.p.ProyectoDistriApplication          : Starting ProyectoDistriApplication using Java 24 with PID 15444 (C:\Users\Usuario\IdeaProjects\Distri\SistemaWebYDistribuido\ProyectoDistri\target\classes started by Usuario in C:\Users\Usuario\IdeaProjects\Distri\SistemaWebYDistribuido\ProyectoDistri)
+2025-11-04T18:36:13.556-03:00  INFO 15444 --- [main] c.d.p.ProyectoDistriApplication          : No active profile set, falling back to 1 default profile: "default"
+2025-11-04T18:36:14.347-03:00  INFO 15444 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-04T18:36:14.512-03:00  INFO 15444 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 157 ms. Found 7 JPA repository interfaces.
+2025-11-04T18:36:14.726-03:00  INFO 15444 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a2c9d5b9-d1cd-3ffd-9afc-72582b687f4f
+2025-11-04T18:36:15.107-03:00  INFO 15444 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8082 (http)
+2025-11-04T18:36:15.120-03:00  INFO 15444 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-04T18:36:15.120-03:00  INFO 15444 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-11-04T18:36:15.184-03:00  INFO 15444 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-04T18:36:15.184-03:00  INFO 15444 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1592 ms
+2025-11-04T18:36:15.337-03:00  INFO 15444 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-04T18:36:17.370-03:00  INFO 15444 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@592cb470
+2025-11-04T18:36:17.371-03:00  INFO 15444 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-04T18:36:18.659-03:00  INFO 15444 --- [main] liquibase.database                       : Set default schema name to public
+2025-11-04T18:36:19.739-03:00  INFO 15444 --- [main] liquibase.changelog                      : Reading from public.databasechangelog
+2025-11-04T18:36:21.824-03:00  INFO 15444 --- [main] liquibase.ui                             : Database is up to date, no changesets to execute
+2025-11-04T18:36:22.021-03:00  INFO 15444 --- [main] liquibase.changelog                      : Reading from public.databasechangelog
+2025-11-04T18:36:22.234-03:00  INFO 15444 --- [main] liquibase.util                           : UPDATE SUMMARY
+2025-11-04T18:36:22.234-03:00  INFO 15444 --- [main] liquibase.util                           : Run:                          0
+2025-11-04T18:36:22.234-03:00  INFO 15444 --- [main] liquibase.util                           : Previously run:              21
+2025-11-04T18:36:22.234-03:00  INFO 15444 --- [main] liquibase.util                           : Filtered out:                 0
+2025-11-04T18:36:22.234-03:00  INFO 15444 --- [main] liquibase.util                           : -------------------------------
+2025-11-04T18:36:22.234-03:00  INFO 15444 --- [main] liquibase.util                           : Total change sets:           21
+2025-11-04T18:36:22.235-03:00  INFO 15444 --- [main] liquibase.util                           : Update summary generated
+2025-11-04T18:36:22.236-03:00  INFO 15444 --- [main] liquibase.command                        : Command execution complete
+2025-11-04T18:36:24.001-03:00  INFO 15444 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-04T18:36:24.048-03:00  INFO 15444 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-11-04T18:36:24.079-03:00  INFO 15444 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-04T18:36:24.332-03:00  INFO 15444 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-04T18:36:25.010-03:00  INFO 15444 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.6
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-04T18:36:26.003-03:00  INFO 15444 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-04T18:36:26.005-03:00  INFO 15444 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-04T18:36:26.381-03:00  INFO 15444 --- [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-04T18:36:26.974-03:00  WARN 15444 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-04T18:36:27.031-03:00  WARN 15444 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: f403fdc7-f9a9-47da-a01d-2947dae242df
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-11-04T18:36:27.039-03:00  INFO 15444 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-11-04T18:36:28.700-03:00  INFO 15444 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T18:36:29.724-03:00  INFO 15444 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T18:36:29.744-03:00  INFO 15444 --- [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2025-11-04T18:36:29.782-03:00  WARN 15444 --- [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2025-11-04T18:36:29.825-03:00  INFO 15444 --- [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2025-11-04T18:36:29.845-03:00  INFO 15444 --- [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2025-11-04T18:36:29.848-03:00  INFO 15444 --- [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-11-04T18:36:29.856-03:00  INFO 15444 --- [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2025-11-04T18:36:29.856-03:00  INFO 15444 --- [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2025-11-04T18:36:29.856-03:00  INFO 15444 --- [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2025-11-04T18:36:29.856-03:00  INFO 15444 --- [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2025-11-04T18:36:29.856-03:00  INFO 15444 --- [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2025-11-04T18:36:29.857-03:00  INFO 15444 --- [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2025-11-04T18:36:29.857-03:00  INFO 15444 --- [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2025-11-04T18:36:30.151-03:00  INFO 15444 --- [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2025-11-04T18:36:30.152-03:00  INFO 15444 --- [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2025-11-04T18:36:30.154-03:00  INFO 15444 --- [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2025-11-04T18:36:30.156-03:00  INFO 15444 --- [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1762292190155 with initial instances count: 3
+2025-11-04T18:36:30.162-03:00  INFO 15444 --- [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application UNKNOWN with eureka with status UP
+2025-11-04T18:36:30.163-03:00  INFO 15444 --- [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1762292190163, current=UP, previous=STARTING]
+2025-11-04T18:36:30.165-03:00  INFO 15444 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082: registering service...
+2025-11-04T18:36:30.197-03:00  INFO 15444 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8082 (http) with context path '/'
+2025-11-04T18:36:30.198-03:00  INFO 15444 --- [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8082
+2025-11-04T18:36:30.217-03:00  INFO 15444 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - registration status: 204
+2025-11-04T18:36:31.202-03:00  INFO 15444 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T18:36:31.210-03:00  INFO 15444 --- [main] c.d.p.ProyectoDistriApplication          : Started ProyectoDistriApplication in 19.071 seconds (process running for 19.81)
+2025-11-04T18:36:38.360-03:00  INFO 15444 --- [http-nio-8082-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-04T18:36:38.360-03:00  INFO 15444 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-04T18:36:38.361-03:00  INFO 15444 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-11-04T18:41:29.859-03:00  INFO 15444 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-11-04T18:42:24.720-03:00  INFO 15444 --- [http-nio-8082-exec-5] c.d.p.apis.controller.CompraController   : GET /compras page=0 size=10 filtros: proveedorId=null, desde=null, hasta=null
+2025-11-04T18:42:24.922-03:00  INFO 15444 --- [http-nio-8082-exec-5] c.d.p.apis.service.CompraService         : Trayendo lista de compras realizadas pagina=Page request [number: 0, size 10, sort: UNSORTED] por el proveedor con ID=null desde=null hasta=null
+2025-11-04T18:42:24.976-03:00 DEBUG 15444 --- [http-nio-8082-exec-5] org.hibernate.SQL                        : select c1_0.id,c1_0.activo,c1_0.creado_en,c1_0.estado,c1_0.fecha_emision,c1_0.iva,c1_0.numero,c1_0.proveedor_id,c1_0.serie,c1_0.subtotal,c1_0.total from compra c1_0 where (c1_0.activo = true) offset ? rows fetch first ? rows only
+2025-11-04T18:42:24.977-03:00 TRACE 15444 --- [http-nio-8082-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:INTEGER) <- [0]
+2025-11-04T18:42:24.977-03:00 TRACE 15444 --- [http-nio-8082-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (2:INTEGER) <- [10]
+2025-11-04T18:42:25.213-03:00 DEBUG 15444 --- [http-nio-8082-exec-5] c.d.p.apis.service.CompraService         : Cantidad de compras encontradas: 7
+2025-11-04T18:42:25.416-03:00  WARN 15444 --- [http-nio-8082-exec-5] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-11-04T18:42:34.061-03:00  INFO 15444 --- [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application UNKNOWN with eureka with status DOWN
+2025-11-04T18:42:34.061-03:00  INFO 15444 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1762292554061, current=DOWN, previous=UP]
+2025-11-04T18:42:34.061-03:00  INFO 15444 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082: registering service...
+2025-11-04T18:42:34.063-03:00  INFO 15444 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-04T18:42:34.066-03:00  INFO 15444 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-04T18:42:34.066-03:00  INFO 15444 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - registration status: 204
+2025-11-04T18:42:34.073-03:00  INFO 15444 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-04T18:42:34.074-03:00  INFO 15444 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-04T18:42:35.055-03:00  INFO 15444 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-04T18:42:35.056-03:00  INFO 15444 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2025-11-04T18:42:38.058-03:00  INFO 15444 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2025-11-04T18:42:38.062-03:00  INFO 15444 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - deregister  status: 200
+2025-11-04T18:42:38.062-03:00  INFO 15444 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2025-11-04T18:43:18.095-03:00  INFO 6948 --- [main] c.d.p.ProyectoDistriApplication          : Starting ProyectoDistriApplication using Java 24 with PID 6948 (C:\Users\Usuario\IdeaProjects\Distri\SistemaWebYDistribuido\ProyectoDistri\target\classes started by Usuario in C:\Users\Usuario\IdeaProjects\Distri\SistemaWebYDistribuido\ProyectoDistri)
+2025-11-04T18:43:18.096-03:00  INFO 6948 --- [main] c.d.p.ProyectoDistriApplication          : No active profile set, falling back to 1 default profile: "default"
+2025-11-04T18:43:18.892-03:00  INFO 6948 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-04T18:43:19.047-03:00  INFO 6948 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 146 ms. Found 7 JPA repository interfaces.
+2025-11-04T18:43:19.265-03:00  INFO 6948 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a2c9d5b9-d1cd-3ffd-9afc-72582b687f4f
+2025-11-04T18:43:19.635-03:00  INFO 6948 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8082 (http)
+2025-11-04T18:43:19.647-03:00  INFO 6948 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-04T18:43:19.647-03:00  INFO 6948 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-11-04T18:43:19.708-03:00  INFO 6948 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-04T18:43:19.709-03:00  INFO 6948 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1575 ms
+2025-11-04T18:43:19.858-03:00  INFO 6948 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-04T18:43:21.910-03:00  INFO 6948 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@67a6a2d0
+2025-11-04T18:43:21.911-03:00  INFO 6948 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-04T18:43:23.202-03:00  INFO 6948 --- [main] liquibase.database                       : Set default schema name to public
+2025-11-04T18:43:24.248-03:00  INFO 6948 --- [main] liquibase.changelog                      : Reading from public.databasechangelog
+2025-11-04T18:43:26.296-03:00  INFO 6948 --- [main] liquibase.ui                             : Database is up to date, no changesets to execute
+2025-11-04T18:43:26.485-03:00  INFO 6948 --- [main] liquibase.changelog                      : Reading from public.databasechangelog
+2025-11-04T18:43:26.687-03:00  INFO 6948 --- [main] liquibase.util                           : UPDATE SUMMARY
+2025-11-04T18:43:26.687-03:00  INFO 6948 --- [main] liquibase.util                           : Run:                          0
+2025-11-04T18:43:26.688-03:00  INFO 6948 --- [main] liquibase.util                           : Previously run:              21
+2025-11-04T18:43:26.688-03:00  INFO 6948 --- [main] liquibase.util                           : Filtered out:                 0
+2025-11-04T18:43:26.688-03:00  INFO 6948 --- [main] liquibase.util                           : -------------------------------
+2025-11-04T18:43:26.688-03:00  INFO 6948 --- [main] liquibase.util                           : Total change sets:           21
+2025-11-04T18:43:26.689-03:00  INFO 6948 --- [main] liquibase.util                           : Update summary generated
+2025-11-04T18:43:26.690-03:00  INFO 6948 --- [main] liquibase.command                        : Command execution complete
+2025-11-04T18:43:28.446-03:00  INFO 6948 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-04T18:43:28.490-03:00  INFO 6948 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-11-04T18:43:28.519-03:00  INFO 6948 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-04T18:43:28.771-03:00  INFO 6948 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-04T18:43:29.409-03:00  INFO 6948 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.6
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-04T18:43:30.317-03:00  INFO 6948 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-04T18:43:30.319-03:00  INFO 6948 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-04T18:43:30.681-03:00  INFO 6948 --- [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-04T18:43:31.276-03:00  WARN 6948 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-04T18:43:31.331-03:00  WARN 6948 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 874eacf2-e816-4f9e-8a89-9914f986da7c
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-11-04T18:43:31.338-03:00  INFO 6948 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-11-04T18:43:32.965-03:00  INFO 6948 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T18:43:33.987-03:00  INFO 6948 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T18:43:34.007-03:00  INFO 6948 --- [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2025-11-04T18:43:34.044-03:00  WARN 6948 --- [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2025-11-04T18:43:34.085-03:00  INFO 6948 --- [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2025-11-04T18:43:34.105-03:00  INFO 6948 --- [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2025-11-04T18:43:34.109-03:00  INFO 6948 --- [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-11-04T18:43:34.116-03:00  INFO 6948 --- [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2025-11-04T18:43:34.116-03:00  INFO 6948 --- [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2025-11-04T18:43:34.117-03:00  INFO 6948 --- [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2025-11-04T18:43:34.117-03:00  INFO 6948 --- [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2025-11-04T18:43:34.117-03:00  INFO 6948 --- [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2025-11-04T18:43:34.117-03:00  INFO 6948 --- [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2025-11-04T18:43:34.117-03:00  INFO 6948 --- [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2025-11-04T18:43:34.401-03:00  INFO 6948 --- [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2025-11-04T18:43:34.402-03:00  INFO 6948 --- [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2025-11-04T18:43:34.404-03:00  INFO 6948 --- [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2025-11-04T18:43:34.405-03:00  INFO 6948 --- [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1762292614405 with initial instances count: 3
+2025-11-04T18:43:34.410-03:00  INFO 6948 --- [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application UNKNOWN with eureka with status UP
+2025-11-04T18:43:34.411-03:00  INFO 6948 --- [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1762292614410, current=UP, previous=STARTING]
+2025-11-04T18:43:34.412-03:00  INFO 6948 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082: registering service...
+2025-11-04T18:43:34.427-03:00  INFO 6948 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8082 (http) with context path '/'
+2025-11-04T18:43:34.428-03:00  INFO 6948 --- [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8082
+2025-11-04T18:43:34.445-03:00  INFO 6948 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - registration status: 204
+2025-11-04T18:43:35.431-03:00  INFO 6948 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T18:43:35.438-03:00  INFO 6948 --- [main] c.d.p.ProyectoDistriApplication          : Started ProyectoDistriApplication in 18.774 seconds (process running for 19.709)
+2025-11-04T18:43:55.184-03:00  INFO 6948 --- [http-nio-8082-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-04T18:43:55.184-03:00  INFO 6948 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-04T18:43:55.186-03:00  INFO 6948 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-11-04T18:43:55.259-03:00  INFO 6948 --- [http-nio-8082-exec-1] c.d.p.apis.controller.CompraController   : GET /compras page=0 size=10 filtros: proveedorId=null, desde=null, hasta=null
+2025-11-04T18:43:55.459-03:00  INFO 6948 --- [http-nio-8082-exec-1] c.d.p.apis.service.CompraService         : Trayendo lista de compras realizadas pagina=Page request [number: 0, size 10, sort: UNSORTED] por el proveedor con ID=null desde=null hasta=null
+2025-11-04T18:43:55.512-03:00 DEBUG 6948 --- [http-nio-8082-exec-1] org.hibernate.SQL                        : select c1_0.id,c1_0.activo,c1_0.creado_en,c1_0.estado,c1_0.fecha_emision,c1_0.iva,c1_0.numero,c1_0.proveedor_id,c1_0.serie,c1_0.subtotal,c1_0.total from compra c1_0 where (c1_0.activo = true) offset ? rows fetch first ? rows only
+2025-11-04T18:43:55.513-03:00 TRACE 6948 --- [http-nio-8082-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:INTEGER) <- [0]
+2025-11-04T18:43:55.513-03:00 TRACE 6948 --- [http-nio-8082-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (2:INTEGER) <- [10]
+2025-11-04T18:43:55.753-03:00 DEBUG 6948 --- [http-nio-8082-exec-1] c.d.p.apis.service.CompraService         : Cantidad de compras encontradas: 7
+2025-11-04T18:43:55.756-03:00 DEBUG 6948 --- [http-nio-8082-exec-1] org.hibernate.SQL                        : select d1_0.compra_id,d1_0.id,d1_0.activo,d1_0.cantidad,d1_0.costo_unitario,d1_0.producto_id,d1_0.subtotal_linea,d1_0.tasa_iva,d1_0.total_linea from compra_detalle d1_0 where d1_0.compra_id=? and (d1_0.activo = true)
+2025-11-04T18:43:55.757-03:00 TRACE 6948 --- [http-nio-8082-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [2]
+2025-11-04T18:43:55.958-03:00 DEBUG 6948 --- [http-nio-8082-exec-1] org.hibernate.SQL                        : select d1_0.compra_id,d1_0.id,d1_0.activo,d1_0.cantidad,d1_0.costo_unitario,d1_0.producto_id,d1_0.subtotal_linea,d1_0.tasa_iva,d1_0.total_linea from compra_detalle d1_0 where d1_0.compra_id=? and (d1_0.activo = true)
+2025-11-04T18:43:55.959-03:00 TRACE 6948 --- [http-nio-8082-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [3]
+2025-11-04T18:43:56.150-03:00 DEBUG 6948 --- [http-nio-8082-exec-1] org.hibernate.SQL                        : select d1_0.compra_id,d1_0.id,d1_0.activo,d1_0.cantidad,d1_0.costo_unitario,d1_0.producto_id,d1_0.subtotal_linea,d1_0.tasa_iva,d1_0.total_linea from compra_detalle d1_0 where d1_0.compra_id=? and (d1_0.activo = true)
+2025-11-04T18:43:56.150-03:00 TRACE 6948 --- [http-nio-8082-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [4]
+2025-11-04T18:43:56.349-03:00 DEBUG 6948 --- [http-nio-8082-exec-1] org.hibernate.SQL                        : select d1_0.compra_id,d1_0.id,d1_0.activo,d1_0.cantidad,d1_0.costo_unitario,d1_0.producto_id,d1_0.subtotal_linea,d1_0.tasa_iva,d1_0.total_linea from compra_detalle d1_0 where d1_0.compra_id=? and (d1_0.activo = true)
+2025-11-04T18:43:56.349-03:00 TRACE 6948 --- [http-nio-8082-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [5]
+2025-11-04T18:43:56.540-03:00 DEBUG 6948 --- [http-nio-8082-exec-1] org.hibernate.SQL                        : select d1_0.compra_id,d1_0.id,d1_0.activo,d1_0.cantidad,d1_0.costo_unitario,d1_0.producto_id,d1_0.subtotal_linea,d1_0.tasa_iva,d1_0.total_linea from compra_detalle d1_0 where d1_0.compra_id=? and (d1_0.activo = true)
+2025-11-04T18:43:56.540-03:00 TRACE 6948 --- [http-nio-8082-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [6]
+2025-11-04T18:43:56.730-03:00 DEBUG 6948 --- [http-nio-8082-exec-1] org.hibernate.SQL                        : select d1_0.compra_id,d1_0.id,d1_0.activo,d1_0.cantidad,d1_0.costo_unitario,d1_0.producto_id,d1_0.subtotal_linea,d1_0.tasa_iva,d1_0.total_linea from compra_detalle d1_0 where d1_0.compra_id=? and (d1_0.activo = true)
+2025-11-04T18:43:56.730-03:00 TRACE 6948 --- [http-nio-8082-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [7]
+2025-11-04T18:43:56.921-03:00 DEBUG 6948 --- [http-nio-8082-exec-1] org.hibernate.SQL                        : select d1_0.compra_id,d1_0.id,d1_0.activo,d1_0.cantidad,d1_0.costo_unitario,d1_0.producto_id,d1_0.subtotal_linea,d1_0.tasa_iva,d1_0.total_linea from compra_detalle d1_0 where d1_0.compra_id=? and (d1_0.activo = true)
+2025-11-04T18:43:56.921-03:00 TRACE 6948 --- [http-nio-8082-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [8]
+2025-11-04T18:43:57.311-03:00  WARN 6948 --- [http-nio-8082-exec-1] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-11-04T18:44:48.649-03:00  INFO 6948 --- [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application UNKNOWN with eureka with status DOWN
+2025-11-04T18:44:48.649-03:00  INFO 6948 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1762292688649, current=DOWN, previous=UP]
+2025-11-04T18:44:48.649-03:00  INFO 6948 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082: registering service...
+2025-11-04T18:44:48.651-03:00  INFO 6948 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-04T18:44:48.654-03:00  INFO 6948 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - registration status: 204
+2025-11-04T18:44:48.655-03:00  INFO 6948 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-04T18:44:48.660-03:00  INFO 6948 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-04T18:44:48.662-03:00  INFO 6948 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-04T18:44:49.613-03:00  INFO 6948 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-04T18:44:49.614-03:00  INFO 6948 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2025-11-04T18:44:52.615-03:00  INFO 6948 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2025-11-04T18:44:52.620-03:00  INFO 6948 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - deregister  status: 200
+2025-11-04T18:44:52.621-03:00  INFO 6948 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2025-11-04T20:04:23.655-03:00  INFO 14872 --- [main] c.d.p.ProyectoDistriApplication          : Starting ProyectoDistriApplication using Java 24 with PID 14872 (C:\Users\Usuario\IdeaProjects\Distri\SistemaWebYDistribuido\ProyectoDistri\target\classes started by Usuario in C:\Users\Usuario\IdeaProjects\Distri\SistemaWebYDistribuido\ProyectoDistri)
+2025-11-04T20:04:23.659-03:00  INFO 14872 --- [main] c.d.p.ProyectoDistriApplication          : No active profile set, falling back to 1 default profile: "default"
+2025-11-04T20:04:24.575-03:00  INFO 14872 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-11-04T20:04:24.576-03:00  INFO 14872 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-04T20:04:24.732-03:00  INFO 14872 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 148 ms. Found 7 JPA repository interfaces.
+2025-11-04T20:04:24.748-03:00  INFO 14872 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-11-04T20:04:24.749-03:00  INFO 14872 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-11-04T20:04:24.767-03:00  INFO 14872 --- [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.distri.proyectodistri.apis.repository.CategoriaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-11-04T20:04:24.768-03:00  INFO 14872 --- [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.distri.proyectodistri.apis.repository.ClienteRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-11-04T20:04:24.769-03:00  INFO 14872 --- [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.distri.proyectodistri.apis.repository.CompraRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-11-04T20:04:24.769-03:00  INFO 14872 --- [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.distri.proyectodistri.apis.repository.ProductoRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-11-04T20:04:24.770-03:00  INFO 14872 --- [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.distri.proyectodistri.apis.repository.ProveedorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-11-04T20:04:24.770-03:00  INFO 14872 --- [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.distri.proyectodistri.apis.repository.RolRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-11-04T20:04:24.770-03:00  INFO 14872 --- [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.distri.proyectodistri.apis.repository.UsuarioRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-11-04T20:04:24.770-03:00  INFO 14872 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 12 ms. Found 0 Redis repository interfaces.
+2025-11-04T20:04:25.037-03:00  INFO 14872 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=afee0740-69fb-3616-bee3-3c54b63173e1
+2025-11-04T20:04:25.447-03:00  INFO 14872 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8082 (http)
+2025-11-04T20:04:25.460-03:00  INFO 14872 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-04T20:04:25.460-03:00  INFO 14872 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-11-04T20:04:25.527-03:00  INFO 14872 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-04T20:04:25.527-03:00  INFO 14872 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1828 ms
+2025-11-04T20:04:25.738-03:00  INFO 14872 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-04T20:04:27.834-03:00  INFO 14872 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7ec508e6
+2025-11-04T20:04:27.835-03:00  INFO 14872 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-04T20:04:29.207-03:00  INFO 14872 --- [main] liquibase.database                       : Set default schema name to public
+2025-11-04T20:04:30.390-03:00  INFO 14872 --- [main] liquibase.changelog                      : Reading from public.databasechangelog
+2025-11-04T20:04:32.499-03:00  INFO 14872 --- [main] liquibase.ui                             : Database is up to date, no changesets to execute
+2025-11-04T20:04:32.688-03:00  INFO 14872 --- [main] liquibase.changelog                      : Reading from public.databasechangelog
+2025-11-04T20:04:32.904-03:00  INFO 14872 --- [main] liquibase.util                           : UPDATE SUMMARY
+2025-11-04T20:04:32.905-03:00  INFO 14872 --- [main] liquibase.util                           : Run:                          0
+2025-11-04T20:04:32.905-03:00  INFO 14872 --- [main] liquibase.util                           : Previously run:              21
+2025-11-04T20:04:32.905-03:00  INFO 14872 --- [main] liquibase.util                           : Filtered out:                 0
+2025-11-04T20:04:32.905-03:00  INFO 14872 --- [main] liquibase.util                           : -------------------------------
+2025-11-04T20:04:32.905-03:00  INFO 14872 --- [main] liquibase.util                           : Total change sets:           21
+2025-11-04T20:04:32.905-03:00  INFO 14872 --- [main] liquibase.util                           : Update summary generated
+2025-11-04T20:04:32.906-03:00  INFO 14872 --- [main] liquibase.command                        : Command execution complete
+2025-11-04T20:04:34.697-03:00  INFO 14872 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-04T20:04:34.745-03:00  INFO 14872 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-11-04T20:04:34.782-03:00  INFO 14872 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-04T20:04:35.053-03:00  INFO 14872 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-04T20:04:35.716-03:00  INFO 14872 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.6
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-04T20:04:36.677-03:00  INFO 14872 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-04T20:04:36.680-03:00  INFO 14872 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-04T20:04:37.082-03:00  INFO 14872 --- [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-04T20:04:37.996-03:00  WARN 14872 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-04T20:04:38.075-03:00  WARN 14872 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: d9f09d0d-ed51-44b8-be7d-c34bdeb16670
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-11-04T20:04:38.084-03:00  INFO 14872 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-11-04T20:04:39.877-03:00  INFO 14872 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T20:04:40.903-03:00  INFO 14872 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T20:04:40.935-03:00  INFO 14872 --- [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2025-11-04T20:04:40.980-03:00  WARN 14872 --- [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2025-11-04T20:04:41.026-03:00  INFO 14872 --- [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2025-11-04T20:04:41.048-03:00  INFO 14872 --- [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2025-11-04T20:04:41.051-03:00  INFO 14872 --- [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-11-04T20:04:41.060-03:00  INFO 14872 --- [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2025-11-04T20:04:41.060-03:00  INFO 14872 --- [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2025-11-04T20:04:41.060-03:00  INFO 14872 --- [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2025-11-04T20:04:41.060-03:00  INFO 14872 --- [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2025-11-04T20:04:41.060-03:00  INFO 14872 --- [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2025-11-04T20:04:41.060-03:00  INFO 14872 --- [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2025-11-04T20:04:41.060-03:00  INFO 14872 --- [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2025-11-04T20:04:41.355-03:00  INFO 14872 --- [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2025-11-04T20:04:41.357-03:00  INFO 14872 --- [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2025-11-04T20:04:41.358-03:00  INFO 14872 --- [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2025-11-04T20:04:41.360-03:00  INFO 14872 --- [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1762297481359 with initial instances count: 3
+2025-11-04T20:04:41.366-03:00  INFO 14872 --- [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application UNKNOWN with eureka with status UP
+2025-11-04T20:04:41.366-03:00  INFO 14872 --- [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1762297481366, current=UP, previous=STARTING]
+2025-11-04T20:04:41.368-03:00  INFO 14872 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082: registering service...
+2025-11-04T20:04:41.384-03:00  INFO 14872 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8082 (http) with context path '/'
+2025-11-04T20:04:41.385-03:00  INFO 14872 --- [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8082
+2025-11-04T20:04:41.403-03:00  INFO 14872 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - registration status: 204
+2025-11-04T20:04:42.389-03:00  INFO 14872 --- [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2025-11-04T20:04:42.398-03:00  INFO 14872 --- [main] c.d.p.ProyectoDistriApplication          : Started ProyectoDistriApplication in 20.257 seconds (process running for 21.691)
+2025-11-04T20:05:57.385-03:00  INFO 14872 --- [http-nio-8082-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-04T20:05:57.386-03:00  INFO 14872 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-04T20:05:57.387-03:00  INFO 14872 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-11-04T20:05:57.486-03:00  INFO 14872 --- [http-nio-8082-exec-1] c.d.p.apis.controller.CompraController   : GET /compras/2
+2025-11-04T20:05:57.827-03:00 DEBUG 14872 --- [http-nio-8082-exec-1] com.distri.cache                         : [CACHE GET] sd key=api_compra_2
+2025-11-04T20:05:58.040-03:00 DEBUG 14872 --- [http-nio-8082-exec-1] c.d.p.apis.service.CompraService         : Obteniendo compra por id: 2
+2025-11-04T20:05:58.064-03:00 DEBUG 14872 --- [http-nio-8082-exec-1] org.hibernate.SQL                        : select c1_0.id,c1_0.activo,c1_0.creado_en,c1_0.estado,c1_0.fecha_emision,c1_0.iva,c1_0.numero,c1_0.proveedor_id,c1_0.serie,c1_0.subtotal,c1_0.total from compra c1_0 where c1_0.id=? and (c1_0.activo = true)
+2025-11-04T20:05:58.066-03:00 TRACE 14872 --- [http-nio-8082-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [2]
+2025-11-04T20:05:58.300-03:00 DEBUG 14872 --- [http-nio-8082-exec-1] c.d.p.apis.service.CompraService         : Compra encontrada por id: com.distri.proyectodistri.apis.entities.compra.Compra@343770e3
+2025-11-04T20:05:58.519-03:00 DEBUG 14872 --- [http-nio-8082-exec-1] com.distri.cache                         : [CACHE PUT] sd key=api_compra_2
+2025-11-04T20:09:18.541-03:00  INFO 14872 --- [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application UNKNOWN with eureka with status DOWN
+2025-11-04T20:09:18.542-03:00  INFO 14872 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1762297758542, current=DOWN, previous=UP]
+2025-11-04T20:09:18.542-03:00  INFO 14872 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082: registering service...
+2025-11-04T20:09:18.544-03:00  INFO 14872 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-04T20:09:18.548-03:00  INFO 14872 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - registration status: 204
+2025-11-04T20:09:18.550-03:00  INFO 14872 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-04T20:09:18.587-03:00  INFO 14872 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-04T20:09:18.589-03:00  INFO 14872 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-04T20:09:19.591-03:00  INFO 14872 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-04T20:09:19.592-03:00  INFO 14872 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2025-11-04T20:09:22.594-03:00  INFO 14872 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2025-11-04T20:09:22.600-03:00  INFO 14872 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_UNKNOWN/localhost:8082 - deregister  status: 200
+2025-11-04T20:09:22.600-03:00  INFO 14872 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient

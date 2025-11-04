@@ -1,0 +1,250 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-activo-categoria
+      author: nico
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+          columnExists:
+            tableName: categoria
+            columnName: activo
+      changes:
+        - addColumn:
+            tableName: categoria
+            columns:
+              - column:
+                  name: activo
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: categoria
+            columnName: activo
+
+  - changeSet:
+      id: add-activo-cliente
+      author: nico
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+          columnExists:
+            tableName: cliente
+            columnName: activo
+      changes:
+        - addColumn:
+            tableName: cliente
+            columns:
+              - column:
+                  name: activo
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: cliente
+            columnName: activo
+
+  - changeSet:
+      id: add-activo-compra_detalle
+      author: nico
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+          columnExists:
+            tableName: compra_detalle
+            columnName: activo
+      changes:
+        - addColumn:
+            tableName: compra_detalle
+            columns:
+              - column:
+                  name: activo
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: compra_detalle
+            columnName: activo
+
+  - changeSet:
+      id: add-activo-producto
+      author: nico
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+          columnExists:
+            tableName: producto
+            columnName: activo
+      changes:
+        - addColumn:
+            tableName: producto
+            columns:
+              - column:
+                  name: activo
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: producto
+            columnName: activo
+
+  - changeSet:
+      id: add-activo-proveedor
+      author: nico
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+          columnExists:
+            tableName: proveedor
+            columnName: activo
+      changes:
+        - addColumn:
+            tableName: proveedor
+            columns:
+              - column:
+                  name: activo
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: proveedor
+            columnName: activo
+
+  - changeSet:
+      id: add-activo-rol
+      author: nico
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+          columnExists:
+            tableName: rol
+            columnName: activo
+      changes:
+        - addColumn:
+            tableName: rol
+            columns:
+              - column:
+                  name: activo
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: rol
+            columnName: activo
+
+  - changeSet:
+      id: add-activo-usuario
+      author: nico
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+          columnExists:
+            tableName: usuario
+            columnName: activo
+      changes:
+        - addColumn:
+            tableName: usuario
+            columns:
+              - column:
+                  name: activo
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: usuario
+            columnName: activo
+
+  - changeSet:
+      id: add-activo-usuario_rol
+      author: nico
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+          columnExists:
+            tableName: usuario_rol
+            columnName: activo
+      changes:
+        - addColumn:
+            tableName: usuario_rol
+            columns:
+              - column:
+                  name: activo
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: usuario_rol
+            columnName: activo
+
+  - changeSet:
+      id: add-activo-venta
+      author: nico
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+          columnExists:
+            tableName: venta
+            columnName: activo
+      changes:
+        - addColumn:
+            tableName: venta
+            columns:
+              - column:
+                  name: activo
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: venta
+            columnName: activo
+
+  - changeSet:
+      id: add-activo-venta_detalle
+      author: nico
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+          columnExists:
+            tableName: venta_detalle
+            columnName: activo
+      changes:
+        - addColumn:
+            tableName: venta_detalle
+            columns:
+              - column:
+                  name: activo
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: venta_detalle
+            columnName: activo

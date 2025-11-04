@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="api-gateway" />
+        <module name="eureka-server" />
+      </profile>
+      <profile name="Annotation profile for msvc-compra" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+        </processorPath>
+        <module name="Seguridad" />
+      </profile>
+      <profile name="Annotation profile for ProyectoDistri" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+        </processorPath>
+        <module name="ProyectoDistri" />
+        <module name="proyectoVenta" />
+        <module name="Proyecto-Venta" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="auth" target="17" />
+      <module name="Proyecto-Compra" target="17" />
+      <module name="Validacion" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Proyecto-Compra" options="-parameters" />
+      <module name="Proyecto-Venta" options="-parameters" />
+      <module name="ProyectoDistri" options="-parameters" />
+      <module name="Seguridad" options="-parameters" />
+      <module name="Validacion" options="-parameters" />
+      <module name="api-gateway" options="-parameters" />
+      <module name="auth" options="-parameters" />
+      <module name="eureka-server" options="-parameters" />
+      <module name="proyectoVenta" options="-parameters" />
+    </option>
+  </component>
+</project>
