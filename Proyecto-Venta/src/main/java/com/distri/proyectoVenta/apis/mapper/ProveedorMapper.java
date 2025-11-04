@@ -14,7 +14,7 @@ public interface ProveedorMapper extends BaseMapper<Proveedor, ProveedorDTO> {
     Proveedor toEntity(ProveedorDTO dto);
 
     @Override
-    //@Mapping(source = "nombre", target = "nombre")
+    @Mapping(source = "nombre", target = "nombre")
     ProveedorDTO toDto(Proveedor entity);
 
     @Override

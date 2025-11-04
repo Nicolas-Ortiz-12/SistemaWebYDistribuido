@@ -11,7 +11,7 @@ public interface CategoriaMapper extends  BaseMapper<Categoria, CategoriaDTO> {
     Categoria toEntity(CategoriaDTO dto);
 
     @Override
-    //@Mapping(source = "nombre", target = "nombre")
+    @Mapping(source = "nombre", target = "nombre")
     CategoriaDTO toDto(Categoria entity);
 
 

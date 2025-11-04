@@ -10,13 +10,13 @@ import org.mapstruct.*;
 @Mapper(config = MapperCentralConfig.class)
 public interface CompraResponseMapper {
 
-    /*@Mapping(target = "proveedorId", source = "proveedor.id")
+    @Mapping(target = "proveedorId", source = "proveedor.id")
     @Mapping(target = "detalles", source = "detalles")
     @Mapping(target = "fechaEmision", qualifiedByName = "asLocalDate")
-    @Mapping(target = "creadoEn", source = "creadoEn", qualifiedByName = "asOffsetDateTime")*/
+    @Mapping(target = "creadoEn", source = "creadoEn", qualifiedByName = "asOffsetDateTime")
     CompraResponseDTO toDto(Compra entity);
 
-    //@Mapping(target = "productoId", source = "producto.id")
+    @Mapping(target = "productoId", source = "producto.id")
 
     CompraDetalleResponseDTO toDetalleDto(CompraDetalle entity);
 }

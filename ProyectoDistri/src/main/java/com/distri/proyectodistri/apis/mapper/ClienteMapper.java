@@ -14,7 +14,7 @@ public interface ClienteMapper extends BaseMapper<Cliente, ClienteDTO> {
     @Override
     Cliente toEntity(ClienteDTO dto);
     @Override
-    //@Mapping(source = "nombre", target = "nombre")
+    @Mapping(source = "nombre", target = "nombre")
     ClienteDTO toDto(Cliente entity);
 
     @Override

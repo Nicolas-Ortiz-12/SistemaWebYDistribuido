@@ -16,7 +16,7 @@ public interface ProductoMapper extends BaseMapper<Producto, ProductoDTO> {
     Producto toEntity(ProductoDTO dto);
 
     @Override
-    //@Mapping(source = "nombre", target = "nombre")
+    @Mapping(source = "nombre", target = "nombre")
     ProductoDTO toDto(Producto entity);
 
     @Override
