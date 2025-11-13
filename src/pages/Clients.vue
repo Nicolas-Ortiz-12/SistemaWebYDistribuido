@@ -56,8 +56,9 @@ import ClientsTable from '../components/ClientsTable.vue'
 import ClienteForm from '../components/ClienteForm.vue'
 import ClienteEditForm from '../components/ClienteEditForm.vue'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+import { fetchWithAuth } from '../services/authService'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 // Estado
 const q = ref('')
 const page = ref(0)
@@ -102,31 +103,28 @@ async function fetchClientes() {
     loading.value = true
     error.value = ''
     try {
-        const p = page.value            // 0-based (tu UI ya usa 0)
+        const p = page.value
         const s = size.value
         const term = q.value?.trim()
 
-        // 👉 Usa path variables como en tu Swagger
         let endpoint = `${API_URL}/clientes/${p}/${s}`
         if (term) endpoint += `/${encodeURIComponent(term)}`
 
-        const resp = await fetch(endpoint, { signal: aborter.signal })
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
+        
+        const data = await fetchWithAuth(endpoint, { signal: aborter.signal })
 
-        const data = await resp.json()
-
-        // Soporta Page<ClienteDTO> y, por si acaso, arreglo plano
         rows.value = Array.isArray(data?.content) ? data.content : (Array.isArray(data) ? data : [])
         totalPages.value = Number.isInteger(data?.totalPages) ? data.totalPages : 1
         totalElements.value = Number.isInteger(data?.totalElements) ? data.totalElements : rows.value.length
 
-        // Si el backend devuelve 'number' y 'size', sincronizamos
         if (Number.isInteger(data?.number)) page.value = data.number
         if (Number.isInteger(data?.size)) size.value = data.size
     } catch (e) {
         if (e.name !== 'AbortError') {
             console.error(e)
-            error.value = 'No se pudo cargar la lista de clientes.'
+            error.value = e.message || 'No se pudo cargar la lista de clientes.'
+            // Opcional: si te quedaste sin sesión, redirige al login
+            // if (e.message.includes('401')) router.push('/login')
         }
     } finally {
         loading.value = false

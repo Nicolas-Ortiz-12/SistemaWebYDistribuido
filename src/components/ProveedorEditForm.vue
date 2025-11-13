@@ -38,7 +38,9 @@
                     </label>
 
                     <div class="actions" style="grid-column:1/-1;text-align:right;margin-top:10px">
-                        <button type="button" class="btn ghost" @click="onClose" :disabled="loading">Cancelar</button>
+                        <button type="button" class="btn ghost" @click="onClose" :disabled="loading">
+                            Cancelar
+                        </button>
                         <button type="submit" class="btn" :disabled="loading">
                             <span v-if="!loading">Guardar cambios</span>
                             <span v-else>Guardando…</span>
@@ -52,56 +54,68 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch } from 'vue'
-import '../assets/ProveedorForm.css' 
+import { reactive, ref, watch } from "vue"
+import "../assets/ProveedorForm.css"
+import { fetchWithAuth } from "../services/authService" // ⬅️ usamos auth service
 
 const props = defineProps({ proveedor: { type: Object, required: true } })
-const emit = defineEmits(['close', 'updated'])
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+const emit = defineEmits(["close", "updated"])
+
+// Unificamos con lo que usas en auth.js
+const API_BASE =
+    import.meta.env.VITE_API_BASE ??
+    import.meta.env.VITE_API_URL ??
+    "http://localhost:8080"
 
 const form = reactive({
     id: null,
-    nombre: '',
-    ruc: '',
-    telefono: '',
-    correo: '',
-    direccion: '',
-    activo: true
+    nombre: "",
+    ruc: "",
+    telefono: "",
+    correo: "",
+    direccion: "",
+    activo: true,
 })
 
 const loading = ref(false)
-const error = ref('')
+const error = ref("")
 
-watch(() => props.proveedor, (p) => {
-    if (!p) return
-    form.id = p.id ?? null
-    form.nombre = p.nombre ?? ''
-    form.ruc = p.ruc ?? ''
-    form.telefono = p.telefono ?? ''
-    form.correo = p.correo ?? ''
-    form.direccion = p.direccion ?? ''
-    form.activo = p.activo ?? true
-}, { immediate: true })
+watch(
+    () => props.proveedor,
+    (p) => {
+        if (!p) return
+        form.id = p.id ?? null
+        form.nombre = p.nombre ?? ""
+        form.ruc = p.ruc ?? ""
+        form.telefono = p.telefono ?? ""
+        form.correo = p.correo ?? ""
+        form.direccion = p.direccion ?? ""
+        form.activo = p.activo ?? true
+    },
+    { immediate: true }
+)
 
 async function onSubmit() {
-    error.value = ''
+    error.value = ""
     loading.value = true
     try {
-        const resp = await fetch(`${API_URL}/proveedores/${form.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form)
+        const updated = await fetchWithAuth(`${API_BASE}/proveedores/${form.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(form),
         })
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
-        const updated = await resp.json().catch(() => ({}))
-        emit('updated', updated)
+
+        // `fetchWithAuth` ya lanza si no es ok, así que si llega acá es éxito
+        emit("updated", updated)
     } catch (e) {
         console.error(e)
-        error.value = 'No se pudo actualizar el proveedor.'
+        error.value = e?.message || "No se pudo actualizar el proveedor."
     } finally {
         loading.value = false
     }
 }
 
-function onClose() { emit('close') }
+function onClose() {
+    emit("close")
+}
 </script>

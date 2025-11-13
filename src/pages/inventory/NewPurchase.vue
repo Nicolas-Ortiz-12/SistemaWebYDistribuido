@@ -13,7 +13,9 @@
                     <span>Proveedor</span>
                     <select v-model.number="compra.proveedorId" style="border:none;outline:none;width:100%">
                         <option :value="0" disabled>Selecciona proveedor</option>
-                        <option v-for="p in proveedores" :key="p.id" :value="p.id">{{ p.nombre }}</option>
+                        <option v-for="p in proveedores" :key="p.id" :value="p.id">
+                            {{ p.nombre }}
+                        </option>
                     </select>
                 </label>
 
@@ -67,7 +69,9 @@
                             </td>
                             <td class="td-right">{{ money(lineTotal(it)) }}</td>
                             <td>
-                                <button class="btn eliminar" @click="removeItem(i)" title="Quitar">🗑️</button>
+                                <button class="btn eliminar" @click="removeItem(i)" title="Quitar">
+                                    🗑️
+                                </button>
                             </td>
                         </tr>
                         <tr>
@@ -88,7 +92,9 @@
 
             <!-- Acciones -->
             <div style="display:flex;gap:10px;margin-top:16px">
-                <button class="btn" :disabled="loading" @click="guardarBorrador">Guardar borrador</button>
+                <button class="btn" :disabled="loading" @click="guardarBorrador">
+                    Guardar borrador
+                </button>
                 <button class="btn" :disabled="loading" @click="confirmarCompra">
                     <span v-if="!loading">Confirmar compra</span>
                     <span v-else>Enviando…</span>
@@ -102,16 +108,21 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed, onMounted } from 'vue'
+import { reactive, ref, computed, onMounted } from "vue"
+import { fetchWithAuth } from "../../services/authservice" // ⬅️ auth service
 
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8080').replace(/\/+$/, '')
-
+// Base unificada con el resto de la app
+const API_BASE = (
+    import.meta.env.VITE_API_BASE ??
+    import.meta.env.VITE_API_URL ??
+    "http://localhost:8080"
+).replace(/\/+$/, "")
 
 const today = new Date().toISOString().slice(0, 10)
 const compra = reactive({
     proveedorId: 0,
-    numero: '',
-    fechaEmision: today, 
+    numero: "",
+    fechaEmision: today,
 })
 
 const items = ref([{ productoId: 0, cantidad: 0, costoUnitario: 0, tasaIva: 10 }])
@@ -120,21 +131,32 @@ const proveedores = ref([])
 const productos = ref([])
 
 const loading = ref(false)
-const error = ref('')
-const okMsg = ref('')
+const error = ref("")
+const okMsg = ref("")
 
+const money = (v) =>
+    new Intl.NumberFormat("es-PY", {
+        style: "currency",
+        currency: "PYG",
+    }).format(Number(v) || 0)
 
-const money = v => new Intl.NumberFormat('es-PY', { style: 'currency', currency: 'PYG' }).format(Number(v) || 0)
-const lineTotal = it => (it.cantidad || 0) * (it.costoUnitario || 0)
-const subtotal = computed(() => items.value.reduce((a, it) => a + (it.cantidad || 0) * (it.costoUnitario || 0), 0))
+const lineTotal = (it) => (it.cantidad || 0) * (it.costoUnitario || 0)
+
+const subtotal = computed(() =>
+    items.value.reduce(
+        (a, it) => a + (it.cantidad || 0) * (it.costoUnitario || 0),
+        0
+    )
+)
+
 const iva = computed(() =>
     items.value.reduce((a, it) => {
         const base = (it.cantidad || 0) * (it.costoUnitario || 0)
         return a + base * ((it.tasaIva || 0) / 100)
     }, 0)
 )
-const total = computed(() => subtotal.value + iva.value)
 
+const total = computed(() => subtotal.value + iva.value)
 
 function addItem() {
     items.value.push({ productoId: 0, cantidad: 0, costoUnitario: 0, tasaIva: 10 })
@@ -145,104 +167,126 @@ function removeItem(i) {
 
 function seedFromCatalog(i) {
     const it = items.value[i]
-    const p = productos.value.find(x => x.id === it.productoId)
+    const p = productos.value.find((x) => x.id === it.productoId)
     if (p) {
-        const costo = Number.isFinite(p.costo) ? p.costo : (Number.isFinite(p.precio) ? p.precio : 0)
+        const costo = Number.isFinite(p.costo)
+            ? p.costo
+            : Number.isFinite(p.precio)
+                ? p.precio
+                : 0
         it.costoUnitario = costo
         if (Number.isFinite(p.tasaIva)) it.tasaIva = p.tasaIva
     }
 }
 
-
 function validate() {
-    error.value = ''
-    okMsg.value = ''
-    if (!compra.proveedorId) { error.value = 'Selecciona un proveedor.'; return false }
-    if (!compra.numero?.trim()) { error.value = 'Número de comprobante es obligatorio.'; return false }
-    if (!compra.fechaEmision) { error.value = 'Fecha de emisión es obligatoria.'; return false }
-    if (!items.value.length) { error.value = 'Agrega al menos un ítem.'; return false }
+    error.value = ""
+    okMsg.value = ""
+    if (!compra.proveedorId) {
+        error.value = "Selecciona un proveedor."
+        return false
+    }
+    if (!compra.numero?.trim()) {
+        error.value = "Número de comprobante es obligatorio."
+        return false
+    }
+    if (!compra.fechaEmision) {
+        error.value = "Fecha de emisión es obligatoria."
+        return false
+    }
+    if (!items.value.length) {
+        error.value = "Agrega al menos un ítem."
+        return false
+    }
     for (const it of items.value) {
-        if (!it.productoId) { error.value = 'Selecciona el producto en todos los ítems.'; return false }
-        if ((it.cantidad || 0) <= 0) { error.value = 'Cantidad debe ser > 0.'; return false }
-        if ((it.costoUnitario || 0) < 0) { error.value = 'Costo unitario no puede ser negativo.'; return false }
+        if (!it.productoId) {
+            error.value = "Selecciona el producto en todos los ítems."
+            return false
+        }
+        if ((it.cantidad || 0) <= 0) {
+            error.value = "Cantidad debe ser > 0."
+            return false
+        }
+        if ((it.costoUnitario || 0) < 0) {
+            error.value = "Costo unitario no puede ser negativo."
+            return false
+        }
     }
     return true
 }
 
-
 async function fetchProveedores() {
-    const resp = await fetch(`${API_URL}/proveedores/0/50`)
-    if (!resp.ok) throw new Error('No se pudieron cargar proveedores')
-    const data = await resp.json()
-    proveedores.value = Array.isArray(data?.content) ? data.content : (Array.isArray(data) ? data : [])
+    const data = await fetchWithAuth(`${API_BASE}/proveedores/0/50`)
+    proveedores.value = Array.isArray(data?.content)
+        ? data.content
+        : Array.isArray(data)
+            ? data
+            : []
 }
 
 async function fetchProductos() {
-    const resp = await fetch(`${API_URL}/productos/0/50`)
-    if (!resp.ok) throw new Error('No se pudieron cargar productos')
-    const data = await resp.json()
-    productos.value = Array.isArray(data?.content) ? data.content : (Array.isArray(data) ? data : [])
+    const data = await fetchWithAuth(`${API_BASE}/productos/0/50`)
+    productos.value = Array.isArray(data?.content)
+        ? data.content
+        : Array.isArray(data)
+            ? data
+            : []
 }
 
 /** ---------- API: POST /compras ---------- **/
 async function confirmarCompra() {
     if (!validate()) return
     loading.value = true
-    error.value = ''
-    okMsg.value = ''
+    error.value = ""
+    okMsg.value = ""
 
     try {
         const payload = {
             proveedorId: compra.proveedorId,
             numero: compra.numero.trim(),
             fechaEmision: new Date(compra.fechaEmision).toISOString(),
-            detalles: items.value.map(it => ({
+            detalles: items.value.map((it) => ({
                 productoId: it.productoId,
                 cantidad: it.cantidad,
                 costoUnitario: it.costoUnitario,
                 tasaIva: it.tasaIva,
             })),
-            
             subtotal: Number(subtotal.value.toFixed(2)),
             iva: Number(iva.value.toFixed(2)),
             total: Number(total.value.toFixed(2)),
         }
 
-        const resp = await fetch(`${API_URL}/compras`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+        await fetchWithAuth(`${API_BASE}/compras`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         })
-        if (!resp.ok) {
-            let msg = `Error HTTP ${resp.status}`
-            try { const d = await resp.json(); if (d?.message) msg = d.message } catch { }
-            throw new Error(msg)
-        }
 
-        await resp.json().catch(() => ({}))
-        okMsg.value = 'Compra registrada correctamente.'
+        okMsg.value = "Compra registrada correctamente."
         // Reset suave
         items.value = [{ productoId: 0, cantidad: 0, costoUnitario: 0, tasaIva: 10 }]
-        compra.numero = ''
+        compra.numero = ""
     } catch (e) {
-        error.value = e.message || 'No se pudo registrar la compra.'
+        error.value = e?.message || "No se pudo registrar la compra."
     } finally {
         loading.value = false
     }
 }
 
-
 function guardarBorrador() {
     if (!validate()) return
-    localStorage.setItem('draft_compra', JSON.stringify({ compra: { ...compra }, items: items.value }))
-    okMsg.value = 'Borrador guardado en este equipo.'
+    localStorage.setItem(
+        "draft_compra",
+        JSON.stringify({ compra: { ...compra }, items: items.value })
+    )
+    okMsg.value = "Borrador guardado en este equipo."
 }
 
 onMounted(async () => {
     try {
         await Promise.all([fetchProveedores(), fetchProductos()])
     } catch (e) {
-        error.value = e.message || 'Error cargando catálogos.'
+        error.value = e?.message || "Error cargando catálogos."
     }
 })
 </script>

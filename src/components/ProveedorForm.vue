@@ -5,7 +5,7 @@
         <div class="card modal-card">
             <div class="card-header">
                 <h3 style="margin:0">Nuevo proveedor</h3>
-                <button class="icon-btn" @click="onClose" title="Cerrar">
+                <button class="icon-btn" @click="onClose" title="Cerrar" :disabled="loading">
                     ✕
                 </button>
             </div>
@@ -40,8 +40,13 @@
                     </label>
 
                     <div class="actions" style="grid-column:1/-1;text-align:right;margin-top:10px">
-                        <button type="button" class="btn ghost" @click="onClose">Cancelar</button>
-                        <button type="submit" class="btn">Guardar</button>
+                        <button type="button" class="btn ghost" @click="onClose" :disabled="loading">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn" :disabled="loading">
+                            <span v-if="!loading">Guardar</span>
+                            <span v-else>Guardando…</span>
+                        </button>
                     </div>
                 </form>
                 <div v-if="error" class="error">{{ error }}</div>
@@ -52,43 +57,50 @@
 
 <script setup>
 import "../assets/proveedorForm.css"
-import { reactive, ref } from 'vue'
+import { reactive, ref } from "vue"
+import { fetchWithAuth } from "../services/authService" // ⬅️ auth service
 
-const emit = defineEmits(['close', 'saved'])
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+const emit = defineEmits(["close", "saved"])
+
+// Unificamos con el resto: intenta usar VITE_API_BASE, luego VITE_API_URL
+const API_BASE =
+    import.meta.env.VITE_API_BASE ??
+    import.meta.env.VITE_API_URL ??
+    "http://localhost:8080"
 
 const form = reactive({
-    nombre: '',
-    ruc: '',
-    telefono: '',
-    correo: '',
-    direccion: '',
-    activo: true
+    nombre: "",
+    ruc: "",
+    telefono: "",
+    correo: "",
+    direccion: "",
+    activo: true,
 })
 
-const error = ref('')
+const error = ref("")
 const loading = ref(false)
 
 async function onSubmit() {
-    error.value = ''
+    error.value = ""
     loading.value = true
     try {
-        const resp = await fetch(`${API_URL}/proveedores`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form)
+        const created = await fetchWithAuth(`${API_BASE}/proveedores`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(form),
         })
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
-        emit('saved')
+
+        // si tu padre necesita el proveedor creado, se lo mandás
+        emit("saved", created)
     } catch (e) {
         console.error(e)
-        error.value = 'No se pudo crear el proveedor.'
+        error.value = e?.message || "No se pudo crear el proveedor."
     } finally {
         loading.value = false
     }
 }
 
 function onClose() {
-    emit('close')
+    emit("close")
 }
 </script>

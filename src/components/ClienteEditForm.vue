@@ -60,26 +60,28 @@
 
 <script setup>
 import "../assets/clienteEdit.css"
-import { reactive, watch, ref } from 'vue'
+import { reactive, watch, ref } from "vue"
+import { fetchWithAuth } from "../services/authService"   // ⬅️ usamos el servicio de auth
 
-const emit = defineEmits(['close', 'updated'])
+const emit = defineEmits(["close", "updated"])
 const props = defineProps({
-    cliente: { type: Object, required: true }
+    cliente: { type: Object, required: true },
 })
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+// usamos la misma base que en auth.js para mantener consistencia
+const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8080"
 
 const form = reactive({
     id: null,
-    nombre: '',
-    ruc: '',
-    telefono: '',
-    correo: '',
-    direccion: ''
+    nombre: "",
+    ruc: "",
+    telefono: "",
+    correo: "",
+    direccion: "",
 })
 
-const errors = reactive({ nombre: '', correo: '' })
-const serverError = ref('')
+const errors = reactive({ nombre: "", correo: "" })
+const serverError = ref("")
 const loading = ref(false)
 
 // Cargar datos del cliente cuando cambie la prop
@@ -88,56 +90,47 @@ watch(
     (val) => {
         if (val) {
             form.id = val.id
-            form.nombre = val.nombre || ''
-            form.ruc = val.ruc || ''
-            form.telefono = val.telefono || ''
-            form.correo = val.correo || ''
-            form.direccion = val.direccion || ''
+            form.nombre = val.nombre || ""
+            form.ruc = val.ruc || ""
+            form.telefono = val.telefono || ""
+            form.correo = val.correo || ""
+            form.direccion = val.direccion || ""
         }
     },
     { immediate: true }
 )
 
 function validate() {
-    errors.nombre = form.nombre ? '' : 'El nombre es obligatorio.'
+    errors.nombre = form.nombre ? "" : "El nombre es obligatorio."
     errors.correo =
         form.correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.correo)
-            ? 'Correo inválido.'
-            : ''
+            ? "Correo inválido."
+            : ""
     return !errors.nombre && !errors.correo
 }
 
 async function onSubmit() {
-    serverError.value = ''
+    serverError.value = ""
     if (!validate()) return
 
     loading.value = true
     try {
-        const resp = await fetch(`${API_URL}/clientes/${form.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form)
+        const updated = await fetchWithAuth(`${API_BASE}/clientes/${form.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(form),
         })
 
-        if (!resp.ok) {
-            let msg = `Error HTTP ${resp.status}`
-            try {
-                const data = await resp.json()
-                if (data?.message) msg = data.message
-            } catch (_) { }
-            throw new Error(msg)
-        }
-
-        const updated = await resp.json()
-        emit('updated', updated)
+        emit("updated", updated)
     } catch (e) {
-        serverError.value = e.message || 'No se pudo actualizar el cliente.'
+        // fetchWithAuth ya arma un mensaje decente
+        serverError.value = e?.message || "No se pudo actualizar el cliente."
     } finally {
         loading.value = false
     }
 }
 
 function onClose() {
-    emit('close')
+    emit("close")
 }
 </script>

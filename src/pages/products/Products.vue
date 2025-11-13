@@ -2,8 +2,14 @@
 import { ref, watch, onMounted, onUnmounted } from "vue"
 import "../../assets/productos.css"
 import ProductoForm from "../../components/ProductoForm.vue"
+import { fetchWithAuth } from "../../services/authService" // ⬅️ auth service
 
-const API_URL = (import.meta.env.VITE_API_URL || "http://localhost:8080").replace(/\/+$/, "")
+// Unificamos base de API con lo que ya usas en otros módulos
+const API_BASE = (
+    import.meta.env.VITE_API_BASE ??
+    import.meta.env.VITE_API_URL ??
+    "http://localhost:8080"
+).replace(/\/+$/, "")
 
 // Estados
 const busqueda = ref("")
@@ -19,8 +25,12 @@ let aborter = null
 let debounceId = null
 
 // Formateo precios
-const fmt = new Intl.NumberFormat("es-PY", { style: "currency", currency: "PYG", maximumFractionDigits: 0 })
-const fmtPrecio = v => (isFinite(v) ? fmt.format(v) : "—")
+const fmt = new Intl.NumberFormat("es-PY", {
+    style: "currency",
+    currency: "PYG",
+    maximumFractionDigits: 0,
+})
+const fmtPrecio = (v) => (isFinite(v) ? fmt.format(v) : "—")
 
 // Normalizador
 function normalizeProducto(p = {}) {
@@ -33,7 +43,7 @@ function normalizeProducto(p = {}) {
         precio: p.precio ?? 0,
         stockMinimo: p.stockMinimo ?? 0,
         unidadMedida: p.unidadMedida ?? "UN",
-        descripcion: p.descripcion ?? ""
+        descripcion: p.descripcion ?? "",
     }
 }
 
@@ -50,12 +60,10 @@ async function fetchProductos() {
         const q = busqueda.value?.trim()
 
         // tu API: /productos/{page}/{size}/{q} (opcional q)
-        let endpoint = `${API_URL}/productos/${p}/${s}`
+        let endpoint = `${API_BASE}/productos/${p}/${s}`
         if (q) endpoint += `/${encodeURIComponent(q)}`
 
-        const resp = await fetch(endpoint, { signal: aborter.signal })
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
-        const data = await resp.json()
+        const data = await fetchWithAuth(endpoint, { signal: aborter.signal })
 
         const content = Array.isArray(data?.content)
             ? data.content
@@ -68,13 +76,13 @@ async function fetchProductos() {
     } catch (e) {
         if (e.name !== "AbortError") {
             console.error(e)
-            error.value = "No se pudieron cargar los productos."
+            error.value =
+                e?.message || "No se pudieron cargar los productos."
         }
     } finally {
         loading.value = false
     }
 }
-
 
 function siguiente() {
     if (page.value < totalPages.value - 1) page.value++
@@ -89,7 +97,6 @@ function ultimo() {
     page.value = totalPages.value - 1
 }
 
-
 watch(busqueda, () => {
     page.value = 0
     clearTimeout(debounceId)
@@ -103,24 +110,25 @@ onUnmounted(() => {
     clearTimeout(debounceId)
 })
 
-
-
 async function editarProducto(p) {
     const nombre = prompt("Editar nombre:", p.nombre)
     if (!nombre?.trim()) return
     const descripcion = prompt("Editar descripción:", p.descripcion)
     try {
         loading.value = true
-        const resp = await fetch(`${API_URL}/productos/${p.id}`, {
+        await fetchWithAuth(`${API_BASE}/productos/${p.id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...p, nombre: nombre.trim(), descripcion: descripcion ?? "" })
+            body: JSON.stringify({
+                ...p,
+                nombre: nombre.trim(),
+                descripcion: descripcion ?? "",
+            }),
         })
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
         await fetchProductos()
     } catch (e) {
         console.error(e)
-        error.value = "No se pudo actualizar el producto."
+        error.value = e?.message || "No se pudo actualizar el producto."
     } finally {
         loading.value = false
     }
@@ -130,8 +138,9 @@ async function eliminarProducto(p) {
     if (!confirm(`¿Eliminar producto "${p.nombre}"?`)) return
     try {
         loading.value = true
-        const resp = await fetch(`${API_URL}/productos/${p.id}`, { method: "DELETE" })
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
+        await fetchWithAuth(`${API_BASE}/productos/${p.id}`, {
+            method: "DELETE",
+        })
         if (productos.value.length === 1 && page.value > 0) {
             page.value--
         } else {
@@ -139,7 +148,7 @@ async function eliminarProducto(p) {
         }
     } catch (e) {
         console.error(e)
-        error.value = "No se pudo eliminar el producto."
+        error.value = e?.message || "No se pudo eliminar el producto."
     } finally {
         loading.value = false
     }
@@ -147,8 +156,12 @@ async function eliminarProducto(p) {
 
 // ========= MODAL NUEVO =========
 const showCreate = ref(false)
-function nuevoProducto() { showCreate.value = true }
-function onCloseForm() { showCreate.value = false }
+function nuevoProducto() {
+    showCreate.value = true
+}
+function onCloseForm() {
+    showCreate.value = false
+}
 function onSavedProducto() {
     showCreate.value = false
     fetchProductos()
@@ -213,8 +226,16 @@ function onSavedProducto() {
                             <td>{{ p.descripcion }}</td>
                             <td>{{ fmtPrecio(p.precio) }}</td>
                             <td>{{ p.unidadMedida }}</td>
-                            <td><button class="btn editar" @click="editarProducto(p)">✏️</button></td>
-                            <td><button class="btn eliminar" @click="eliminarProducto(p)">🗑️</button></td>
+                            <td>
+                                <button class="btn editar" @click="editarProducto(p)">
+                                    ✏️
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn eliminar" @click="eliminarProducto(p)">
+                                    🗑️
+                                </button>
+                            </td>
                         </tr>
                         <tr v-if="productos.length === 0">
                             <td colspan="7" style="text-align:center; color:#6b7280; padding:12px">
@@ -227,11 +248,22 @@ function onSavedProducto() {
 
             <!-- PAGINACIÓN -->
             <div class="pager" v-if="totalPages > 1">
-                <button class="btn" :disabled="page === 0" @click="primero">« Primero</button>
-                <button class="btn" :disabled="page === 0" @click="anterior">← Anterior</button>
-                <span>Página {{ page + 1 }} de {{ totalPages }} ({{ totalElements }} registros)</span>
-                <button class="btn" :disabled="page >= totalPages - 1" @click="siguiente">Siguiente →</button>
-                <button class="btn" :disabled="page >= totalPages - 1" @click="ultimo">Último »</button>
+                <button class="btn" :disabled="page === 0" @click="primero">
+                    « Primero
+                </button>
+                <button class="btn" :disabled="page === 0" @click="anterior">
+                    ← Anterior
+                </button>
+                <span>Página {{ page + 1 }} de {{ totalPages }} ({{
+                    totalElements
+                }}
+                    registros)</span>
+                <button class="btn" :disabled="page >= totalPages - 1" @click="siguiente">
+                    Siguiente →
+                </button>
+                <button class="btn" :disabled="page >= totalPages - 1" @click="ultimo">
+                    Último »
+                </button>
             </div>
         </div>
     </section>

@@ -1,20 +1,40 @@
-// Sencillo envoltorio fetch con manejo de errores
+// src/pages/reports/api/ReportsApi.js
+import { fetchWithAuth } from "../../../services/auth"
+
+const API_BASE =
+    import.meta.env.VITE_API_BASE ??
+    import.meta.env.VITE_API_URL ??
+    "http://localhost:8080"
+
+/**
+ * GET seguro con params, usando fetchWithAuth
+ */
 export async function apiGet(path, params = {}) {
-    const url = new URL(`/api${path}`, window.location.origin)
-    Object.entries(params).forEach(([k, v]) => {
-        if (v !== undefined && v !== null && v !== '') url.searchParams.set(k, v)
+    const url = new URL(`${API_BASE}${path}`)
+
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+            url.searchParams.set(key, value)
+        }
     })
-    const res = await fetch(url.toString(), { headers: { 'Accept': 'application/json' } })
-    if (!res.ok) {
-        const text = await res.text().catch(() => '')
-        throw new Error(`HTTP ${res.status} - ${text || res.statusText}`)
-    }
-    return res.json()
+
+    // fetchWithAuth maneja errores 401, refresh automático y parseo JSON
+    return fetchWithAuth(url.toString(), {
+        method: "GET",
+        headers: { Accept: "application/json" }
+    })
 }
 
-// Endpoints según tu OpenAPI (ajusta si cambiaste)
+/**
+ * Endpoints de reportes
+ * Ajusta si agregás más en tu backend
+ */
 export const ReportsApi = {
-    ventasDiarias: (desde, hasta) =>
-        apiGet('/reportes/ventas-diarias', { desde, hasta }),
+    ventasDiarias(desde, hasta) {
+        return apiGet("/reportes/ventas-diarias", { desde, hasta })
+    },
 
+    // cuando agregues más reportes:
+    // ventasPorProducto(desde, hasta) { return apiGet("/reportes/ventas-producto", { desde, hasta }) }
+    // comprasPorProveedor(desde, hasta) { return apiGet("/reportes/compras-proveedor", { desde, hasta }) }
 }

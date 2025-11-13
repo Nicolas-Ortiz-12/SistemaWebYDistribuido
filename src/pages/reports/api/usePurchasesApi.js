@@ -1,10 +1,15 @@
-// src/pages/reports/api/usePurchasesApi.js
-const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:8080').replace(/\/+$/, '')
+import { fetchWithAuth } from "../../../services/authService"
+
+const API_BASE = (
+    import.meta.env.VITE_API_BASE ??
+    import.meta.env.VITE_API_URL ??
+    "http://localhost:8080"
+).replace(/\/+$/, "")
 
 // Rutas disponibles en tu compra-controller
 function comprasPath({ page = 0, size = 50, proveedorId, desde, hasta }) {
     let path = `/compras/${page}/${size}`
-    if (proveedorId !== undefined && proveedorId !== '' && proveedorId !== null) {
+    if (proveedorId !== undefined && proveedorId !== "" && proveedorId !== null) {
         path += `/${proveedorId}`
         if (desde) {
             path += `/${encodeURIComponent(desde)}`
@@ -15,17 +20,17 @@ function comprasPath({ page = 0, size = 50, proveedorId, desde, hasta }) {
 }
 
 async function apiGet(path) {
-    const res = await fetch(`${API_BASE}${path}`, { headers: { Accept: 'application/json' } })
-    if (!res.ok) {
-        const txt = await res.text().catch(() => res.statusText)
-        throw new Error(`HTTP ${res.status}: ${txt}`)
-    }
-    return res.json()
+    // fetchWithAuth ya maneja Authorization + manejo de errores y parseo JSON
+    return fetchWithAuth(`${API_BASE}${path}`, {
+        headers: { Accept: "application/json" },
+    })
 }
 
 // Página simple
 export async function getComprasPage({ page = 0, size = 50, proveedorId, desde, hasta }) {
-    const data = await apiGet(comprasPath({ page, size, proveedorId, desde, hasta }))
+    const data = await apiGet(
+        comprasPath({ page, size, proveedorId, desde, hasta })
+    )
     return {
         content: Array.isArray(data?.content) ? data.content : [],
         totalPages: data?.totalPages ?? 1,
@@ -36,7 +41,13 @@ export async function getComprasPage({ page = 0, size = 50, proveedorId, desde, 
 }
 
 // Recorre páginas y junta todo (sin tocar backend)
-export async function getComprasAll({ proveedorId, desde, hasta, size = 50, MAX_PAGES = 40 }) {
+export async function getComprasAll({
+    proveedorId,
+    desde,
+    hasta,
+    size = 50,
+    MAX_PAGES = 40,
+}) {
     let page = 0
     const first = await getComprasPage({ page, size, proveedorId, desde, hasta })
     const total = Math.min(Number(first.totalPages || 1), MAX_PAGES)
@@ -51,10 +62,5 @@ export async function getComprasAll({ proveedorId, desde, hasta, size = 50, MAX_
 
 // Producto por id (para traer el nombre)
 export async function getProductoById(id) {
-    const res = await fetch(`${API_BASE}/productos/${id}`, { headers: { Accept: 'application/json' } })
-    if (!res.ok) {
-        const txt = await res.text().catch(() => res.statusText)
-        throw new Error(`HTTP ${res.status}: ${txt}`)
-    }
-    return res.json()
+    return apiGet(`/productos/${id}`)
 }

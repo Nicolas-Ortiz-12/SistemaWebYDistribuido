@@ -1,4 +1,3 @@
-
 <template>
     <div class="modal" @keydown.esc="onClose">
         <div class="backdrop" @click="onClose"></div>
@@ -32,8 +31,9 @@
                                 <input v-model.trim="categoryQuery" placeholder="Buscar categoría…"
                                     @focus="openCat = true" @input="onTypeCategory" autocomplete="off" />
                                 <!-- Muestra la selección actual (id) a la derecha, opcional -->
-                                <span v-if="form.categoriaId" style="font-size:12px;color:var(--muted)">#{{
-                                    form.categoriaId }}</span>
+                                <span v-if="form.categoriaId" style="font-size:12px;color:var(--muted)">
+                                    #{{ form.categoriaId }}
+                                </span>
                             </label>
 
                             <div v-if="openCat && filteredCategories.length" class="dropdown"
@@ -44,7 +44,9 @@
                                     <span>{{ cat.nombre }}</span>
                                     <small style="color:var(--muted)">#{{ cat.id }}</small>
                                 </button>
-                                <div v-if="loadingCats" style="padding:8px 10px; color:var(--muted);">Buscando…</div>
+                                <div v-if="loadingCats" style="padding:8px 10px; color:var(--muted);">
+                                    Buscando…
+                                </div>
                             </div>
 
                             <small v-if="categoryError" class="err">{{ categoryError }}</small>
@@ -92,39 +94,45 @@
 
 <script setup>
 import "../assets/productoForm.css"
-import { reactive, ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { reactive, ref, computed, onMounted, onUnmounted } from "vue"
+import { fetchWithAuth } from "../services/authService"
 
-const emit = defineEmits(['close', 'saved'])
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+const emit = defineEmits(["close", "saved"])
+
+// Soporta tanto VITE_API_BASE (auth.js) como VITE_API_URL
+const API_BASE =
+    import.meta.env.VITE_API_BASE ??
+    import.meta.env.VITE_API_URL ??
+    "http://localhost:8080"
 
 const form = reactive({
-    codigo: '',
-    nombre: '',
-    categoriaId: null, 
+    codigo: "",
+    nombre: "",
+    categoriaId: null,
     costo: null,
     precio: null,
     stockMinimo: null,
-    descripcion: '',
-    unidadMedida: ''
+    descripcion: "",
+    unidadMedida: "",
 })
 
-const errors = reactive({ nombre: '' })
-const serverError = ref('')
+const errors = reactive({ nombre: "" })
+const serverError = ref("")
 const loading = ref(false)
 
 // ---- Categorías (combo con búsqueda) ----
-const categories = ref([])     // cache de resultados recientes
-const categoryQuery = ref('')  // lo que escribe el usuario
+const categories = ref([]) // cache de resultados recientes
+const categoryQuery = ref("") // lo que escribe el usuario
 const openCat = ref(false)
 const loadingCats = ref(false)
-const categoryError = ref('')
+const categoryError = ref("")
 let catAborter = null
 let catDebounceId = null
 
 const filteredCategories = computed(() => {
     const q = categoryQuery.value.trim().toLowerCase()
     if (!q) return categories.value
-    return categories.value.filter(c => c.nombre?.toLowerCase().includes(q))
+    return categories.value.filter((c) => c.nombre?.toLowerCase().includes(q))
 })
 
 function selectCategory(cat) {
@@ -137,21 +145,25 @@ async function fetchCategorias() {
     if (catAborter) catAborter.abort()
     catAborter = new AbortController()
     loadingCats.value = true
-    categoryError.value = ''
+    categoryError.value = ""
     try {
-        const url = new URL(`${API_URL}/categorias`)
-        url.searchParams.set('page', 0)
-        url.searchParams.set('size', 50) // ajusta según tu volumen
-        if (categoryQuery.value?.trim()) url.searchParams.set('q', categoryQuery.value.trim())
+        const url = new URL(`${API_BASE}/categorias`)
+        url.searchParams.set("page", 0)
+        url.searchParams.set("size", 50) // ajusta según tu volumen
+        if (categoryQuery.value?.trim())
+            url.searchParams.set("q", categoryQuery.value.trim())
 
-        const resp = await fetch(url.toString(), { signal: catAborter.signal })
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
-        const data = await resp.json()
+        // ⬇️ usamos fetchWithAuth en lugar de fetch directo
+        const data = await fetchWithAuth(url.toString(), {
+            signal: catAborter.signal,
+        })
+
         categories.value = Array.isArray(data.content) ? data.content : []
     } catch (e) {
-        if (e.name !== 'AbortError') {
+        if (e.name !== "AbortError") {
             console.error(e)
-            categoryError.value = 'No se pudieron cargar categorías.'
+            categoryError.value =
+                e?.message || "No se pudieron cargar categorías."
         }
     } finally {
         loadingCats.value = false
@@ -162,12 +174,12 @@ async function fetchCategorias() {
 onMounted(() => {
     fetchCategorias()
     // cerrar dropdown al hacer clic afuera
-    window.addEventListener('click', onClickOutside, true)
+    window.addEventListener("click", onClickOutside, true)
 })
 onUnmounted(() => {
     if (catAborter) catAborter.abort()
     clearTimeout(catDebounceId)
-    window.removeEventListener('click', onClickOutside, true)
+    window.removeEventListener("click", onClickOutside, true)
 })
 
 // cuando se tipea, busca con debounce
@@ -179,48 +191,41 @@ function onTypeCategory() {
 
 function onClickOutside(e) {
     // si el click no fue dentro del combobox, cerramos
-    const el = e.target.closest('.category-combobox')
+    const el = e.target.closest(".category-combobox")
     if (!el) openCat.value = false
 }
 
-
 function validate() {
-    errors.nombre = form.nombre ? '' : 'El nombre es obligatorio.'
+    errors.nombre = form.nombre ? "" : "El nombre es obligatorio."
     if (!form.categoriaId) {
-        categoryError.value = 'Seleccioná una categoría.'
+        categoryError.value = "Seleccioná una categoría."
     } else {
-        categoryError.value = ''
+        categoryError.value = ""
     }
     return !errors.nombre && !categoryError.value
 }
 
 async function onSubmit() {
     if (!validate()) return
-    serverError.value = ''
+    serverError.value = ""
     loading.value = true
     try {
-        const resp = await fetch(`${API_URL}/productos`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form)
+        const created = await fetchWithAuth(`${API_BASE}/productos`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(form),
         })
-        if (!resp.ok) {
-            let msg = `Error HTTP ${resp.status}`
-            try {
-                const data = await resp.json()
-                if (data?.message) msg = data.message
-            } catch (_) { }
-            throw new Error(msg)
-        }
-        const created = await resp.json()
-        emit('saved', created)
+
+        emit("saved", created)
     } catch (e) {
         console.error(e)
-        serverError.value = e.message || 'No se pudo guardar el producto.'
+        serverError.value = e?.message || "No se pudo guardar el producto."
     } finally {
         loading.value = false
     }
 }
 
-function onClose() { emit('close') }
+function onClose() {
+    emit("close")
+}
 </script>

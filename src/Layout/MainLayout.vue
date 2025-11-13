@@ -1,6 +1,8 @@
 <template>
     <div>
+        <TopBar />
         <div class="layout">
+            <SideNav />
             <main>
                 <RouterView />
             </main>
@@ -9,6 +11,8 @@
 </template>
 
 
+
 <script setup>
-import { RouterView } from 'vue-router'
+import SideNav from '../components/SideNav.vue'
+import TopBar from '../components/TopBar.vue'
 </script>

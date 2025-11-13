@@ -40,7 +40,6 @@
                             <input v-model.trim="form.direccion" placeholder="Dirección" autocomplete="off" />
                         </label>
                     </div>
-
                 </form>
 
                 <div v-if="serverError" class="error" style="margin-top:8px">{{ serverError }}</div>
@@ -61,70 +60,65 @@
 
 <script setup>
 import "../assets/clienteFrom.css"
-import { reactive, ref } from 'vue'
+import { reactive, ref } from "vue"
+import { fetchWithAuth } from "../services/authService"   
+// Usamos la misma base que en auth.js para no duplicar
+const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8080"
 
-const emit = defineEmits(['close', 'saved'])
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+const emit = defineEmits(["close", "saved"])
 
 const form = reactive({
-    nombre: '',
-    ruc: '',
-    telefono: '',
-    correo: '',
-    direccion: ''
+    nombre: "",
+    ruc: "",
+    telefono: "",
+    correo: "",
+    direccion: "",
 })
 
 const loading = ref(false)
-const serverError = ref('')
-const errors = reactive({ nombre: '', correo: '' })
+const serverError = ref("")
+const errors = reactive({ nombre: "", correo: "" })
 
 function validate() {
-    errors.nombre = form.nombre ? '' : 'El nombre es obligatorio.'
+    errors.nombre = form.nombre ? "" : "El nombre es obligatorio."
     errors.correo =
         form.correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.correo)
-            ? 'Correo inválido.'
-            : ''
+            ? "Correo inválido."
+            : ""
     return !errors.nombre && !errors.correo
 }
 
 async function onSubmit() {
-    serverError.value = ''
+    serverError.value = ""
     if (!validate()) return
     loading.value = true
+
     try {
-        const resp = await fetch(`${API_URL}/clientes`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form)
+        const created = await fetchWithAuth(`${API_BASE}/clientes`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(form),
         })
-        if (!resp.ok) {
-            // Intentamos leer mensaje de error del backend
-            let msg = `Error HTTP ${resp.status}`
-            try {
-                const data = await resp.json()
-                if (data?.message) msg = data.message
-            } catch (_) { }
-            throw new Error(msg)
-        }
-        const created = await resp.json()
-        emit('saved', created)
+
+        emit("saved", created)
         reset()
     } catch (e) {
-        serverError.value = e.message || 'No se pudo crear el cliente.'
+        // Podés personalizar el mensaje si la sesión expiró, etc.
+        serverError.value = e?.message || "No se pudo crear el cliente."
     } finally {
         loading.value = false
     }
 }
 
 function reset() {
-    form.nombre = ''
-    form.ruc = ''
-    form.telefono = ''
-    form.correo = ''
-    form.direccion = ''
+    form.nombre = ""
+    form.ruc = ""
+    form.telefono = ""
+    form.correo = ""
+    form.direccion = ""
 }
 
 function onClose() {
-    emit('close')
+    emit("close")
 }
 </script>
