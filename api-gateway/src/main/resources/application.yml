@@ -6,27 +6,37 @@ spring:
     name: msvc-gateway
   cloud:
     gateway:
-      mvc:
-        discovery:
-          locator:
-            enabled: true
-        routes:
-          - id: auth
-            uri: http://localhost:8083
-            predicates:
-              - Path=/auth/**,/users/**
-          - id: ventas
-            uri: http://localhost:8081
-            predicates:
-              - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**
+      server:
+        webmvc:
+          routes:
+            - id: auth
+              uri: http://localhost:8083
+              predicates:
+                - Path=/auth/**
+              filters:
+                - PrefixPath=/Seguridad
 
+            - id: seguridad-path
+              uri: http://localhost:8083
+              predicates:
+                - Path=/Seguridad/**
 
-          - id: compras
-            uri: http://localhost:8082
-            predicates:
-              - Path=/compras/**
+            - id: ventas
+              uri: http://localhost:8083
+              predicates:
+                - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**
+              filters:
+                - PrefixPath=/Venta
+
+            - id: compras
+              uri: http://localhost:8083
+              predicates:
+                - Path=/compras/**
+              filters:
+                - PrefixPath=/Compra
+
 security:
   jwt:
-    secret: cambia-esto-por-un-secret-muy-largo-y-aleatorio
-    issuer: proyectodistri
+    secret: "cambia-esto-por-un-secret-muy-largo-y-aleatorio"
+    issuer: "proyectodistri"
     expiration-minutes: 60

@@ -18,15 +18,19 @@ public class JwtGatewayFilter extends OncePerRequestFilter {
 
     private final JwtService jwt;
 
-    // Rutas públicas (no requieren token)
+    private static final Set<String> WHITELIST_EXACT = Set.of(
+            "/Seguridad/auth/login",
+            "/auth/login"
+    );
+
     private static final Set<String> WHITELIST_PREFIXES = Set.of(
-            "/auth/", "/v3/api-docs", "/swagger-ui", "/actuator/health"
+            "/v3/api-docs", "/swagger-ui", "/actuator/health"
     );
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String p = request.getRequestURI();
-        // Permite /auth/** y swagger/health
+        if (WHITELIST_EXACT.contains(p)) return true;
         return WHITELIST_PREFIXES.stream().anyMatch(p::startsWith);
     }
 
@@ -42,8 +46,8 @@ public class JwtGatewayFilter extends OncePerRequestFilter {
 
         String token = h.substring(7);
         try {
-            jwt.parse(token); // ← valida firma/exp/estructura
-            chain.doFilter(req, res); // OK, continúa el ruteo del Gateway
+            jwt.parse(token);
+            chain.doFilter(req, res);
         } catch (JwtException ex) {
             unauthorized(res, "Token inválido");
         }
@@ -55,3 +59,4 @@ public class JwtGatewayFilter extends OncePerRequestFilter {
         res.getWriter().write("{\"error\":\"unauthorized\",\"message\":\"" + msg + "\"}");
     }
 }
+
