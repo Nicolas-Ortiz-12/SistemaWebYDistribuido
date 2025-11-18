@@ -1,0 +1,42 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: msvc-gateway
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: auth
+              uri: http://localhost:8083
+              predicates:
+                - Path=/auth/**
+              filters:
+                - PrefixPath=/Seguridad
+
+            - id: seguridad-path
+              uri: http://localhost:8083
+              predicates:
+                - Path=/Seguridad/**
+
+            - id: ventas
+              uri: http://localhost:8083
+              predicates:
+                - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**
+              filters:
+                - PrefixPath=/Venta
+
+            - id: compras
+              uri: http://localhost:8083
+              predicates:
+                - Path=/compras/**
+              filters:
+                - PrefixPath=/Compra
+
+security:
+  jwt:
+    secret: "cambia-esto-por-un-secret-muy-largo-y-aleatorio"
+    issuer: "proyectodistri"
+    expiration-minutes: 60
