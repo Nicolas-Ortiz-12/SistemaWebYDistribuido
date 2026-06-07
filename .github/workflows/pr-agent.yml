@@ -15,14 +15,15 @@ jobs:
       pull-requests: write
       contents: write
     steps:
-      - id: pragent
-        name: PR Agent action step
+      - name: PR Agent action step
+        id: pragent
         uses: Codium-ai/pr-agent@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PR_AGENT_CONFIG__AI_PROVIDER: "litellm"
           PR_AGENT_CONFIG__MODEL: "gemini/gemini-1.5-flash"
-          PR_AGENT_CONFIG__FALLBACK_MODELS: '["gemini/gemini-1.5-pro"]'
+          PR_AGENT_CONFIG__FALLBACK_MODELS: '["gemini/gemini-1.5-flash"]'
           PR_AGENT_PR_REVIEWER__LANGUAGE: "es"
           PR_AGENT_PR_DESCRIPTION__LANGUAGE: "es"
           PR_AGENT_PR_CODE_SUGGESTIONS__LANGUAGE: "es"
