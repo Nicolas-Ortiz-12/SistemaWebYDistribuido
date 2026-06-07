@@ -71,7 +71,8 @@ public class DeudorService {
     public void addDeuda(Long id, BigDecimal monto) {
         Deudor e = repo.findByIdAndActivoTrue(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Deudor no encontrado"));
-        e.setTotalAdeudado(e.getTotalAdeudado().add(monto));
+        BigDecimal totalAdeudado = e.getTotalAdeudado() != null ? e.getTotalAdeudado() : BigDecimal.ZERO;
+        e.setTotalAdeudado(totalAdeudado.add(monto));
         repo.save(e);
     }
 }

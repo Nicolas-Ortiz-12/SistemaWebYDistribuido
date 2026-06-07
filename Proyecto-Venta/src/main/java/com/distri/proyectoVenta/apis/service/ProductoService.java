@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -61,8 +63,7 @@ public class ProductoService {
         Producto e = mapper.toEntity(dto);
         // Autogenerar codigoBarras si no viene
         if (e.getCodigoBarras() == null || e.getCodigoBarras().isBlank()) {
-            // Un simple generador basado en timestamp o UUID
-            e.setCodigoBarras(String.valueOf(System.currentTimeMillis()));
+            e.setCodigoBarras(UUID.randomUUID().toString());
         }
         log.debug("Producto con creado {}", e.getCodigo());
         return mapper.toDto(repo.save(e));

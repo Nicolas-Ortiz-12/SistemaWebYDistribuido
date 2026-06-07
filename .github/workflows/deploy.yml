@@ -36,7 +36,7 @@ jobs:
           VITE_API_BASE=/api npm run build
 
       - name: Package backend jars
-        shell: pwsh
+        shell: bash
         run: |
           ./Seguridad/mvnw -q -DskipTests package
           ./Proyecto-Venta/mvnw -q -DskipTests package

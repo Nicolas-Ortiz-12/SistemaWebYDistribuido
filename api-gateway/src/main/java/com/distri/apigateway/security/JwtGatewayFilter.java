@@ -53,7 +53,7 @@ public class JwtGatewayFilter extends OncePerRequestFilter {
 
     private void unauthorized(HttpServletResponse res, String msg) throws IOException {
         res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        res.setContentType("application/json");
+        res.setContentType("application/json; charset=UTF-8");
         res.getWriter().write("{\"error\":\"unauthorized\",\"message\":\"" + msg + "\"}");
     }
 }

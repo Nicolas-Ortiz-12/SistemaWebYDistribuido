@@ -80,7 +80,7 @@ services:
       DB_PASS: ${DB_PASS}
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      REDIS_PASS: ${REDIS_PASSWORD}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
       CACHE_PREFIX: "ferreteria:"
       JWT_SECRET: ${JWT_SECRET}
       JWT_ISSUER: ${JWT_ISSUER:-proyectodistri}

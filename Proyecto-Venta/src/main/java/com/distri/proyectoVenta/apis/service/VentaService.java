@@ -71,11 +71,13 @@ public class VentaService {
             venta.setFechaVenta(fv);
         }
 
-        if (req.getEstadoPago() != null) {
-            venta.setEstadoPago(req.getEstadoPago());
+        if (req.getEstadoPago() == null || req.getEstadoPago().isBlank()) {
+            throw new IllegalArgumentException("estadoPago es requerido");
         }
 
-        if ("FIADO".equalsIgnoreCase(req.getEstadoPago())) {
+        venta.setEstadoPago(req.getEstadoPago());
+
+        if ("FIADO".equalsIgnoreCase(venta.getEstadoPago())) {
             if (req.getDeudorId() == null) {
                 throw new IllegalArgumentException("Se requiere deudorId cuando el estado de pago es FIADO");
             }
@@ -146,7 +148,8 @@ public class VentaService {
         
         if ("FIADO".equalsIgnoreCase(venta.getEstadoPago()) && venta.getDeudor() != null) {
             com.distri.proyectoVenta.apis.entities.venta.Deudor d = venta.getDeudor();
-            d.setTotalAdeudado(d.getTotalAdeudado().add(venta.getTotal()));
+            BigDecimal totalAdeudado = d.getTotalAdeudado() != null ? d.getTotalAdeudado() : BigDecimal.ZERO;
+            d.setTotalAdeudado(totalAdeudado.add(venta.getTotal()));
             deudorRepository.save(d);
             log.info("Actualizada deuda del deudor id={}, nuevo total={}", d.getId(), d.getTotalAdeudado());
         }

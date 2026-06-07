@@ -6,7 +6,9 @@ import { API_BASE } from "../../../services/api"
  * GET seguro con params, usando fetchWithAuth
  */
 export async function apiGet(path, params = {}) {
-    const url = new URL(`${API_BASE}${path}`)
+    const url = API_BASE.startsWith("http")
+        ? new URL(`${API_BASE}${path}`)
+        : new URL(`${API_BASE}${path}`, window.location.origin)
 
     Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null && value !== "") {
