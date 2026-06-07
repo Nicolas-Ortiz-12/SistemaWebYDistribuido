@@ -92,6 +92,10 @@ watch(
 
 async function onSubmit() {
     error.value = ""
+    if (!form.id) {
+        error.value = "ID de proveedor inválido."
+        return
+    }
     loading.value = true
     try {
         const updated = await fetchWithAuth(`${API_BASE}/proveedores/${form.id}`, {

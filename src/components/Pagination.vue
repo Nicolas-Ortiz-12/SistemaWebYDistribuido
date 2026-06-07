@@ -22,7 +22,10 @@ const props = defineProps({
 
 const emit = defineEmits(["update:page", "update:pageSize"]);
 
-const pages = computed(() => Math.max(1, Math.ceil(props.total / props.pageSize)));
+const pages = computed(() => {
+  const safePageSize = props.pageSize > 0 ? props.pageSize : 1;
+  return Math.max(1, Math.ceil(props.total / safePageSize));
+});
 
 const page = computed({
   get: () => props.page,

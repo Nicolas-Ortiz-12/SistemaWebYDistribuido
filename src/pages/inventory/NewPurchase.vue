@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <section class="card">
         <div class="card-header">
             <h2 style="margin:0;font-size:18px">Compras / FacturaciÃ³n de compras</h2>
@@ -219,6 +219,10 @@ function validate() {
             error.value = "Costo unitario no puede ser negativo."
             return false
         }
+        if (!Number.isFinite(it.tasaIva) || it.tasaIva < 0 || it.tasaIva > 100) {
+            error.value = "La tasa de IVA debe estar entre 0 y 100."
+            return false
+        }
     }
     return true
 }
@@ -261,7 +265,7 @@ async function confirmarCompra() {
         const payload = {
             proveedorId: compra.proveedorId,
             numero: compra.numero.trim(),
-            fechaEmision: new Date(compra.fechaEmision).toISOString(),
+            fechaEmision: new Date(compra.fechaEmision + 'T00:00:00').toISOString(),
             detalles: items.value.map((it) => ({
                 productoId: it.productoId,
                 cantidad: it.cantidad,

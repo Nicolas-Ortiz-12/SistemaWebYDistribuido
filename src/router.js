@@ -12,7 +12,6 @@ import DebtorsBook from "./pages/inventory/DebtorsBook.vue";
 const routes = [
   { path: "/", redirect: { name: "productos" } },
   { path: "/auth/login", name: "login", component: Login },
-  { path: "/register", redirect: { name: "login" } },
   { path: "/productos/lista", name: "productos", component: Products, meta: { requiresAuth: true } },
   { path: "/productos/proveedores", name: "proveedores", component: Suppliers, meta: { requiresAuth: true } },
   { path: "/existencias/compras", name: "compras", component: NewPurchase, meta: { requiresAuth: true } },

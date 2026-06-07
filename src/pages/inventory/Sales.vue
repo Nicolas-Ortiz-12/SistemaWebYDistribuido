@@ -323,6 +323,10 @@ function validate() {
             error.value = "La cantidad debe ser mayor a cero."
             return false
         }
+        if ((it.unit_price || 0) < 0 || it.unit_price == null) {
+            error.value = "Precio unitario inválido."
+            return false
+        }
         if ((it.tax_rate || 0) < 0) {
             error.value = "IVA inválido."
             return false
@@ -365,6 +369,11 @@ async function processTabSale() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ nombre: newDebtorName.value.trim() })
             })
+            if (!res || !res.id) {
+                saving.value = false
+                alert("Respuesta inválida del servidor al crear deudor.")
+                return
+            }
             finalDebtorId = res.id
         } catch (e) {
             saving.value = false
@@ -385,7 +394,7 @@ async function confirmSale(estadoPago = 'PAGADO', deudorId = null) {
 
     try {
         const payload = {
-            fechaVenta: new Date(sale.date).toISOString(),
+            fechaVenta: new Date(sale.date + 'T00:00:00').toISOString(),
             estadoPago: estadoPago,
             deudorId: deudorId,
             subtotal: Number(subtotal.value.toFixed(2)),

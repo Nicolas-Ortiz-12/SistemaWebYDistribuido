@@ -25,9 +25,6 @@
                 <p v-if="error" class="error">{{ error }}</p>
             </form>
 
-            <p class="small">
-                ¿No tienes cuenta? <router-link to="/register">Regístrate</router-link>
-            </p>
         </div>
     </div>
 </template>
