@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-activo-compra
+      author: carlos
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+          columnExists:
+            tableName: compra
+            columnName: activo
+      changes:
+        - addColumn:
+            tableName: compra
+            columns:
+              - column:
+                  name: activo
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: compra
+            columnName: activo

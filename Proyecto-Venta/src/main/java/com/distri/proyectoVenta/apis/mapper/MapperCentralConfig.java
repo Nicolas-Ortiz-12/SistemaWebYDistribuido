@@ -1,0 +1,15 @@
+package com.distri.proyectoVenta.apis.mapper;
+
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.MapperConfig;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
+
+@MapperConfig(
+        componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        uses = { DateMapper.class }
+)
+public interface MapperCentralConfig {}
