@@ -21,14 +21,12 @@ public class ProductoService {
     private final ProductoMapper mapper;
 
     @Transactional(readOnly = true)
-    public Page<ProductoDTO> list(String q, Long categoriaId, int page, int size) {
+    public Page<ProductoDTO> list(String q, int page, int size) {
         log.info("Listado de producto con filtro='{}', página={}, tamaño={}", q, page, size);
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Producto> data;
 
-        if (categoriaId != null)
-            data = repo.findByCategoriaId(categoriaId, pageable);
-        else if (q != null && !q.isBlank())
+        if (q != null && !q.isBlank())
             data = repo.findByNombreContainingIgnoreCaseOrCodigoContainingIgnoreCase(q.trim(), q.trim(), pageable);
         else
             data = repo.findAll(pageable);

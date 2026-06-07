@@ -1,0 +1,152 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ferreteria-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ferreteria}
+      POSTGRES_USER: ${POSTGRES_USER:-ferreteria_app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ferreteria_app} -d ${POSTGRES_DB:-ferreteria}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ferreteria-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: ferreteria-redis
+    restart: unless-stopped
+    command: ["sh", "-c", "redis-server --appendonly yes --requirepass \"$${REDIS_PASSWORD}\""]
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$${REDIS_PASSWORD}\" ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ferreteria-net
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+    container_name: ferreteria-eureka
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "127.0.0.1:8761:8761"
+    networks:
+      - ferreteria-net
+
+  seguridad:
+    build:
+      context: ./Seguridad
+    container_name: ferreteria-seguridad
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - eureka-server
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_URL: ${DB_URL}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ISSUER: ${JWT_ISSUER:-proyectodistri}
+    networks:
+      - ferreteria-net
+
+  proyecto-venta:
+    build:
+      context: ./Proyecto-Venta
+    container_name: ferreteria-venta
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+      - eureka-server
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_URL: ${DB_URL}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASS: ${REDIS_PASSWORD}
+      CACHE_PREFIX: "ferreteria:"
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ISSUER: ${JWT_ISSUER:-proyectodistri}
+    networks:
+      - ferreteria-net
+
+  proyecto-distri:
+    build:
+      context: ./ProyectoDistri
+    container_name: ferreteria-distri
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+      - eureka-server
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_URL: ${DB_URL}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASS: ${REDIS_PASSWORD}
+      CACHE_PREFIX: "ferreteria:"
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ISSUER: ${JWT_ISSUER:-proyectodistri}
+    networks:
+      - ferreteria-net
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: ferreteria-gateway
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+      - seguridad
+      - proyecto-venta
+      - proyecto-distri
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ISSUER: ${JWT_ISSUER:-proyectodistri}
+      APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173,http://127.0.0.1:4173}
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks:
+      - ferreteria-net
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ferreteria-frontend
+    restart: unless-stopped
+    depends_on:
+      - api-gateway
+    ports:
+      - "127.0.0.1:4173:80"
+    networks:
+      - ferreteria-net
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  ferreteria-net:
+    driver: bridge

@@ -12,21 +12,19 @@ spring:
             enabled: true
         routes:
           - id: auth
-            uri: http://localhost:8083
+            uri: ${AUTH_URI:http://localhost:8083}
             predicates:
               - Path=/auth/**,/users/**
           - id: ventas
-            uri: http://localhost:8081
+            uri: ${VENTAS_URI:http://localhost:8081}
             predicates:
               - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**
-
-
           - id: compras
-            uri: http://localhost:8082
+            uri: ${COMPRAS_URI:http://localhost:8082}
             predicates:
               - Path=/compras/**
 security:
   jwt:
-    secret: cambia-esto-por-un-secret-muy-largo-y-aleatorio
-    issuer: proyectodistri
-    expiration-minutes: 60
+    secret: ${JWT_SECRET:change-me-in-dev}
+    issuer: ${JWT_ISSUER:proyectodistri}
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:60}

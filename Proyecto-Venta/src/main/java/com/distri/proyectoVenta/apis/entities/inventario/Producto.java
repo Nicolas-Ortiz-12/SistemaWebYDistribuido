@@ -19,13 +19,13 @@ public class Producto extends EntidadBase {
     @ToString.Include
     private String codigo;
 
+    @Column(name = "codigo_barras", length = 64, unique = true)
+    private String codigoBarras;
+
     @Column(nullable = false, length = 200)
     @ToString.Include
     private String nombre;
 
-    // Igual al DTO: Long categoriaId (sin @ManyToOne)
-    @Column(name = "categoria_id")
-    private Long categoriaId;
 
     @Column(nullable = false, columnDefinition = "NUMERIC(14,2) DEFAULT 0")
     private Double costo = 0d;

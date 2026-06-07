@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: msvc-gateway
+  cloud:
+    gateway:
+      mvc:
+        discovery:
+          locator:
+            enabled: true
+        routes:
+          - id: auth
+            uri: http://seguridad:8083
+            predicates:
+              - Path=/auth/**,/users/**
+          - id: ventas
+            uri: http://proyecto-venta:8081
+            predicates:
+              - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**
+          - id: compras
+            uri: http://proyecto-distri:8082
+            predicates:
+              - Path=/compras/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:change-me-in-dev}
+    issuer: ${JWT_ISSUER:proyectodistri}
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:60}

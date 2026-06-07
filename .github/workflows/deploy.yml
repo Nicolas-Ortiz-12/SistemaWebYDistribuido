@@ -1,0 +1,68 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Build frontend
+        run: |
+          npm ci
+          VITE_API_BASE=/api npm run build
+
+      - name: Package backend jars
+        shell: pwsh
+        run: |
+          ./Seguridad/mvnw -q -DskipTests package
+          ./Proyecto-Venta/mvnw -q -DskipTests package
+          ./ProyectoDistri/mvnw -q -DskipTests package
+          ./api-gateway/mvnw -q -DskipTests package
+          ./eureka-server/mvnw -q -DskipTests package
+
+      - name: Create runtime env
+        run: |
+          cat > .env.docker <<EOF
+          POSTGRES_DB=ferreteria
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          DB_URL=jdbc:postgresql://postgres:5432/ferreteria
+          DB_USER=${{ secrets.POSTGRES_USER }}
+          DB_PASS=${{ secrets.POSTGRES_PASSWORD }}
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          JWT_ISSUER=proyectodistri
+          APP_CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,http://127.0.0.1:4173
+          EOF
+
+      - name: Deploy stack
+        run: docker compose --env-file .env.docker up -d --build --remove-orphans
+
+      - name: Cleanup Docker
+        run: |
+          docker image prune -af --filter "until=168h"
+          docker builder prune -af

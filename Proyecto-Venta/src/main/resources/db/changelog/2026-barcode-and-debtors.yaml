@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-barcode-and-debtors-1
+      author: nicolas
+      changes:
+        - addColumn:
+            tableName: producto
+            columns:
+              - column:
+                  name: codigo_barras
+                  type: varchar(64)
+                  constraints:
+                    unique: true
+                    nullable: true
+
+        - createTable:
+            tableName: deudor
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: activo
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: bigint
+                  defaultValueNumeric: 0
+              - column:
+                  name: nombre
+                  type: varchar(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_adeudado
+                  type: decimal(14,2)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+        - addColumn:
+            tableName: venta
+            columns:
+              - column:
+                  name: estado_pago
+                  type: varchar(20)
+                  defaultValue: 'PAGADO'
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deudor_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_venta_deudor
+                    references: deudor(id)

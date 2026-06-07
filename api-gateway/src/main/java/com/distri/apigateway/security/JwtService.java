@@ -14,6 +14,7 @@ import java.security.Key;
 public class JwtService {
 
     @Value("${security.jwt.secret}") private String secret;
+    @Value("${security.jwt.issuer}") private String issuer;
 
     private Key key() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
@@ -21,6 +22,7 @@ public class JwtService {
 
     public Jws<Claims> parse(String token) {
         return Jwts.parserBuilder()
+                .requireIssuer(issuer)
                 .setSigningKey(key())
                 .build()
                 .parseClaimsJws(token);

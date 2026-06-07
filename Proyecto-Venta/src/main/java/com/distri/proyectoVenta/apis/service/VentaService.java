@@ -37,6 +37,7 @@ public class VentaService {
     private final VentaRepository ventaRepository;
     private final ClienteRepository clienteRepository;
     private final ProductoRepository productoRepository;
+    private final com.distri.proyectoVenta.apis.repository.DeudorRepository deudorRepository;
     private final VentaRequestMapper ventaRequestMapper;
     private final VentaResponseMapper ventaResponseMapper;
 
@@ -46,7 +47,7 @@ public class VentaService {
     // CREATE
     // =======================
     @Transactional
-    @CachePut(value = "sd", key = "'api_venta_' + #result.id", unless = "#result == null")
+    @CachePut(value = "ventas", key = "'api_venta_' + #result.id", unless = "#result == null")
     public VentaResponseDTO crear(VentaRequestDTO req) {
         log.info("Creando nueva venta para clienteId={}", req.getClienteId());
         if (req.getItems() == null || req.getItems().isEmpty()) {
@@ -68,6 +69,19 @@ public class VentaService {
         if (req.getFechaVenta() != null) {
             LocalDateTime fv = OffsetDateTime.parse(req.getFechaVenta().toString()).toLocalDateTime();
             venta.setFechaVenta(fv);
+        }
+
+        if (req.getEstadoPago() != null) {
+            venta.setEstadoPago(req.getEstadoPago());
+        }
+
+        if ("FIADO".equalsIgnoreCase(req.getEstadoPago())) {
+            if (req.getDeudorId() == null) {
+                throw new IllegalArgumentException("Se requiere deudorId cuando el estado de pago es FIADO");
+            }
+            com.distri.proyectoVenta.apis.entities.venta.Deudor deudor = deudorRepository.findByIdAndActivoTrue(req.getDeudorId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Deudor no existe: " + req.getDeudorId()));
+            venta.setDeudor(deudor);
         }
 
         BigDecimal subtotal = BigDecimal.ZERO;
@@ -129,12 +143,21 @@ public class VentaService {
         venta.setTotal(subtotal.add(iva));
 
         venta = ventaRepository.save(venta);
+        
+        if ("FIADO".equalsIgnoreCase(venta.getEstadoPago()) && venta.getDeudor() != null) {
+            com.distri.proyectoVenta.apis.entities.venta.Deudor d = venta.getDeudor();
+            d.setTotalAdeudado(d.getTotalAdeudado().add(venta.getTotal()));
+            deudorRepository.save(d);
+            log.info("Actualizada deuda del deudor id={}, nuevo total={}", d.getId(), d.getTotalAdeudado());
+        }
+
+        clearProductCache();
         log.debug("Venta registrada exitosamente con id={}", venta.getId());
         return ventaResponseMapper.toDto(venta);
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "sd", key = "'api_venta_' + #id")
+    @Cacheable(value = "ventas", key = "'api_venta_' + #id")
     public VentaResponseDTO obtenerPorId(Long id) {
         log.debug("Buscando venta por id={}", id);
         Venta v = ventaRepository.findById(id)
@@ -171,7 +194,7 @@ public class VentaService {
 
     // UPDATE (revertir stock, aplicar nuevos items)
     @Transactional
-    @CachePut(value = "sd", key = "'api_venta_' + #result.id", unless = "#result == null")
+    @CachePut(value = "ventas", key = "'api_venta_' + #result.id", unless = "#result == null")
     public VentaResponseDTO actualizar(Long id, VentaRequestDTO req) {
         log.info("Actualizando venta con id={}", id);
         Venta venta = ventaRepository.findById(id)
@@ -256,12 +279,13 @@ public class VentaService {
         venta.setTotal(subtotal.add(iva));
 
         venta = ventaRepository.save(venta);
+        clearProductCache();
         log.debug("Venta actualizada correctamente id={}", venta.getId());
         return ventaResponseMapper.toDto(venta);
     }
 
     @Transactional
-    @CacheEvict(value = "sd", key = "'api_venta_' + #id")
+    @CacheEvict(value = "ventas", key = "'api_venta_' + #id")
     public void eliminar(Long id) {
         log.debug("Eliminando (soft) venta id={}", id);
         // Trae SOLO ventas activas (si ya estaba inactiva => 404 / 400)
@@ -288,10 +312,17 @@ public class VentaService {
         venta.setActivo(false);
         // Persistir cambios (venta + detalles + productos)
         ventaRepository.save(venta);
+        clearProductCache();
         log.info("Venta marcada como inactiva id={}", id);
     }
 
     // helpers
     private BigDecimal toBD(Number n) { return n == null ? BigDecimal.ZERO : new BigDecimal(n.toString()); }
     private double nz(Double d) { return d == null ? 0d : d; }
+    private void clearProductCache() {
+        var cache = redisCacheManager.getCache("productos");
+        if (cache != null) {
+            cache.clear();
+        }
+    }
 }

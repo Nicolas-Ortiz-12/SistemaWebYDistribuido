@@ -23,9 +23,6 @@ public class Producto extends EntidadBase {
     @ToString.Include
     private String nombre;
 
-    // Igual al DTO: Long categoriaId (sin @ManyToOne)
-    @Column(name = "categoria_id")
-    private Long categoriaId;
 
     @Column(nullable = false, columnDefinition = "NUMERIC(14,2) DEFAULT 0")
     private Double costo = 0d;

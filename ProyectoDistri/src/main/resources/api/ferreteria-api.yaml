@@ -4,95 +4,7 @@ info:
   version: 1.0.0
   description: Esquemas usados para generar DTOs con openapi-generator.
 paths:
-  # --------- CATEGORÍAS ---------
-  /categorias:
-    get:
-      tags: [Categorias]
-      operationId: listCategorias
-      parameters:
-        - in: query
-          name: page
-          schema: { type: integer, minimum: 0, default: 0 }
-        - in: query
-          name: size
-          schema: { type: integer, minimum: 1, default: 10 }
-        - in: query
-          name: q
-          description: Filtro por nombre
-          schema: { type: string }
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/PageCategoriaDTO' }
-        '500': { $ref: '#/components/responses/InternalError' }
-    post:
-      tags: [Categorias]
-      operationId: createCategoria
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/CategoriaDTO' }
-      responses:
-        '201':
-          description: Creado
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/CategoriaDTO' }
-        '500': { $ref: '#/components/responses/InternalError' }
 
-  /categorias/{id}:
-    get:
-      tags: [Categorias]
-      operationId: getCategoria
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer, format: int64 }
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/CategoriaDTO' }
-        '404': { $ref: '#/components/responses/NotFound' }
-        '500': { $ref: '#/components/responses/InternalError' }
-    put:
-      tags: [Categorias]
-      operationId: updateCategoria
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer, format: int64 }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/CategoriaDTO' }
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/CategoriaDTO' }
-        '404': { $ref: '#/components/responses/NotFound' }
-        '500': { $ref: '#/components/responses/InternalError' }
-    delete:
-      tags: [Categorias]
-      operationId: deleteCategoria
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer, format: int64 }
-      responses:
-        '204': { description: Eliminado }
-        '404': { $ref: '#/components/responses/NotFound' }
-        '500': { $ref: '#/components/responses/InternalError' }
 
   # --------- PRODUCTOS ---------
   /productos:
@@ -110,9 +22,7 @@ paths:
           name: q
           description: Filtro por nombre/código
           schema: { type: string }
-        - in: query
-          name: categoriaId
-          schema: { type: integer, format: int64 }
+
       responses:
         '200':
           description: OK
@@ -536,16 +446,6 @@ components:
           format: int64
 
     # ================== CATALOGO ==================
-    CategoriaDTO:
-      allOf:
-        - $ref: '#/components/schemas/BaseDTO'
-        - type: object
-          properties:
-            nombre:
-              type: string
-              maxLength: 120
-          required: [nombre]
-
     ProductoDTO:
       allOf:
         - $ref: '#/components/schemas/BaseDTO'
@@ -557,10 +457,6 @@ components:
             nombre:
               type: string
               maxLength: 200
-            categoriaId:
-              type: integer
-              format: int64
-              nullable: true
             costo:
               type: number
               format: double
@@ -921,17 +817,6 @@ components:
               type: array
               items: { $ref: '#/components/schemas/VentaDetalleResponseDTO' }
           required: [warehouseId, fechaVenta, total]
-
-    PageCategoriaDTO:
-      type: object
-      properties:
-        content:
-          type: array
-          items: { $ref: '#/components/schemas/CategoriaDTO' }
-        totalElements: { type: integer, format: int64 }
-        totalPages: { type: integer }
-        page: { type: integer }
-        size: { type: integer }
 
     PageProductoDTO:
       type: object

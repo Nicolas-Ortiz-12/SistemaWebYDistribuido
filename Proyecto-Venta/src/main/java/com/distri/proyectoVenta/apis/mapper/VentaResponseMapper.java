@@ -11,6 +11,7 @@ import org.mapstruct.*;
 public interface VentaResponseMapper {
 
     @Mapping(target = "clienteId", source = "cliente.id")
+    @Mapping(target = "deudorId", source = "deudor.id")
     @Mapping(target = "creadoPorId", source = "creadoPor.id")
     @Mapping(target = "items", source = "detalles")
     @Mapping(target = "fechaVenta", qualifiedByName = "asOffsetDateTime")

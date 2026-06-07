@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.JwtException;
@@ -26,8 +27,9 @@ public class JwtGatewayFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String p = request.getRequestURI();
-        // Permite /auth/** y swagger/health
-        return WHITELIST_PREFIXES.stream().anyMatch(p::startsWith);
+        // Permite /auth/**, swagger/health y preflight CORS
+        return HttpMethod.OPTIONS.matches(request.getMethod())
+                || WHITELIST_PREFIXES.stream().anyMatch(p::startsWith);
     }
 
     @Override

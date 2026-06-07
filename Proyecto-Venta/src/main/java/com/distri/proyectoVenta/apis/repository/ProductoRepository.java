@@ -12,9 +12,7 @@ import jakarta.persistence.LockModeType;
 import java.util.Optional;
 
 public interface    ProductoRepository extends JpaRepository<Producto, Long> {
-    Page<Producto> findByNombreContainingIgnoreCaseOrCodigoContainingIgnoreCase(String nombre, String codigo, Pageable pageable);
-
-    Page<Producto> findByCategoriaId(Long categoriaId, Pageable pageable);
+    Page<Producto> findByNombreContainingIgnoreCaseOrCodigoContainingIgnoreCaseOrCodigoBarrasContainingIgnoreCase(String nombre, String codigo, String codigoBarras, Pageable pageable);
 
     Optional<Producto> findByIdAndActivoTrue(@Param("id") Long id);
 

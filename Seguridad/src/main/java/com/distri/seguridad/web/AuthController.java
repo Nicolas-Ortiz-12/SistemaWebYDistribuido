@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Value;
 import java.util.Map;
 
 @RestController
@@ -20,6 +21,8 @@ public class AuthController {
     private final AuthenticationManager authManager; // ← cambia a AuthenticationManager
     private final UserService userService;
     private final JwtService jwt;
+    @Value("${security.jwt.expiration-minutes:60}")
+    private long expMin;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginReq req) {
@@ -39,7 +42,7 @@ public class AuthController {
                 "access_token", access,
                 "refresh_token", refresh,
                 "token_type", "Bearer",
-                "expires_in_minutes", 60
+                "expires_in_minutes", expMin
         ));
     }
 
@@ -52,7 +55,11 @@ public class AuthController {
             var u = userService.findActiveByUsername(username).orElseThrow();
             var roles = u.getRoles().stream().map(Role::getName).toList();
             String access = jwt.generateAccessToken(username, roles);
-            return ResponseEntity.ok(Map.of("access_token", access, "token_type", "Bearer"));
+            return ResponseEntity.ok(Map.of(
+                    "access_token", access,
+                    "token_type", "Bearer",
+                    "expires_in_minutes", expMin
+            ));
         } catch (Exception e) {
             return ResponseEntity.status(401).body(Map.of("error","invalid_refresh"));
         }
