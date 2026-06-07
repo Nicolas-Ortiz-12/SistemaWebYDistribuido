@@ -19,8 +19,7 @@ jobs:
         name: PR Agent action step
         uses: Codium-ai/pr-agent@main
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PR_AGENT_CONFIG__MODEL: "gemini/gemini-3.1-flash-lite"
           PR_AGENT_CONFIG__FALLBACK_MODELS: "['gemini/gemini-1.5-flash']"
