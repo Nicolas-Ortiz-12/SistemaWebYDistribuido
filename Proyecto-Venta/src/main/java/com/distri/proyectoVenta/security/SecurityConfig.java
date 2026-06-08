@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(e -> e.authenticationEntryPoint(entryPoint).accessDeniedHandler(deniedHandler))
                 .authorizeHttpRequests(reg -> reg
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // públicos del micro (ajustá lo que necesites)
                         .requestMatchers("/actuator/health", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
 
@@ -35,6 +36,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT,  "/ventas/**").hasAnyRole("ADMIN","VENDEDOR")
                         .requestMatchers(HttpMethod.DELETE,"/ventas/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/ventas/**").hasAnyRole("ADMIN","VENDEDOR","USER")
+
+                        .requestMatchers(HttpMethod.GET,  "/deudores/**").hasAnyRole("ADMIN","VENDEDOR")
+                        .requestMatchers(HttpMethod.POST, "/deudores/**").hasAnyRole("ADMIN","VENDEDOR")
+                        .requestMatchers(HttpMethod.PUT,  "/deudores/**").hasAnyRole("ADMIN","VENDEDOR")
 
                         // categorías/productos si viven en este micro:
                         // .requestMatchers(HttpMethod.GET, "/productos/**").hasAnyRole("ADMIN","USER","VENDEDOR")

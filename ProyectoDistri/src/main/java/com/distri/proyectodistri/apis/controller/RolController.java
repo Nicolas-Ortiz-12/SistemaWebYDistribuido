@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j // 👈 Activa el logger SLF4J
 @RestController
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RequestMapping("/roles")
 @RequiredArgsConstructor
 public class RolController {

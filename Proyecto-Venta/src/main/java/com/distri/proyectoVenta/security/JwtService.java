@@ -55,6 +55,11 @@ public class JwtService {
     }
 
     public Jws<Claims> parse(String token) {
-        return Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(token);
+        return Jwts.parserBuilder()
+                .requireIssuer(issuer)
+                .setAllowedClockSkewSeconds(60) // Permitir desincronización de relojes
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token);
     }
 }

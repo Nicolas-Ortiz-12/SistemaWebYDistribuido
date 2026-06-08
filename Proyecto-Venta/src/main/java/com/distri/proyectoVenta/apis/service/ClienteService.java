@@ -1,6 +1,5 @@
 package com.distri.proyectoVenta.apis.service;
 
-import com.distri.proyectoVenta.apis.entities.inventario.Categoria;
 import com.distri.proyectoVenta.apis.mapper.ClienteMapper;
 import com.distri.proyectoVenta.apis.repository.ClienteRepository;
 import com.distri.proyectoVenta.apis.entities.cliente.Cliente;
@@ -40,7 +39,7 @@ public class ClienteService {
 
     // -------- OBTENER POR ID
     @Transactional(readOnly = true)
-    @Cacheable(value = "sd", key = "'api_cliente_' + #id")
+    @Cacheable(value = "clientes", key = "'api_cliente_' + #id")
     public ClienteDTO get(Long id) {
         log.info("Buscando cliente por ID: {}", id);
         Cliente e = repo.findById(id)
@@ -54,7 +53,7 @@ public class ClienteService {
 
     // -------- CREAR
     @Transactional
-    @CachePut(value = "sd", key = "'api_cliente_' + #result.id", unless = "#result == null")
+    @CachePut(value = "clientes", key = "'api_cliente_' + #result.id", unless = "#result == null")
     public ClienteDTO create(ClienteDTO dto) {
         log.info("Creando cliente con nombre='{}' y RUC='{}'", dto.getNombre(), dto.getRuc());
         if (dto.getRuc() != null && !dto.getRuc().isBlank() && repo.existsByRuc(dto.getRuc().trim())) {
@@ -69,7 +68,7 @@ public class ClienteService {
 
     // -------- ACTUALIZAR
     @Transactional
-    @CachePut(value = "sd", key = "'api_cliente_' + #result.id", unless = "#result == null")
+    @CachePut(value = "clientes", key = "'api_cliente_' + #result.id", unless = "#result == null")
     public ClienteDTO update(Long id, ClienteDTO dto) {
         log.info("Actualizando cliente con id={}", id);
         Cliente e = repo.findById(id)
@@ -95,7 +94,7 @@ public class ClienteService {
 
     // -------- ELIMINAR
     @Transactional
-    @CacheEvict(value = "sd", key = "'api_cliente_' + #id")
+    @CacheEvict(value = "clientes", key = "'api_cliente_' + #id")
     public void delete(Long id) {
         log.warn("Intentando eliminar cliente con id={}", id);
         Cliente e = repo.findByIdAndActivoTrue(id)

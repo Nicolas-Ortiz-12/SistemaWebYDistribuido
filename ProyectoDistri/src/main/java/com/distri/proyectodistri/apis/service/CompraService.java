@@ -11,6 +11,7 @@ import com.distri.proyectodistri.apis.repository.*;
 import com.distri.proyectodistri.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -35,10 +36,11 @@ public class CompraService {
     private final ProductoRepository productoRepository;
     private final CompraRequestMapper compraRequestMapper;
     private final CompraResponseMapper compraResponseMapper;
+    private final CacheManager redisCacheManager;
 
     // CREATE
     @Transactional
-    @CachePut(value = "sd", key = "'api_compra_' + #result.id", unless = "#result == null")
+    @CachePut(value = "compras", key = "'api_compra_' + #result.id", unless = "#result == null")
     public CompraResponseDTO crear(CompraRequestDTO req) {
         log.info("Creando nueva compra con proveedorId={}", req.getProveedorId());
         if (req.getDetalles() == null || req.getDetalles().isEmpty()) {
@@ -121,13 +123,14 @@ public class CompraService {
         compra.setTotal(subtotal.add(iva));
 
         compra = compraRepository.save(compra);
+        clearProductCache();
         log.debug("Compra registrada: {}", compra);
         return compraResponseMapper.toDto(compra);
     }
 
     // GET BY ID
     @Transactional(readOnly = true)
-    @Cacheable(value = "sd", key = "'api_compra_' + #id")
+    @Cacheable(value = "compras", key = "'api_compra_' + #id")
     public CompraResponseDTO obtenerPorId(Long id) {
         log.debug("Obteniendo compra por id: {}", id);
         Compra c = compraRepository.findById(id)
@@ -162,7 +165,7 @@ public class CompraService {
 
     // UPDATE (revertir stock anterior y aplicar nuevos ítems)
     @Transactional
-    @CachePut(value = "sd", key = "'api_compra_' + #result.id", unless = "#result == null")
+    @CachePut(value = "compras", key = "'api_compra_' + #result.id", unless = "#result == null")
     public CompraResponseDTO actualizar(Long id, CompraRequestDTO req) {
         log.info("Actualizando compra con Id={}", id);
         Compra compra = compraRepository.findById(id)
@@ -244,13 +247,14 @@ public class CompraService {
         compra.setTotal(subtotal.add(iva));
 
         compra = compraRepository.save(compra);
+        clearProductCache();
         log.debug("Compra actualizada correctamente con id: {}", compra.getId());
         return compraResponseMapper.toDto(compra);
     }
 
     // DELETE (Quita stock previo de la compra)
     @Transactional
-    @CacheEvict(value = "sd", key = "'api_compra_' + #id")
+    @CacheEvict(value = "compras", key = "'api_compra_' + #id")
     public void eliminar(Long id) {
         log.debug("Eliminando compra con id={}", id);
         // Trae SOLO Compras activas
@@ -266,7 +270,7 @@ public class CompraService {
                 Producto p = productoRepository.findByIdForUpdate(det.getProducto().getId())
                         .orElseThrow();
                 // Usa tu misma lógica de stock
-                p.setStockMinimo(nz(p.getStockMinimo()) + det.getCantidad().doubleValue());
+                p.setStockMinimo(nz(p.getStockMinimo()) - det.getCantidad().doubleValue());
                 // Si CompraDetalle también tiene 'activo', lo marcamos inactivo:
                 try {
                     det.setActivo(false);
@@ -276,10 +280,17 @@ public class CompraService {
         // Soft delete: marcar compra como inactiva
         compra.setActivo(false);
         compraRepository.save(compra);
+        clearProductCache();
         log.info("Compra marcada como inactiva id={}", id);
     }
 
     // helpers
     private BigDecimal toBD(Number n) { return n == null ? BigDecimal.ZERO : new BigDecimal(n.toString()); }
     private double nz(Double d) { return d == null ? 0d : d; }
+    private void clearProductCache() {
+        var cache = redisCacheManager.getCache("productos");
+        if (cache != null) {
+            cache.clear();
+        }
+    }
 }

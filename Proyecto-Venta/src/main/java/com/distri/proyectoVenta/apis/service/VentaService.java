@@ -37,6 +37,7 @@ public class VentaService {
     private final VentaRepository ventaRepository;
     private final ClienteRepository clienteRepository;
     private final ProductoRepository productoRepository;
+    private final com.distri.proyectoVenta.apis.repository.DeudorRepository deudorRepository;
     private final VentaRequestMapper ventaRequestMapper;
     private final VentaResponseMapper ventaResponseMapper;
 
@@ -46,7 +47,7 @@ public class VentaService {
     // CREATE
     // =======================
     @Transactional
-    @CachePut(value = "sd", key = "'api_venta_' + #result.id", unless = "#result == null")
+    @CachePut(value = "ventas", key = "'api_venta_' + #result.id", unless = "#result == null")
     public VentaResponseDTO crear(VentaRequestDTO req) {
         log.info("Creando nueva venta para clienteId={}", req.getClienteId());
         if (req.getItems() == null || req.getItems().isEmpty()) {
@@ -68,6 +69,19 @@ public class VentaService {
         if (req.getFechaVenta() != null) {
             LocalDateTime fv = OffsetDateTime.parse(req.getFechaVenta().toString()).toLocalDateTime();
             venta.setFechaVenta(fv);
+        }
+
+        if (req.getEstadoPago() == null || req.getEstadoPago().isBlank()) {
+            throw new IllegalArgumentException("estadoPago es requerido");
+        }
+
+        venta.setEstadoPago(req.getEstadoPago());
+
+        if ("FIADO".equalsIgnoreCase(venta.getEstadoPago())) {
+            com.distri.proyectoVenta.apis.entities.venta.Deudor deudor = resolveDebtorForTab(req);
+            venta.setDeudor(deudor);
+        } else {
+            venta.setDeudor(null);
         }
 
         BigDecimal subtotal = BigDecimal.ZERO;
@@ -129,12 +143,22 @@ public class VentaService {
         venta.setTotal(subtotal.add(iva));
 
         venta = ventaRepository.save(venta);
+        
+        if ("FIADO".equalsIgnoreCase(venta.getEstadoPago()) && venta.getDeudor() != null) {
+            com.distri.proyectoVenta.apis.entities.venta.Deudor d = venta.getDeudor();
+            BigDecimal totalAdeudado = d.getTotalAdeudado() != null ? d.getTotalAdeudado() : BigDecimal.ZERO;
+            d.setTotalAdeudado(totalAdeudado.add(venta.getTotal()));
+            deudorRepository.save(d);
+            log.info("Actualizada deuda del deudor id={}, nuevo total={}", d.getId(), d.getTotalAdeudado());
+        }
+
+        clearProductCache();
         log.debug("Venta registrada exitosamente con id={}", venta.getId());
         return ventaResponseMapper.toDto(venta);
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "sd", key = "'api_venta_' + #id")
+    @Cacheable(value = "ventas", key = "'api_venta_' + #id")
     public VentaResponseDTO obtenerPorId(Long id) {
         log.debug("Buscando venta por id={}", id);
         Venta v = ventaRepository.findById(id)
@@ -171,7 +195,7 @@ public class VentaService {
 
     // UPDATE (revertir stock, aplicar nuevos items)
     @Transactional
-    @CachePut(value = "sd", key = "'api_venta_' + #result.id", unless = "#result == null")
+    @CachePut(value = "ventas", key = "'api_venta_' + #result.id", unless = "#result == null")
     public VentaResponseDTO actualizar(Long id, VentaRequestDTO req) {
         log.info("Actualizando venta con id={}", id);
         Venta venta = ventaRepository.findById(id)
@@ -179,6 +203,9 @@ public class VentaService {
                     log.error("Venta no encontrada: {}", id);
                     return new ResponseStatusException(HttpStatus.NOT_FOUND,"Venta no encontrada: " + id);
                 });
+        String estadoPagoAnterior = venta.getEstadoPago();
+        com.distri.proyectoVenta.apis.entities.venta.Deudor deudorAnterior = venta.getDeudor();
+        BigDecimal totalAnterior = venta.getTotal() != null ? venta.getTotal() : BigDecimal.ZERO;
 
         // devolver stock de los detalles actuales
         if (venta.getDetalles() != null) {
@@ -190,6 +217,12 @@ public class VentaService {
             venta.getDetalles().clear();
         }
         log.debug("Devolviendo stock de venta previa id={}", id);
+
+        if ("FIADO".equalsIgnoreCase(estadoPagoAnterior) && deudorAnterior != null) {
+            BigDecimal deudaAnterior = deudorAnterior.getTotalAdeudado() != null ? deudorAnterior.getTotalAdeudado() : BigDecimal.ZERO;
+            deudorAnterior.setTotalAdeudado(deudaAnterior.subtract(totalAnterior));
+            deudorRepository.save(deudorAnterior);
+        }
 
         // actualizar cabecera (cliente / fecha)
         if (req.getClienteId() != null) {
@@ -204,6 +237,9 @@ public class VentaService {
             log.debug("Actualizando cliente de venta id={}", id);
             venta.setFechaVenta(req.getFechaVenta().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         }
+
+        venta.setEstadoPago(req.getEstadoPago());
+        venta.setDeudor(null);
 
         // aplicar nuevos items
         BigDecimal subtotal = BigDecimal.ZERO;
@@ -255,13 +291,22 @@ public class VentaService {
         venta.setIva(iva);
         venta.setTotal(subtotal.add(iva));
 
+        if ("FIADO".equalsIgnoreCase(venta.getEstadoPago())) {
+            com.distri.proyectoVenta.apis.entities.venta.Deudor deudorNuevo = resolveDebtorForTab(req);
+            BigDecimal deudaActual = deudorNuevo.getTotalAdeudado() != null ? deudorNuevo.getTotalAdeudado() : BigDecimal.ZERO;
+            deudorNuevo.setTotalAdeudado(deudaActual.add(venta.getTotal()));
+            deudorRepository.save(deudorNuevo);
+            venta.setDeudor(deudorNuevo);
+        }
+
         venta = ventaRepository.save(venta);
+        clearProductCache();
         log.debug("Venta actualizada correctamente id={}", venta.getId());
         return ventaResponseMapper.toDto(venta);
     }
 
     @Transactional
-    @CacheEvict(value = "sd", key = "'api_venta_' + #id")
+    @CacheEvict(value = "ventas", key = "'api_venta_' + #id")
     public void eliminar(Long id) {
         log.debug("Eliminando (soft) venta id={}", id);
         // Trae SOLO ventas activas (si ya estaba inactiva => 404 / 400)
@@ -285,13 +330,46 @@ public class VentaService {
             }
         }
         // Soft delete: marcar venta como inactiva
+        if ("FIADO".equalsIgnoreCase(venta.getEstadoPago()) && venta.getDeudor() != null) {
+            com.distri.proyectoVenta.apis.entities.venta.Deudor deudor = venta.getDeudor();
+            BigDecimal deudaActual = deudor.getTotalAdeudado() != null ? deudor.getTotalAdeudado() : BigDecimal.ZERO;
+            deudor.setTotalAdeudado(deudaActual.subtract(venta.getTotal() != null ? venta.getTotal() : BigDecimal.ZERO));
+            deudorRepository.save(deudor);
+        }
         venta.setActivo(false);
         // Persistir cambios (venta + detalles + productos)
         ventaRepository.save(venta);
+        clearProductCache();
         log.info("Venta marcada como inactiva id={}", id);
     }
 
     // helpers
+    private com.distri.proyectoVenta.apis.entities.venta.Deudor resolveDebtorForTab(VentaRequestDTO req) {
+        if (req.getDeudorId() != null) {
+            return deudorRepository.findByIdAndActivoTrue(req.getDeudorId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Deudor no existe: " + req.getDeudorId()));
+        }
+
+        String nombre = req.getDeudorNombre();
+        if (nombre == null || nombre.isBlank()) {
+            throw new IllegalArgumentException("Se requiere deudorNombre cuando el estado de pago es FIADO");
+        }
+
+        return deudorRepository.findByNombreIgnoreCaseAndActivoTrue(nombre.trim())
+                .orElseGet(() -> {
+                    com.distri.proyectoVenta.apis.entities.venta.Deudor nuevo = new com.distri.proyectoVenta.apis.entities.venta.Deudor();
+                    nuevo.setNombre(nombre.trim());
+                    nuevo.setTotalAdeudado(BigDecimal.ZERO);
+                    return deudorRepository.save(nuevo);
+                });
+    }
+
     private BigDecimal toBD(Number n) { return n == null ? BigDecimal.ZERO : new BigDecimal(n.toString()); }
     private double nz(Double d) { return d == null ? 0d : d; }
+    private void clearProductCache() {
+        var cache = redisCacheManager.getCache("productos");
+        if (cache != null) {
+            cache.clear();
+        }
+    }
 }

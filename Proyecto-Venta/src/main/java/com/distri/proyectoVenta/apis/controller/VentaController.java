@@ -17,7 +17,6 @@ import java.time.OffsetDateTime;
 
 @Slf4j
 @RestController
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RequestMapping("/ventas")
 @RequiredArgsConstructor
 public class VentaController {

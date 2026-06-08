@@ -24,15 +24,13 @@ public class ProductoService {
     private final ProductoMapper mapper;
 
     @Transactional(readOnly = true)
-    public Page<ProductoDTO> list(String q, Long categoriaId, int page, int size) {
+    public Page<ProductoDTO> list(String q, int page, int size) {
         log.info("Listado de producto con filtro='{}', página={}, tamaño={}", q, page, size);
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Producto> data;
 
-        if (categoriaId != null)
-            data = repo.findByCategoriaId(categoriaId, pageable);
-        else if (q != null && !q.isBlank())
-            data = repo.findByNombreContainingIgnoreCaseOrCodigoContainingIgnoreCase(q.trim(), q.trim(), pageable);
+        if (q != null && !q.isBlank())
+            data = repo.findByNombreContainingIgnoreCaseOrCodigoContainingIgnoreCaseOrCodigoBarrasContainingIgnoreCase(q.trim(), q.trim(), q.trim(), pageable);
         else
             data = repo.findAll(pageable);
         log.debug("Cantidad de productos encontradas: {}", data.getTotalElements());
@@ -40,7 +38,7 @@ public class ProductoService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "sd", key = "'api_producto_' + #id")
+    @Cacheable(value = "productos", key = "'api_producto_' + #id")
     public ProductoDTO get(Long id) {
         log.info("Buscando producto con id {}", id);
         Producto e = repo.findById(id)
@@ -53,20 +51,39 @@ public class ProductoService {
     }
 
     @Transactional
-    @CachePut(value = "sd", key = "'api_producto_' + #result.id", unless = "#result == null")
+    @CachePut(value = "productos", key = "'api_producto_' + #result.id", unless = "#result == null")
     public ProductoDTO create(ProductoDTO dto) {
-        log.info("Creando producto con id {}", dto.getId());
+        log.info("Creando producto con codigo {}", dto.getCodigo());
+        if (dto.getCodigo() == null || dto.getCodigo().isBlank()) {
+            throw new IllegalArgumentException("codigo es requerido");
+        }
         if (repo.existsByCodigoIgnoreCase(dto.getCodigo())) {
-            log.error("Producto con id {} no encontrado", dto.getCodigo());
+            log.error("Producto con código {} ya existe", dto.getCodigo());
             throw new IllegalStateException("Ya existe un producto con ese código");
         }
         Producto e = mapper.toEntity(dto);
+        e = repo.save(e);
+        if (e.getCodigoBarras() == null || e.getCodigoBarras().isBlank()) {
+            e.setCodigoBarras(generateBarcode(e.getId()));
+            e = repo.save(e);
+        }
         log.debug("Producto con creado {}", e.getCodigo());
-        return mapper.toDto(repo.save(e));
+        return mapper.toDto(e);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductoDTO findByBarcode(String barcode) {
+        if (barcode == null || barcode.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "barcode es requerido");
+        }
+
+        Producto e = repo.findByCodigoBarrasIgnoreCase(barcode.trim())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado"));
+        return mapper.toDto(e);
     }
 
     @Transactional
-    @CachePut(value = "sd", key = "'api_producto_' + #result.id", unless = "#result == null")
+    @CachePut(value = "productos", key = "'api_producto_' + #result.id", unless = "#result == null")
     public ProductoDTO update(Long id, ProductoDTO dto) {
         log.info("Actualizando producto con id {}", id);
         Producto e = repo.findById(id)
@@ -80,7 +97,7 @@ public class ProductoService {
     }
 
     @Transactional
-    @CacheEvict(value = "sd", key = "'api_venta_' + #id")
+    @CacheEvict(value = "productos", key = "'api_producto_' + #id")
     public void delete(Long id) {
         log.info("Eliminando producto con id {}", id);
         Producto e = repo.findByIdAndActivoTrue(id)
@@ -89,5 +106,12 @@ public class ProductoService {
         repo.save(e);
         log.info("Producto con id {} eliminado", id);
 
+    }
+
+    private String generateBarcode(Long id) {
+        if (id == null) {
+            throw new IllegalStateException("No se pudo generar barcode sin id");
+        }
+        return String.format("%09d", id);
     }
 }
