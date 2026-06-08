@@ -1,0 +1,117 @@
+package com.distri.proyectoVenta.apis.service;
+
+import com.distri.proyectoVenta.apis.mapper.ProductoMapper;
+import com.distri.proyectoVenta.apis.repository.ProductoRepository;
+import com.distri.proyectoVenta.apis.entities.inventario.Producto;
+import com.distri.proyectoVenta.dto.ProductoDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ProductoService {
+
+    private final ProductoRepository repo;
+    private final ProductoMapper mapper;
+
+    @Transactional(readOnly = true)
+    public Page<ProductoDTO> list(String q, int page, int size) {
+        log.info("Listado de producto con filtro='{}', página={}, tamaño={}", q, page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Producto> data;
+
+        if (q != null && !q.isBlank())
+            data = repo.findByNombreContainingIgnoreCaseOrCodigoContainingIgnoreCaseOrCodigoBarrasContainingIgnoreCase(q.trim(), q.trim(), q.trim(), pageable);
+        else
+            data = repo.findAll(pageable);
+        log.debug("Cantidad de productos encontradas: {}", data.getTotalElements());
+        return data.map(mapper::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "productos", key = "'api_producto_' + #id")
+    public ProductoDTO get(Long id) {
+        log.info("Buscando producto con id {}", id);
+        Producto e = repo.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Producto con id {} no encontrado", id);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND,"Producto no encontrado");
+                });
+        log.debug("Producto con id {} encontrado", id);
+        return mapper.toDto(e);
+    }
+
+    @Transactional
+    @CachePut(value = "productos", key = "'api_producto_' + #result.id", unless = "#result == null")
+    public ProductoDTO create(ProductoDTO dto) {
+        log.info("Creando producto con codigo {}", dto.getCodigo());
+        if (dto.getCodigo() == null || dto.getCodigo().isBlank()) {
+            throw new IllegalArgumentException("codigo es requerido");
+        }
+        if (repo.existsByCodigoIgnoreCase(dto.getCodigo())) {
+            log.error("Producto con código {} ya existe", dto.getCodigo());
+            throw new IllegalStateException("Ya existe un producto con ese código");
+        }
+        Producto e = mapper.toEntity(dto);
+        e = repo.save(e);
+        if (e.getCodigoBarras() == null || e.getCodigoBarras().isBlank()) {
+            e.setCodigoBarras(generateBarcode(e.getId()));
+            e = repo.save(e);
+        }
+        log.debug("Producto con creado {}", e.getCodigo());
+        return mapper.toDto(e);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductoDTO findByBarcode(String barcode) {
+        if (barcode == null || barcode.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "barcode es requerido");
+        }
+
+        Producto e = repo.findByCodigoBarrasIgnoreCase(barcode.trim())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado"));
+        return mapper.toDto(e);
+    }
+
+    @Transactional
+    @CachePut(value = "productos", key = "'api_producto_' + #result.id", unless = "#result == null")
+    public ProductoDTO update(Long id, ProductoDTO dto) {
+        log.info("Actualizando producto con id {}", id);
+        Producto e = repo.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Producto con id {} no encontrado", id);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND,"Producto no encontrado");
+                });
+        mapper.updateEntityFromDto(dto, e);
+        log.debug("Producto creado correctamente con id {} ", id);
+        return mapper.toDto(repo.save(e));
+    }
+
+    @Transactional
+    @CacheEvict(value = "productos", key = "'api_producto_' + #id")
+    public void delete(Long id) {
+        log.info("Eliminando producto con id {}", id);
+        Producto e = repo.findByIdAndActivoTrue(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrada"));
+        e.setActivo(false);
+        repo.save(e);
+        log.info("Producto con id {} eliminado", id);
+
+    }
+
+    private String generateBarcode(Long id) {
+        if (id == null) {
+            throw new IllegalStateException("No se pudo generar barcode sin id");
+        }
+        return String.format("%09d", id);
+    }
+}

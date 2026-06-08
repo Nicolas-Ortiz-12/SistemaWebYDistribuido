@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0005-add-clientes-001
+      author: ayu-nic
+      context: data
+      changes:
+        - insert:
+            tableName: cliente
+            columns:
+              - column: { name: nombre,   value: "Constructora Ñandutí S.A." }
+              - column: { name: ruc,      value: "80012345-6" }
+              - column: { name: telefono, value: "+595 21 555 123" }
+              - column: { name: correo,   value: "contacto@nanduti.com.py" }
+              - column: { name: direccion,value: "Av. España 1234, Asunción" }
+      rollback:
+        - delete:
+            tableName: cliente
+            where: ruc IN ('80012345-6','80054321-0','80111222-3','80133777-9','80099887-5','80222444-1','80333555-2','80444666-3')

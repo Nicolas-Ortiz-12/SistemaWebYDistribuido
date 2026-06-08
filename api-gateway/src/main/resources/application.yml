@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: msvc-gateway
+  cloud:
+    gateway:
+      mvc:
+        discovery:
+          locator:
+            enabled: true
+        routes:
+          - id: auth
+            uri: ${AUTH_URI:http://localhost:8083}
+            predicates:
+              - Path=/auth/**,/users/**
+          - id: ventas
+            uri: ${VENTAS_URI:http://localhost:8081}
+            predicates:
+              - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**,/deudores/**
+          - id: compras
+            uri: ${COMPRAS_URI:http://localhost:8082}
+            predicates:
+              - Path=/compras/**
+security:
+  jwt:
+    secret: ${JWT_SECRET:change-me-in-dev}
+    issuer: ${JWT_ISSUER:proyectodistri}
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:60}

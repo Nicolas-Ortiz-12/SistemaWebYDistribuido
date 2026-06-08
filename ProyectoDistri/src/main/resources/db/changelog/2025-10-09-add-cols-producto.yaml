@@ -1,0 +1,28 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 2025-10-09-add-descripcion-producto
+      author: nico
+      changes:
+        - addColumn:
+            tableName: producto
+            schemaName: public
+            columns:
+              - column:
+                  name: descripcion
+                  type: VARCHAR(250)
+
+  - changeSet:
+      id: 2025-10-09-add-unidad-medida-producto
+      author: nico
+      changes:
+        - addColumn:
+            tableName: producto
+            schemaName: public
+            columns:
+              - column:
+                  name: unidad_medida
+                  type: VARCHAR(20)
+                  defaultValue: UN
+                  constraints:
+                    nullable: true

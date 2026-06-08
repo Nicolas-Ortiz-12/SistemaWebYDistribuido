@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - include: {file: db/changelog/0001-catalogos.yaml}
+  - include: {file: db/changelog/0003-personas-seguridad.yaml }
+  - include: {file: db/changelog/0004-transacciones.yaml}
+  - include: {file: db/changelog/0005-add-clientes.yml}
+  - include: {file: db/changelog/0006-add-clientes2.yml}
+  - include: {file: db/changelog/0007-add-clientes3.yml}
+  - include: {file: db/changelog/0008-add-cliente4.yml}
+  - include: {file: db/changelog/0009-drop-detalle-producto.yml}
+  - include: {file: db/changelog/2025-10-09-add-cols-producto.yaml}
+  - include: {file: db/changelog/2025-10-14-add-activo.yaml}
+  - include: {file: db/changelog/2025-10-14-add-activocompra.yaml}
+  - include: {file: db/changelog/2026-barcode-and-debtors.yaml}
+
+
+
+
+
+
+

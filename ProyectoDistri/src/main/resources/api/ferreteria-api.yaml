@@ -1,0 +1,891 @@
+openapi: 3.0.3
+info:
+  title: Ferreteria (DTOs)
+  version: 1.0.0
+  description: Esquemas usados para generar DTOs con openapi-generator.
+paths:
+
+
+  # --------- PRODUCTOS ---------
+  /productos:
+    get:
+      tags: [Productos]
+      operationId: listProductos
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 0, default: 0 }
+        - in: query
+          name: size
+          schema: { type: integer, minimum: 1, default: 10 }
+        - in: query
+          name: q
+          description: Filtro por nombre/código
+          schema: { type: string }
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PageProductoDTO' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      tags: [Productos]
+      operationId: createProducto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProductoDTO' }
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductoDTO' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /productos/{id}:
+    get:
+      tags: [Productos]
+      operationId: getProducto
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductoDTO' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    put:
+      tags: [Productos]
+      operationId: updateProducto
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProductoDTO' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProductoDTO' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      tags: [Productos]
+      operationId: deleteProducto
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '204': { description: Eliminado }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  # --------- CLIENTES ---------
+  /clientes:
+    get:
+      tags: [Clientes]
+      operationId: listClientes
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 0, default: 0 }
+        - in: query
+          name: size
+          schema: { type: integer, minimum: 1, default: 10 }
+        - in: query
+          name: q
+          description: Filtro por nombre/RUC
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PageClienteDTO' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      tags: [Clientes]
+      operationId: createCliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ClienteDTO' }
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ClienteDTO' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /clientes/{id}:
+    get:
+      tags: [Clientes]
+      operationId: getCliente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ClienteDTO' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    put:
+      tags: [Clientes]
+      operationId: updateCliente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ClienteDTO' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ClienteDTO' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      tags: [Clientes]
+      operationId: deleteCliente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '204': { description: Eliminado }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  # --------- PROVEEDORES ---------
+  /proveedores:
+    get:
+      tags: [Proveedores]
+      operationId: listProveedores
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 0, default: 0 }
+        - in: query
+          name: size
+          schema: { type: integer, minimum: 1, default: 10 }
+        - in: query
+          name: q
+          description: Filtro por nombre/RUC
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PageProveedorDTO' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      tags: [Proveedores]
+      operationId: createProveedor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProveedorDTO' }
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProveedorDTO' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /proveedores/{id}:
+    get:
+      tags: [Proveedores]
+      operationId: getProveedor
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProveedorDTO' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    put:
+      tags: [Proveedores]
+      operationId: updateProveedor
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProveedorDTO' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProveedorDTO' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      tags: [Proveedores]
+      operationId: deleteProveedor
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '204': { description: Eliminado }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  # --------- COMPRAS (ingreso por factura) ---------
+  /compras:
+    get:
+      tags: [Compras]
+      operationId: listCompras
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 0, default: 0 }
+        - in: query
+          name: size
+          schema: { type: integer, minimum: 1, default: 10 }
+        - in: query
+          name: proveedorId
+          schema: { type: integer, format: int64 }
+        - in: query
+          name: desde
+          description: Fecha desde (YYYY-MM-DD)
+          schema: { type: string, format: date }
+        - in: query
+          name: hasta
+          description: Fecha hasta (YYYY-MM-DD)
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PageCompraResponseDTO' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      tags: [Compras]
+      operationId: createCompra
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CompraRequestDTO' }
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CompraResponseDTO' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /compras/{id}:
+    get:
+      tags: [Compras]
+      operationId: getCompra
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CompraResponseDTO' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  # --------- VENTAS / FACTURACIÓN ---------
+  /ventas:
+    get:
+      tags: [Ventas]
+      operationId: listVentas
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 0, default: 0 }
+        - in: query
+          name: size
+          schema: { type: integer, minimum: 1, default: 10 }
+        - in: query
+          name: clienteId
+          schema: { type: integer, format: int64 }
+        - in: query
+          name: desde
+          description: Fecha/hora desde (ISO-8601)
+          schema: { type: string, format: date-time }
+        - in: query
+          name: hasta
+          description: Fecha/hora hasta (ISO-8601)
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PageVentaResponseDTO' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      tags: [Ventas]
+      operationId: createVenta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VentaRequestDTO' }
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VentaResponseDTO' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /ventas/{id}:
+    get:
+      tags: [Ventas]
+      operationId: getVenta
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VentaResponseDTO' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+components:
+  responses:
+    NotFound:
+      description: No encontrado
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/ProblemDetail' }
+          examples:
+            default:
+              summary: Recurso no encontrado
+              value:
+                type: "about:blank"
+                title: "Not Found"
+                status: 404
+                detail: "No existe el recurso solicitado."
+                instance: "/recurso/123"
+    InternalError:
+      description: Error interno del servidor
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/ProblemDetail' }
+          examples:
+            default:
+              summary: Error inesperado
+              value:
+                type: "about:blank"
+                title: "Internal Server Error"
+                status: 500
+                detail: "Ocurrió un error inesperado. Intente más tarde."
+                instance: "/ventas"
+
+  schemas:
+    # ================== BASE ==================
+    BaseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+
+    # ================== CATALOGO ==================
+    ProductoDTO:
+      allOf:
+        - $ref: '#/components/schemas/BaseDTO'
+        - type: object
+          properties:
+            codigo:
+              type: string
+              maxLength: 64
+            nombre:
+              type: string
+              maxLength: 200
+            costo:
+              type: number
+              format: double
+              default: 0
+            precio:
+              type: number
+              format: double
+              default: 0
+            stockMinimo:
+              type: number
+              format: double
+              default: 0
+            descripcion:
+              type: string
+              maxLength: 250
+            unidadMedida:
+              type: string
+              maxLength: 20
+              default: "UN"
+          required: [codigo, nombre]
+
+    ClienteDTO:
+      allOf:
+        - $ref: '#/components/schemas/BaseDTO'
+        - type: object
+          properties:
+            nombre:
+              type: string
+              maxLength: 75
+            ruc:
+              type: string
+              maxLength: 50
+              nullable: true
+            telefono:
+              type: string
+              maxLength: 50
+              nullable: true
+            correo:
+              type: string
+              maxLength: 200
+              nullable: true
+            direccion:
+              type: string
+              maxLength: 200
+              nullable: true
+          required: [nombre]
+
+    ProveedorDTO:
+      allOf:
+        - $ref: '#/components/schemas/BaseDTO'
+        - type: object
+          properties:
+            nombre:
+              type: string
+              maxLength: 200
+            ruc:
+              type: string
+              maxLength: 50
+              nullable: true
+            telefono:
+              type: string
+              maxLength: 50
+              nullable: true
+            correo:
+              type: string
+              maxLength: 200
+              nullable: true
+            direccion:
+              type: string
+              nullable: true
+            activo:
+              type: boolean
+              default: true
+          required: [nombre]
+
+    # ================== SEGURIDAD ==================
+    RolDTO:
+      allOf:
+        - $ref: '#/components/schemas/BaseDTO'
+        - type: object
+          properties:
+            nombre:
+              type: string
+              maxLength: 50
+          required: [nombre]
+
+    UsuarioDTO:
+      allOf:
+        - $ref: '#/components/schemas/BaseDTO'
+        - type: object
+          properties:
+            usuario:
+              type: string
+              maxLength: 80
+            nombreCompleto:
+              type: string
+              maxLength: 200
+            roles:
+              type: array
+              items:
+                $ref: '#/components/schemas/RolDTO'
+          required: [usuario, nombreCompleto]
+
+    # ================== VENTAS ==================
+    VentaDetalleDTO:
+      type: object
+      properties:
+        productoId:
+          type: integer
+          format: int64
+        cantidad:
+          type: number
+          format: double
+        precioUnitario:
+          type: number
+          format: double
+        tasaIva:
+          type: number
+          format: double
+          nullable: true
+          default: 10
+        subtotalLinea:
+          type: number
+          format: double
+          nullable: true
+        totalLinea:
+          type: number
+          format: double
+          nullable: true
+      required: [productoId, cantidad, precioUnitario]
+
+    VentaDTO:
+      allOf:
+        - $ref: '#/components/schemas/BaseDTO'
+        - type: object
+          properties:
+            clienteId:
+              type: integer
+              format: int64
+              nullable: true
+            fechaVenta:
+              type: string
+              format: date-time
+            subtotal:
+              type: number
+              format: double
+              default: 0
+            iva:
+              type: number
+              format: double
+              default: 0
+            total:
+              type: number
+              format: double
+              default: 0
+            creadoPorId:
+              type: integer
+              format: int64
+              nullable: true
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/VentaDetalleDTO'
+          required: [fechaVenta, total]
+
+    # ================== COMPRAS ==================
+    CompraDetalleDTO:
+      type: object
+      properties:
+        productoId:
+          type: integer
+          format: int64
+        cantidad:
+          type: number
+          format: double
+        costoUnitario:
+          type: number
+          format: double
+        tasaIva:
+          type: number
+          format: double
+          default: 10
+        subtotalLinea:
+          type: number
+          format: double
+          nullable: true
+        totalLinea:
+          type: number
+          format: double
+          nullable: true
+      required: [productoId, cantidad, costoUnitario]
+
+    CompraDTO:
+      allOf:
+        - $ref: '#/components/schemas/BaseDTO'
+        - type: object
+          properties:
+            proveedorId:
+              type: integer
+              format: int64
+            serie:
+              type: string
+              maxLength: 20
+              nullable: true
+            numero:
+              type: string
+              maxLength: 40
+              nullable: true
+            fechaEmision:
+              type: string
+              format: date
+            estado:
+              type: string
+              maxLength: 20
+              default: "CONFIRMADO"
+            subtotal:
+              type: number
+              format: double
+              default: 0
+            iva:
+              type: number
+              format: double
+              default: 0
+            total:
+              type: number
+              format: double
+              default: 0
+            creadoEn:
+              type: string
+              format: date-time
+            detalles:
+              type: array
+              items:
+                $ref: '#/components/schemas/CompraDetalleDTO'
+          required: [proveedorId, fechaEmision, estado, total]
+
+    UsuarioCreateDTO:
+      type: object
+      properties:
+        usuario:
+          type: string
+          maxLength: 80
+          example: "nicolas"
+        nombreCompleto:
+          type: string
+          maxLength: 200
+          example: "Nicolas Ortiz"
+        password:
+          type: string
+          format: password
+          writeOnly: true
+          maxLength: 255
+          example: "12345678"
+        roleIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          example: [1, 2]
+      required: [usuario, nombreCompleto, password, roleIds]
+      description: >
+        DTO usado para crear un usuario nuevo. 
+        Acepta solo los IDs de roles ya existentes en la base de datos.
+
+    # ---- Compra (ingreso por factura)
+    CompraDetalleRequestDTO:
+      type: object
+      properties:
+        productoId: { type: integer, format: int64 }
+        cantidad: { type: number, format: double }
+        costoUnitario: { type: number, format: double }
+        tasaIva: { type: number, format: double, default: 10 }
+      required: [productoId, cantidad, costoUnitario]
+
+    CompraRequestDTO:
+      type: object
+      properties:
+        proveedorId: { type: integer, format: int64 }
+        numero: { type: string, maxLength: 40, nullable: true }
+        fechaEmision: { type: string, format: date }
+        detalles:
+          type: array
+          items: { $ref: '#/components/schemas/CompraDetalleRequestDTO' }
+      required: [proveedorId, fechaEmision, detalles]
+
+    CompraDetalleResponseDTO:
+      allOf:
+        - type: object
+          properties:
+            productoId: { type: integer, format: int64 }
+            cantidad: { type: number, format: double }
+            costoUnitario: { type: number, format: double }
+            tasaIva: { type: number, format: double }
+            subtotalLinea: { type: number, format: double }
+            totalLinea: { type: number, format: double }
+
+    CompraResponseDTO:
+      allOf:
+        - $ref: '#/components/schemas/BaseDTO'
+        - type: object
+          properties:
+            proveedorId: { type: integer, format: int64 }
+            numero: { type: string, maxLength: 40, nullable: true }
+            fechaEmision: { type: string, format: date }
+            estado: { type: string, default: "CONFIRMADO" }
+            subtotal: { type: number, format: double }
+            iva: { type: number, format: double }
+            total: { type: number, format: double }
+            creadoEn: { type: string, format: date-time }
+            detalles:
+              type: array
+              items: { $ref: '#/components/schemas/CompraDetalleResponseDTO' }
+          required: [proveedorId, fechaEmision, total]
+
+    # ---- Venta / Facturación
+    VentaDetalleRequestDTO:
+      type: object
+      properties:
+        productoId: { type: integer, format: int64 }
+        cantidad: { type: number, format: double }
+        tasaIva: { type: number, format: double, default: 10 }
+      required: [productoId, cantidad]
+
+    VentaRequestDTO:
+      type: object
+      properties:
+        clienteId: { type: integer, format: int64, nullable: true }
+        numero: { type: string, maxLength: 40, nullable: true }
+        fechaVenta: { type: string, format: date-time }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/VentaDetalleRequestDTO' }
+      required: [fechaVenta, items]
+
+    VentaDetalleResponseDTO:
+      type: object
+      properties:
+        productoId: { type: integer, format: int64 }
+        cantidad: { type: number, format: double }
+        tasaIva: { type: number, format: double }
+        subtotalLinea: { type: number, format: double }
+        totalLinea: { type: number, format: double }
+
+    VentaResponseDTO:
+      allOf:
+        - $ref: '#/components/schemas/BaseDTO'
+        - type: object
+          properties:
+            clienteId: { type: integer, format: int64, nullable: true }
+            numero: { type: string, maxLength: 40, nullable: true }
+            fechaVenta: { type: string, format: date-time }
+            estado: { type: string, default: "CONFIRMADO" }
+            subtotal: { type: number, format: double }
+            iva: { type: number, format: double }
+            total: { type: number, format: double }
+            creadoPorId: { type: integer, format: int64, nullable: true }
+            items:
+              type: array
+              items: { $ref: '#/components/schemas/VentaDetalleResponseDTO' }
+          required: [fechaVenta, total]
+
+    PageProductoDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/ProductoDTO' }
+        totalElements: { type: integer, format: int64 }
+        totalPages: { type: integer }
+        page: { type: integer }
+        size: { type: integer }
+
+    PageClienteDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/ClienteDTO' }
+        totalElements: { type: integer, format: int64 }
+        totalPages: { type: integer }
+        page: { type: integer }
+        size: { type: integer }
+
+    PageProveedorDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/ProveedorDTO' }
+        totalElements: { type: integer, format: int64 }
+        totalPages: { type: integer }
+        page: { type: integer }
+        size: { type: integer }
+
+    PageCompraResponseDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/CompraResponseDTO' }
+        totalElements: { type: integer, format: int64 }
+        totalPages: { type: integer }
+        page: { type: integer }
+        size: { type: integer }
+
+    PageVentaResponseDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items: { $ref: '#/components/schemas/VentaResponseDTO' }
+        totalElements: { type: integer, format: int64 }
+        totalPages: { type: integer }
+        page: { type: integer }
+        size: { type: integer }
+
+    ProblemDetail:
+      type: object
+      properties:
+        type:       { type: string, format: uri }
+        title:      { type: string }
+        status:     { type: integer, format: int32 }
+        detail:     { type: string }
+        instance:   { type: string, format: uri }
+        timestamp:  { type: string, format: date-time }
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field: { type: string }
+              message: { type: string }
