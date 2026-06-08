@@ -270,7 +270,7 @@ public class CompraService {
                 Producto p = productoRepository.findByIdForUpdate(det.getProducto().getId())
                         .orElseThrow();
                 // Usa tu misma lógica de stock
-                p.setStockMinimo(nz(p.getStockMinimo()) + det.getCantidad().doubleValue());
+                p.setStockMinimo(nz(p.getStockMinimo()) - det.getCantidad().doubleValue());
                 // Si CompraDetalle también tiene 'activo', lo marcamos inactivo:
                 try {
                     det.setActivo(false);

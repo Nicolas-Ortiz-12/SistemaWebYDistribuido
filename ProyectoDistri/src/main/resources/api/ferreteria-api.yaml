@@ -740,7 +740,7 @@ components:
         detalles:
           type: array
           items: { $ref: '#/components/schemas/CompraDetalleRequestDTO' }
-      required: [proveedorId, warehouseId, fechaEmision, detalles]
+      required: [proveedorId, fechaEmision, detalles]
 
     CompraDetalleResponseDTO:
       allOf:
@@ -769,7 +769,7 @@ components:
             detalles:
               type: array
               items: { $ref: '#/components/schemas/CompraDetalleResponseDTO' }
-          required: [proveedorId, warehouseId, fechaEmision, total]
+          required: [proveedorId, fechaEmision, total]
 
     # ---- Venta / Facturación
     VentaDetalleRequestDTO:
@@ -778,7 +778,7 @@ components:
         productoId: { type: integer, format: int64 }
         cantidad: { type: number, format: double }
         tasaIva: { type: number, format: double, default: 10 }
-      required: [productoId, cantidad, precioUnitario]
+      required: [productoId, cantidad]
 
     VentaRequestDTO:
       type: object
@@ -816,7 +816,7 @@ components:
             items:
               type: array
               items: { $ref: '#/components/schemas/VentaDetalleResponseDTO' }
-          required: [warehouseId, fechaVenta, total]
+          required: [fechaVenta, total]
 
     PageProductoDTO:
       type: object

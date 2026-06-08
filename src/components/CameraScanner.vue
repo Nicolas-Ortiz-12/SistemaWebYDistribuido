@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { ref, watch, onUnmounted, nextTick } from 'vue'
 import { Html5Qrcode } from 'html5-qrcode'
 
 const props = defineProps({
@@ -11,7 +11,8 @@ const emit = defineEmits(['close', 'scan'])
 const errorMsg = ref('')
 let html5QrCode = null
 
-onMounted(async () => {
+const startScanner = async () => {
+  await nextTick()
   html5QrCode = new Html5Qrcode("reader")
   try {
     await html5QrCode.start(
@@ -33,23 +34,34 @@ onMounted(async () => {
     console.error("Error al iniciar cámara:", err)
     errorMsg.value = "No se pudo acceder a la cámara. Revisa los permisos."
   }
-})
+}
 
-const closeScanner = async () => {
+const stopScanner = async () => {
   if (html5QrCode && html5QrCode.isScanning) {
     try {
       await html5QrCode.stop()
+      html5QrCode.clear()
     } catch(e) {
       console.error("Error parando escáner", e)
     }
   }
+  html5QrCode = null
+}
+
+watch(() => props.show, (newVal) => {
+  if (newVal) {
+    startScanner()
+  } else {
+    stopScanner()
+  }
+}, { immediate: true })
+
+const closeScanner = () => {
   emit('close')
 }
 
 onUnmounted(() => {
-  if (html5QrCode && html5QrCode.isScanning) {
-    html5QrCode.stop().catch(console.error)
-  }
+  stopScanner()
 })
 </script>
 
