@@ -40,11 +40,11 @@ jobs:
           chmod +x ./api-gateway/mvnw
           chmod +x ./eureka-server/mvnw
           
-          ./Seguridad/mvnw -q -DskipTests package
-          ./Proyecto-Venta/mvnw -q -DskipTests package
-          ./ProyectoDistri/mvnw -q -DskipTests package
-          ./api-gateway/mvnw -q -DskipTests package
-          ./eureka-server/mvnw -q -DskipTests package
+          (cd Seguridad && ./mvnw -q -DskipTests package)
+          (cd Proyecto-Venta && ./mvnw -q -DskipTests package)
+          (cd ProyectoDistri && ./mvnw -q -DskipTests package)
+          (cd api-gateway && ./mvnw -q -DskipTests package)
+          (cd eureka-server && ./mvnw -q -DskipTests package)
           
       - name: Create runtime env
         run: |
