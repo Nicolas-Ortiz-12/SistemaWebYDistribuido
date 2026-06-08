@@ -21,6 +21,7 @@ public class JpaUserDetailsService implements UserDetailsService {
                 .map(r -> new SimpleGrantedAuthority("ROLE_" + r.getName()))
                 .toList();
 
+        System.err.println("DB HASH: " + u.getPasswordHash());
         return new org.springframework.security.core.userdetails.User(
                 u.getUsername(),
                 u.getPasswordHash(),   // el campo correcto

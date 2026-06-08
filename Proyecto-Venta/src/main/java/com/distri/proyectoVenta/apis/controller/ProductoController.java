@@ -39,11 +39,7 @@ public class ProductoController {
     @PreAuthorize("hasAnyRole('ADMIN','VENDEDOR')")
     public ResponseEntity<ProductoDTO> searchByBarcode(@RequestParam String barcode) {
         log.info("GET /productos/search?barcode={}", barcode);
-        Page<ProductoDTO> page = service.list(barcode, 0, 1);
-        if (page.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(page.getContent().get(0));
+        return ResponseEntity.ok(service.findByBarcode(barcode));
     }
 
     // -------- CREAR --------

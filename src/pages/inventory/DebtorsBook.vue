@@ -3,7 +3,7 @@
         <div class="card-header">
             <div>
                 <h2 class="title">Libro de Deudores</h2>
-                <p class="page-subtitle">Gestión de cuentas por cobrar (Fiado).</p>
+                <p class="page-subtitle">Gestion de cuentas por cobrar (Fiado).</p>
             </div>
         </div>
 
@@ -11,37 +11,42 @@
             <div v-if="loading" class="loading">Cargando deudores...</div>
             <div v-if="error" class="error">{{ error }}</div>
 
-            <div v-if="!loading && !error && debtors.length === 0" class="empty-state" style="text-align: center; padding: 3rem; color: #666;">
+            <div v-if="!loading && !error && debtors.length === 0" class="empty-state">
                 <p>No hay deudores con saldo pendiente.</p>
             </div>
 
             <div class="grid-cards">
-                <div v-for="d in debtors" :key="d.id" class="debtor-card">
+                <article v-for="d in debtors" :key="d.id" class="debtor-card">
                     <div class="debtor-info">
                         <h3 class="debtor-name">{{ d.nombre }}</h3>
-                        <p class="debtor-debt">Deuda: <strong>{{ money(d.totalAdeudado) }}</strong></p>
+                        <p class="debtor-debt">Deuda actual</p>
+                        <strong class="debtor-balance">{{ money(d.totalAdeudado) }}</strong>
                     </div>
                     <div class="debtor-actions">
-                        <button class="btn btn-primary btn-sm" @click="clearDebt(d.id)" :disabled="clearingId === d.id">
+                        <button
+                            class="debtor-clear-btn"
+                            @click="clearDebt(d.id)"
+                            :disabled="clearingId === d.id"
+                        >
                             <span v-if="clearingId === d.id">Saldando...</span>
-                            <span v-else>Saldar Deuda</span>
+                            <span v-else>Clear Debt</span>
                         </button>
                     </div>
-                </div>
+                </article>
             </div>
         </div>
     </section>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, shallowRef, onMounted } from 'vue'
 import { fetchWithAuth } from '../../services/authService'
 import { API_BASE } from '../../services/api'
 
 const debtors = ref([])
-const loading = ref(false)
-const error = ref('')
-const clearingId = ref(null)
+const loading = shallowRef(false)
+const error = shallowRef('')
+const clearingId = shallowRef(null)
 
 const money = (v) => new Intl.NumberFormat('es-PY', { style: 'currency', currency: 'PYG' }).format(v)
 
@@ -52,7 +57,7 @@ async function fetchDebtors() {
         const res = await fetchWithAuth(`${API_BASE}/deudores/con-deuda/0/100`)
         debtors.value = Array.isArray(res?.content) ? res.content : []
     } catch (e) {
-        error.value = 'No se pudieron cargar los deudores.'
+        error.value = e?.message || 'No se pudieron cargar los deudores.'
         console.error(e)
     } finally {
         loading.value = false
@@ -60,16 +65,16 @@ async function fetchDebtors() {
 }
 
 async function clearDebt(id) {
-    if (!confirm('¿Confirmas que el deudor ha saldado su deuda en su totalidad?')) return
-    
+    if (!confirm('Confirmas que el deudor ya saldó su deuda en su totalidad?')) return
+
     clearingId.value = id
     try {
         await fetchWithAuth(`${API_BASE}/deudores/${id}/saldar`, {
             method: 'PUT'
         })
-        await fetchDebtors() // Recargar lista
+        await fetchDebtors()
     } catch (e) {
-        alert('No se pudo saldar la deuda.')
+        alert(e?.message || 'No se pudo saldar la deuda.')
         console.error(e)
     } finally {
         clearingId.value = null
@@ -84,37 +89,64 @@ onMounted(() => {
 <style scoped>
 .grid-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
     margin-top: 1rem;
 }
+
 .debtor-card {
-    background: var(--bg-card, #fff);
-    border: 1px solid var(--border-color, #e2e8f0);
-    border-radius: 12px;
-    padding: 1.5rem;
+    background: var(--panel, #fff);
+    border: 1px solid var(--border, #ddd7c8);
+    border-radius: 14px;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-    transition: transform 0.2s, box-shadow 0.2s;
+    gap: 1rem;
+    box-shadow: 0 6px 18px rgba(24, 20, 12, 0.06);
 }
-.debtor-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-}
+
 .debtor-name {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-top: 0;
-    margin-bottom: 0.5rem;
+    margin: 0 0 0.35rem;
+    font-size: 1.05rem;
+    line-height: 1.2;
 }
+
 .debtor-debt {
-    font-size: 1rem;
-    color: #ef4444; /* Rojo para la deuda */
-    margin-bottom: 1.5rem;
+    margin: 0;
+    color: var(--muted, #6d6a62);
+    font-size: 0.85rem;
 }
+
+.debtor-balance {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 1.1rem;
+    color: #0f7a3a;
+}
+
 .debtor-actions {
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.debtor-clear-btn {
+    min-height: 42px;
+    padding: 0 14px;
+    border: 1px solid #1f8a46;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #dff5e7 0%, #8ed9aa 100%);
+    color: #155c2f;
+    font-weight: 700;
+}
+
+.debtor-clear-btn:disabled {
+    opacity: 0.7;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--muted, #6d6a62);
 }
 </style>

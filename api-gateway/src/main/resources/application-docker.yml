@@ -18,7 +18,7 @@ spring:
           - id: ventas
             uri: http://proyecto-venta:8081
             predicates:
-              - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**
+              - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**,/deudores/**
           - id: compras
             uri: http://proyecto-distri:8082
             predicates:

@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface    ProductoRepository extends JpaRepository<Producto, Long> {
     Page<Producto> findByNombreContainingIgnoreCaseOrCodigoContainingIgnoreCaseOrCodigoBarrasContainingIgnoreCase(String nombre, String codigo, String codigoBarras, Pageable pageable);
 
+    Optional<Producto> findByCodigoBarrasIgnoreCase(String codigoBarras);
+
     Optional<Producto> findByIdAndActivoTrue(@Param("id") Long id);
 
     boolean existsByCodigoIgnoreCase(String codigo);

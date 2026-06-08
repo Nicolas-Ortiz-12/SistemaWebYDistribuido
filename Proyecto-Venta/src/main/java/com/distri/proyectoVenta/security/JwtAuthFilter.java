@@ -44,6 +44,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             } catch (JwtException ex) {
                 // token inválido -> quedará 401 por el entry point
+                System.err.println("JwtAuthFilter (Proyecto-Venta) failed: " + ex.getMessage());
             }
         }
         chain.doFilter(req, res);

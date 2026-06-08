@@ -27,9 +27,10 @@ public class JwtGatewayFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String p = request.getRequestURI();
-        // Permite /auth/**, swagger/health y preflight CORS
-        return HttpMethod.OPTIONS.matches(request.getMethod())
-                || WHITELIST_PREFIXES.stream().anyMatch(p::startsWith);
+        boolean preflight = HttpMethod.OPTIONS.matches(request.getMethod())
+                && request.getHeader("Origin") != null
+                && request.getHeader("Access-Control-Request-Method") != null;
+        return preflight || WHITELIST_PREFIXES.stream().anyMatch(p::startsWith);
     }
 
     @Override

@@ -29,6 +29,19 @@
             </div>
 
             <div class="form-field">
+              <span class="field-label">Código de Barras</span>
+              <label class="input-container" style="display: flex;">
+                <input v-model.trim="form.codigoBarras" placeholder="Escanea o escribe" autocomplete="off" style="flex: 1;" />
+                <button type="button" @click="showScanner = true" class="icon-btn" title="Escanear Código" style="padding: 0 10px; background: none; border: none; cursor: pointer; color: var(--text-color);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <circle cx="12" cy="13" r="4" />
+                  </svg>
+                </button>
+              </label>
+            </div>
+
+            <div class="form-field">
               <span class="field-label">Nombre *</span>
               <label class="input-container" :class="{ 'has-error': errors.nombre }">
                 <input v-model.trim="form.nombre" placeholder="Nombre descriptivo" :class="{ invalid: errors.nombre }" />
@@ -100,6 +113,7 @@
       </div>
     </div>
   </div>
+  <CameraScanner :show="showScanner" @close="showScanner = false" @scan="onScanBarcode" />
 </template>
 
 <script setup>
@@ -107,6 +121,7 @@ import "../assets/productoForm.css"
 import { reactive, ref, onMounted } from "vue"
 import { fetchWithAuth } from "../services/authService"
 import { API_BASE } from "../services/api"
+import CameraScanner from "./CameraScanner.vue"
 
 const props = defineProps({
   producto: {
@@ -118,10 +133,16 @@ const props = defineProps({
 const emit = defineEmits(["close", "saved"])
 
 const firstInput = ref(null)
+const showScanner = ref(false)
+
+const onScanBarcode = (code) => {
+  form.codigoBarras = code
+}
 
 const form = reactive({
   id: null,
   codigo: "",
+  codigoBarras: "",
   nombre: "",
   costo: null,
   precio: null,
@@ -142,6 +163,7 @@ onMounted(() => {
   if (props.producto) {
     form.id = props.producto.id
     form.codigo = props.producto.codigo || ""
+    form.codigoBarras = props.producto.codigoBarras || ""
     form.nombre = props.producto.nombre || ""
     form.costo = props.producto.costo ?? null
     form.precio = props.producto.precio ?? null

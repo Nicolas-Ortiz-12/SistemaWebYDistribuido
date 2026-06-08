@@ -3,7 +3,6 @@ import {
     clearAuthTokens,
     getAuthHeader,
     readAuthValue,
-    saveAuthTokens,
     updateAccessToken,
 } from "./authStorage";
 
@@ -12,7 +11,10 @@ async function fetchJson(url, opts = {}) {
     if (!res.ok) {
         let text = await res.text().catch(() => res.statusText);
         try { const j = JSON.parse(text); text = j.message || j.error || text; } catch { }
-        throw new Error(text || `HTTP ${res.status}`);
+        const err = new Error(text || `HTTP ${res.status}`);
+        err.status = res.status;
+        err.url = url;
+        throw err;
     }
     if (res.status === 204) return null;
     const text = await res.text().catch(() => "");
@@ -46,6 +48,12 @@ export function authHeader() {
     return getAuthHeader();
 }
 
+function emitAuthExpired() {
+    if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("auth:expired"));
+    }
+}
+
 /**
  * fetch con Authorization automático y refresh on 401 (un solo reintento)
  */
@@ -65,7 +73,6 @@ export async function fetchWithAuth(url, opts = {}) {
                 const r = await refreshToken(rt);
                 updateAccessToken(r);
 
-                // reintenta con el nuevo token
                 const retryHeaders = {
                     ...opts.headers,
                     ...authHeader(),
@@ -73,16 +80,27 @@ export async function fetchWithAuth(url, opts = {}) {
                 };
                 res = await fetch(url, { ...opts, headers: retryHeaders });
             } catch {
-                // refresh falló: limpia y lanza 401
                 clearAuthTokens();
+                emitAuthExpired();
             }
+        } else {
+            clearAuthTokens();
+            emitAuthExpired();
+        }
+
+        if (res.status === 401) {
+            clearAuthTokens();
+            emitAuthExpired();
         }
     }
 
     if (!res.ok) {
         let text = await res.text().catch(() => res.statusText);
         try { const j = JSON.parse(text); text = j.message || j.error || text; } catch { }
-        throw new Error(text || `HTTP ${res.status}`);
+        const err = new Error(text || `HTTP ${res.status}`);
+        err.status = res.status;
+        err.url = url;
+        throw err;
     }
 
     if (res.status === 204) return null;

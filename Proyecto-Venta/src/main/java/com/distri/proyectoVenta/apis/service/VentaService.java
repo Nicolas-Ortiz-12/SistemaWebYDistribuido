@@ -78,12 +78,10 @@ public class VentaService {
         venta.setEstadoPago(req.getEstadoPago());
 
         if ("FIADO".equalsIgnoreCase(venta.getEstadoPago())) {
-            if (req.getDeudorId() == null) {
-                throw new IllegalArgumentException("Se requiere deudorId cuando el estado de pago es FIADO");
-            }
-            com.distri.proyectoVenta.apis.entities.venta.Deudor deudor = deudorRepository.findByIdAndActivoTrue(req.getDeudorId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Deudor no existe: " + req.getDeudorId()));
+            com.distri.proyectoVenta.apis.entities.venta.Deudor deudor = resolveDebtorForTab(req);
             venta.setDeudor(deudor);
+        } else {
+            venta.setDeudor(null);
         }
 
         BigDecimal subtotal = BigDecimal.ZERO;
@@ -205,6 +203,9 @@ public class VentaService {
                     log.error("Venta no encontrada: {}", id);
                     return new ResponseStatusException(HttpStatus.NOT_FOUND,"Venta no encontrada: " + id);
                 });
+        String estadoPagoAnterior = venta.getEstadoPago();
+        com.distri.proyectoVenta.apis.entities.venta.Deudor deudorAnterior = venta.getDeudor();
+        BigDecimal totalAnterior = venta.getTotal() != null ? venta.getTotal() : BigDecimal.ZERO;
 
         // devolver stock de los detalles actuales
         if (venta.getDetalles() != null) {
@@ -216,6 +217,12 @@ public class VentaService {
             venta.getDetalles().clear();
         }
         log.debug("Devolviendo stock de venta previa id={}", id);
+
+        if ("FIADO".equalsIgnoreCase(estadoPagoAnterior) && deudorAnterior != null) {
+            BigDecimal deudaAnterior = deudorAnterior.getTotalAdeudado() != null ? deudorAnterior.getTotalAdeudado() : BigDecimal.ZERO;
+            deudorAnterior.setTotalAdeudado(deudaAnterior.subtract(totalAnterior));
+            deudorRepository.save(deudorAnterior);
+        }
 
         // actualizar cabecera (cliente / fecha)
         if (req.getClienteId() != null) {
@@ -230,6 +237,9 @@ public class VentaService {
             log.debug("Actualizando cliente de venta id={}", id);
             venta.setFechaVenta(req.getFechaVenta().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         }
+
+        venta.setEstadoPago(req.getEstadoPago());
+        venta.setDeudor(null);
 
         // aplicar nuevos items
         BigDecimal subtotal = BigDecimal.ZERO;
@@ -281,6 +291,14 @@ public class VentaService {
         venta.setIva(iva);
         venta.setTotal(subtotal.add(iva));
 
+        if ("FIADO".equalsIgnoreCase(venta.getEstadoPago())) {
+            com.distri.proyectoVenta.apis.entities.venta.Deudor deudorNuevo = resolveDebtorForTab(req);
+            BigDecimal deudaActual = deudorNuevo.getTotalAdeudado() != null ? deudorNuevo.getTotalAdeudado() : BigDecimal.ZERO;
+            deudorNuevo.setTotalAdeudado(deudaActual.add(venta.getTotal()));
+            deudorRepository.save(deudorNuevo);
+            venta.setDeudor(deudorNuevo);
+        }
+
         venta = ventaRepository.save(venta);
         clearProductCache();
         log.debug("Venta actualizada correctamente id={}", venta.getId());
@@ -312,6 +330,12 @@ public class VentaService {
             }
         }
         // Soft delete: marcar venta como inactiva
+        if ("FIADO".equalsIgnoreCase(venta.getEstadoPago()) && venta.getDeudor() != null) {
+            com.distri.proyectoVenta.apis.entities.venta.Deudor deudor = venta.getDeudor();
+            BigDecimal deudaActual = deudor.getTotalAdeudado() != null ? deudor.getTotalAdeudado() : BigDecimal.ZERO;
+            deudor.setTotalAdeudado(deudaActual.subtract(venta.getTotal() != null ? venta.getTotal() : BigDecimal.ZERO));
+            deudorRepository.save(deudor);
+        }
         venta.setActivo(false);
         // Persistir cambios (venta + detalles + productos)
         ventaRepository.save(venta);
@@ -320,6 +344,26 @@ public class VentaService {
     }
 
     // helpers
+    private com.distri.proyectoVenta.apis.entities.venta.Deudor resolveDebtorForTab(VentaRequestDTO req) {
+        if (req.getDeudorId() != null) {
+            return deudorRepository.findByIdAndActivoTrue(req.getDeudorId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Deudor no existe: " + req.getDeudorId()));
+        }
+
+        String nombre = req.getDeudorNombre();
+        if (nombre == null || nombre.isBlank()) {
+            throw new IllegalArgumentException("Se requiere deudorNombre cuando el estado de pago es FIADO");
+        }
+
+        return deudorRepository.findByNombreIgnoreCaseAndActivoTrue(nombre.trim())
+                .orElseGet(() -> {
+                    com.distri.proyectoVenta.apis.entities.venta.Deudor nuevo = new com.distri.proyectoVenta.apis.entities.venta.Deudor();
+                    nuevo.setNombre(nombre.trim());
+                    nuevo.setTotalAdeudado(BigDecimal.ZERO);
+                    return deudorRepository.save(nuevo);
+                });
+    }
+
     private BigDecimal toBD(Number n) { return n == null ? BigDecimal.ZERO : new BigDecimal(n.toString()); }
     private double nz(Double d) { return d == null ? 0d : d; }
     private void clearProductCache() {

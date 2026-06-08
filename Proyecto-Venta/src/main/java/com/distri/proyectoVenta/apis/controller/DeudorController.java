@@ -44,7 +44,7 @@ public class DeudorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
-    @PutMapping("/{id}/saldar")
+    @PutMapping({"/{id}/saldar", "/{id}/clear-debt"})
     @PreAuthorize("hasAnyRole('ADMIN','VENDEDOR')")
     public ResponseEntity<Void> saldar(@PathVariable Long id) {
         service.saldar(id);

@@ -2,8 +2,14 @@
 import { ref, watch, onMounted, onUnmounted } from "vue"
 import "../../assets/productos.css"
 import ProductoForm from "../../components/ProductoForm.vue"
+import CameraScanner from "../../components/CameraScanner.vue"
 import { fetchWithAuth } from "../../services/authService"
 import { API_BASE } from "../../services/api"
+
+const showScanner = ref(false)
+const onScanSearch = (text) => {
+  busqueda.value = text
+}
 
 const busqueda = ref("")
 const productos = ref([])
@@ -28,6 +34,7 @@ function normalizeProducto(p = {}) {
   return {
     id: p.id ?? null,
     codigo: p.codigo ?? "",
+    codigoBarras: p.codigoBarras ?? "",
     nombre: p.nombre ?? "",
     costo: p.costo ?? 0,
     precio: p.precio ?? 0,
@@ -143,7 +150,6 @@ function onSavedProducto() {
 
 <template>
   <div class="products-page-container">
-    <!-- Header Section -->
     <div class="premium-page-header">
       <div class="header-left">
         <h2 class="title premium-title">Catálogo de Productos</h2>
@@ -157,7 +163,6 @@ function onSavedProducto() {
       </button>
     </div>
 
-    <!-- Filters & Search Section -->
     <div class="card premium-filters-card">
       <div class="card-body">
         <div class="premium-filters-grid">
@@ -168,6 +173,12 @@ function onSavedProducto() {
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input type="text" placeholder="Buscar por código, nombre o descripción..." v-model="busqueda" class="premium-search-input" />
+              <button type="button" class="btn btn-secondary" @click="showScanner = true" style="margin-left: 8px; display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: var(--radius-md); background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-color); cursor: pointer;" title="Escanear con cámara">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <circle cx="12" cy="13" r="4" />
+                </svg>
+              </button>
             </div>
           </div>
 
@@ -183,7 +194,6 @@ function onSavedProducto() {
       </div>
     </div>
 
-    <!-- Error Banner -->
     <div v-if="error" class="error-banner fade-in" style="margin-bottom: 20px;">
       <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -191,7 +201,6 @@ function onSavedProducto() {
       <span>{{ error }}</span>
     </div>
 
-    <!-- Main List Table -->
     <div class="card premium-table-card">
       <div class="card-body p-0">
         <div v-if="loading" class="premium-table-loading">
@@ -258,7 +267,6 @@ function onSavedProducto() {
       </div>
     </div>
 
-    <!-- Premium Pagination -->
     <div class="premium-pagination-container" v-if="totalPages > 1">
       <div class="pagination-info">
         Mostrando página <strong>{{ page + 1 }}</strong> de <strong>{{ totalPages }}</strong> ({{ totalElements }} productos en total)
@@ -290,4 +298,5 @@ function onSavedProducto() {
   </div>
 
   <ProductoForm v-if="showForm" :producto="editingProducto" @close="onCloseForm" @saved="onSavedProducto" />
+  <CameraScanner :show="showScanner" @close="showScanner = false" @scan="onScanSearch" />
 </template>

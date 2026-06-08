@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.UUID;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -55,18 +53,33 @@ public class ProductoService {
     @Transactional
     @CachePut(value = "productos", key = "'api_producto_' + #result.id", unless = "#result == null")
     public ProductoDTO create(ProductoDTO dto) {
-        log.info("Creando producto con id {}", dto.getId());
+        log.info("Creando producto con codigo {}", dto.getCodigo());
+        if (dto.getCodigo() == null || dto.getCodigo().isBlank()) {
+            throw new IllegalArgumentException("codigo es requerido");
+        }
         if (repo.existsByCodigoIgnoreCase(dto.getCodigo())) {
             log.error("Producto con código {} ya existe", dto.getCodigo());
             throw new IllegalStateException("Ya existe un producto con ese código");
         }
         Producto e = mapper.toEntity(dto);
-        // Autogenerar codigoBarras si no viene
+        e = repo.save(e);
         if (e.getCodigoBarras() == null || e.getCodigoBarras().isBlank()) {
-            e.setCodigoBarras(UUID.randomUUID().toString());
+            e.setCodigoBarras(generateBarcode(e.getId()));
+            e = repo.save(e);
         }
         log.debug("Producto con creado {}", e.getCodigo());
-        return mapper.toDto(repo.save(e));
+        return mapper.toDto(e);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductoDTO findByBarcode(String barcode) {
+        if (barcode == null || barcode.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "barcode es requerido");
+        }
+
+        Producto e = repo.findByCodigoBarrasIgnoreCase(barcode.trim())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado"));
+        return mapper.toDto(e);
     }
 
     @Transactional
@@ -93,5 +106,12 @@ public class ProductoService {
         repo.save(e);
         log.info("Producto con id {} eliminado", id);
 
+    }
+
+    private String generateBarcode(Long id) {
+        if (id == null) {
+            throw new IllegalStateException("No se pudo generar barcode sin id");
+        }
+        return String.format("%09d", id);
     }
 }

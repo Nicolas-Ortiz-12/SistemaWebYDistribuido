@@ -814,6 +814,10 @@ components:
       properties:
         clienteId: { type: integer, format: int64, nullable: true }
         deudorId: { type: integer, format: int64, nullable: true }
+        deudorNombre:
+          type: string
+          maxLength: 150
+          nullable: true
         estadoPago: { type: string, default: "PAGADO" }
         numero: { type: string, maxLength: 40, nullable: true }
         fechaVenta: { type: string, format: date-time }

@@ -18,7 +18,7 @@ spring:
           - id: ventas
             uri: ${VENTAS_URI:http://localhost:8081}
             predicates:
-              - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**
+              - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**,/deudores/**
           - id: compras
             uri: ${COMPRAS_URI:http://localhost:8082}
             predicates:

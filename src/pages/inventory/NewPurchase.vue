@@ -1,7 +1,7 @@
 <template>
     <section class="card">
         <div class="card-header">
-            <h2 style="margin:0;font-size:18px">Compras / FacturaciÃ³n de compras</h2>
+            <h2 style="margin:0;font-size:18px">Compras / Facturación de compras</h2>
             <RouterLink class="btn btn-primary" to="/productos/lista">Ver catálogo</RouterLink>
         </div>
 
@@ -9,16 +9,23 @@
             <div class="filters" style="margin: 0 0 12px 0">
                 <label class="input" style="flex:1 1 320px">
                     <span>Buscar producto en catálogo</span>
-                    <input
-                        v-model.trim="productQuery"
-                        placeholder="Código, nombre o descripción"
-                    />
+                    <div style="display: flex; gap: 8px;">
+                        <input
+                            v-model.trim="productQuery"
+                            placeholder="Código, nombre o descripción"
+                            style="flex: 1;"
+                        />
+                        <button type="button" class="btn btn-secondary" @click="showScanner = true" style="display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: var(--radius-md); background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-color); cursor: pointer;" title="Escanear con cámara">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                              <circle cx="12" cy="13" r="4" />
+                            </svg>
+                        </button>
+                    </div>
                 </label>
             </div>
 
-            <!-- Encabezado -->
             <div class="filters" style="margin-bottom:16px">
-                <!-- Proveedor -->
                 <label class="input">
                     <span>Proveedor</span>
                     <select v-model.number="compra.proveedorId">
@@ -29,20 +36,17 @@
                     </select>
                 </label>
 
-                <!-- NÃºmero de comprobante -->
                 <label class="input">
-                    <span>NÃºmero</span>
+                    <span>Número</span>
                     <input v-model.trim="compra.numero" placeholder="000456" />
                 </label>
 
-                <!-- Fecha de emisiÃ³n -->
                 <label class="input">
-                    <span>Fecha emisiÃ³n</span>
+                    <span>Fecha emisión</span>
                     <input type="date" v-model="compra.fechaEmision" />
                 </label>
             </div>
 
-            <!-- Detalle -->
             <div class="tabla-container">
                 <table>
                     <thead>
@@ -61,7 +65,7 @@
                                 <select v-model.number="it.productoId" style="width:100%" @change="seedFromCatalog(i)">
                                     <option :value="0" disabled>Selecciona producto</option>
                                     <option v-for="p in productos" :key="p.id" :value="p.id">
-                                        {{ p.codigo || p.sku || ('#' + p.id) }} â€” {{ p.nombre }}
+                                        {{ p.codigo || p.sku || ('#' + p.id) }} - {{ p.nombre }}
                                     </option>
                                 </select>
                             </td>
@@ -93,27 +97,26 @@
                 </table>
             </div>
 
-            <!-- Totales -->
             <div style="display:flex;justify-content:flex-end;gap:18px;margin-top:12px;flex-wrap:wrap">
                 <div>Subtotal: <strong>{{ money(subtotal) }}</strong></div>
                 <div>IVA: <strong>{{ money(iva) }}</strong></div>
                 <div>Total: <strong>{{ money(total) }}</strong></div>
             </div>
 
-            <!-- Acciones -->
             <div style="display:flex;gap:10px;margin-top:16px">
                 <button type="button" class="btn btn-ghost" :disabled="loading" @click="guardarBorrador">
                     Guardar borrador
                 </button>
                 <button type="button" class="btn btn-primary" :disabled="loading" @click="confirmarCompra">
                     <span v-if="!loading">Confirmar compra</span>
-                    <span v-else>Enviandoâ€¦</span>
+                    <span v-else>Enviando...</span>
                 </button>
             </div>
 
             <div v-if="error" class="error" style="margin-top:10px">{{ error }}</div>
             <div v-if="okMsg" class="chip" style="margin-top:10px">{{ okMsg }}</div>
         </div>
+        <CameraScanner :show="showScanner" @close="showScanner = false" @scan="searchAndAddProduct" />
     </section>
 </template>
 
@@ -121,6 +124,9 @@
 import { reactive, ref, computed, onMounted, watch, onUnmounted } from "vue"
 import { fetchWithAuth } from "../../services/authService"
 import { API_BASE } from "../../services/api"
+import CameraScanner from "../../components/CameraScanner.vue"
+
+const showScanner = ref(false)
 
 const today = new Date().toISOString().slice(0, 10)
 const compra = reactive({
@@ -195,20 +201,20 @@ function validate() {
         return false
     }
     if (!compra.numero?.trim()) {
-        error.value = "NÃºmero de comprobante es obligatorio."
+        error.value = "Número de comprobante es obligatorio."
         return false
     }
     if (!compra.fechaEmision) {
-        error.value = "Fecha de emisiÃ³n es obligatoria."
+        error.value = "Fecha de emisión es obligatoria."
         return false
     }
     if (!items.value.length) {
-        error.value = "Agrega al menos un Ã­tem."
+        error.value = "Agrega al menos un ítem."
         return false
     }
     for (const it of items.value) {
         if (!it.productoId) {
-            error.value = "Selecciona el producto en todos los Ã­tems."
+            error.value = "Selecciona el producto en todos los ítems."
             return false
         }
         if ((it.cantidad || 0) <= 0) {
@@ -254,7 +260,43 @@ async function fetchProductos() {
             : []
 }
 
-/** ---------- API: POST /compras ---------- **/
+async function searchAndAddProduct(code) {
+    if (!code) return
+    error.value = ""
+    okMsg.value = ""
+
+    try {
+        const res = await fetchWithAuth(`${API_BASE}/productos/search?barcode=${encodeURIComponent(code)}`)
+        if (res && res.id) {
+            // Add product to local array if not present to ensure <select> works
+            if (!productos.value.find(p => p.id === res.id)) {
+                productos.value.unshift(res)
+            }
+            
+            const existingItem = items.value.find((it) => it.productoId === res.id)
+            if (existingItem) {
+                existingItem.cantidad += 1
+            } else {
+                if (items.value.length === 1 && items.value[0].productoId === 0) {
+                    items.value = []
+                }
+                const costo = Number.isFinite(res.costo) ? res.costo : (Number.isFinite(res.precio) ? res.precio : 0)
+                items.value.unshift({
+                    productoId: res.id,
+                    cantidad: 1,
+                    costoUnitario: costo,
+                    tasaIva: res.tasaIva || 10,
+                })
+            }
+        } else {
+            error.value = "Producto no encontrado por código: " + code
+        }
+    } catch (e) {
+        console.error(e)
+        error.value = "Error buscando producto por código de barras."
+    }
+}
+
 async function confirmarCompra() {
     if (!validate()) return
     loading.value = true
@@ -284,7 +326,6 @@ async function confirmarCompra() {
         })
 
         okMsg.value = "Compra registrada correctamente."
-        // Reset suave
         items.value = [{ productoId: 0, cantidad: 0, costoUnitario: 0, tasaIva: 10 }]
         compra.numero = ""
     } catch (e) {
@@ -307,7 +348,7 @@ onMounted(async () => {
     try {
         await Promise.all([fetchProveedores(), fetchProductos()])
     } catch (e) {
-        error.value = e?.message || "Error cargando catÃ¡logos."
+        error.value = e?.message || "Error cargando catálogos."
     }
 })
 

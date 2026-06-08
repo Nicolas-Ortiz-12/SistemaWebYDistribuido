@@ -9,7 +9,7 @@
         <span class="brand-mark">F</span>
         <div>
           <strong>Ferreteria</strong>
-          <small>Operacion movil</small>
+          <small>Operación móvil</small>
         </div>
       </div>
 
@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuth } from "./composables/useAuth";
 
@@ -60,6 +60,21 @@ const { user, logout: clearSession } = useAuth();
 
 const isAuthRoute = computed(() => route.path.startsWith("/auth"));
 const username = computed(() => user.value?.username ?? "");
+
+function handleAuthExpired() {
+  clearSession();
+  if (!route.path.startsWith("/auth")) {
+    router.replace({ name: "login" });
+  }
+}
+
+onMounted(() => {
+  window.addEventListener("auth:expired", handleAuthExpired);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("auth:expired", handleAuthExpired);
+});
 
 function logout() {
   clearSession();

@@ -37,6 +37,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE,"/ventas/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,  "/ventas/**").hasAnyRole("ADMIN","VENDEDOR","USER")
 
+                        .requestMatchers(HttpMethod.GET,  "/deudores/**").hasAnyRole("ADMIN","VENDEDOR")
+                        .requestMatchers(HttpMethod.POST, "/deudores/**").hasAnyRole("ADMIN","VENDEDOR")
+                        .requestMatchers(HttpMethod.PUT,  "/deudores/**").hasAnyRole("ADMIN","VENDEDOR")
+
                         // categorías/productos si viven en este micro:
                         // .requestMatchers(HttpMethod.GET, "/productos/**").hasAnyRole("ADMIN","USER","VENDEDOR")
                         // .requestMatchers(HttpMethod.POST,"/productos/**").hasRole("ADMIN")

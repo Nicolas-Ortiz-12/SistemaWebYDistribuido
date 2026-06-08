@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21
 
 WORKDIR /app
 COPY target/*SNAPSHOT.jar app.jar

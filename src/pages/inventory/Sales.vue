@@ -3,9 +3,9 @@
         <div class="card-header">
             <div>
                 <h2 class="title">Punto de Venta</h2>
-                <p class="page-subtitle">Facturación rápida con lector de código de barras.</p>
+                <p class="page-subtitle">Facturacion rapida con lector de codigo de barras.</p>
             </div>
-            <RouterLink class="btn btn-primary" to="/productos/lista">Ver catálogo</RouterLink>
+            <RouterLink class="btn btn-primary" to="/productos/lista">Ver catalogo</RouterLink>
         </div>
 
         <div class="card-body">
@@ -20,20 +20,28 @@
 
             <div class="filters" style="margin-bottom:12px; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <label class="input input-inline">
-                    <span>Lector de Código de Barras</span>
-                    <input
-                        v-model.trim="barcodeInput"
-                        @keyup.enter="searchAndAddProduct"
-                        placeholder="Escanea el código..."
-                        autofocus
-                        ref="barcodeInputRef"
-                    />
+                    <span>Lector de Codigo de Barras</span>
+                    <div style="display: flex; gap: 8px;">
+                        <input
+                            v-model.trim="barcodeInput"
+                            @keyup.enter="searchAndAddProduct(barcodeInput)"
+                            placeholder="Escanea el codigo..."
+                            ref="barcodeInputRef"
+                            style="flex: 1;"
+                        />
+                        <button type="button" class="btn btn-secondary" @click="showScanner = true" style="display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: var(--radius-md); background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-color); cursor: pointer;" title="Escanear con cámara">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                <circle cx="12" cy="13" r="4" />
+                            </svg>
+                        </button>
+                    </div>
                 </label>
                 <label class="input input-inline">
-                    <span>Búsqueda manual en catálogo</span>
+                    <span>Busqueda manual en catalogo</span>
                     <input
                         v-model.trim="productQuery"
-                        placeholder="Código, nombre o descripción"
+                        placeholder="Codigo, nombre o descripcion"
                     />
                 </label>
             </div>
@@ -58,7 +66,6 @@
                                     <option v-for="p in products" :key="p.id" :value="p.id">
                                         {{ p.codigoBarras || p.codigo || p.id }} - {{ p.nombre }}
                                     </option>
-                                    <!-- Fallback para productos escaneados no en la lista actual -->
                                     <option v-if="it.product_id && !products.find(x => x.id === it.product_id)" :value="it.product_id">
                                         {{ it.nombre_temp }}
                                     </option>
@@ -82,7 +89,7 @@
                         </tr>
                         <tr>
                             <td colspan="6" style="padding:10px">
-                                <button type="button" class="btn btn-ghost" @click="addItem">+ Agregar ítem manual</button>
+                                <button type="button" class="btn btn-ghost" @click="addItem">+ Agregar item manual</button>
                             </td>
                         </tr>
                     </tbody>
@@ -100,55 +107,61 @@
                     Guardar borrador
                 </button>
                 <button type="button" class="btn btn-primary" @click="confirmSale('PAGADO')" :disabled="saving || loading">
-                    <span v-if="!saving">Cobrar (Pagado)</span>
+                    <span v-if="!saving">Charge (Cash)</span>
                     <span v-else>Procesando...</span>
                 </button>
                 <button type="button" class="btn btn-secondary" @click="openDebtorModal" :disabled="saving || loading">
-                    Anotar (Fiado)
+                    Put on Tab
                 </button>
             </div>
 
-            <div v-if="loading" class="loading">Cargando catálogo...</div>
+            <div v-if="loading" class="loading">Cargando catalogo...</div>
             <div v-if="error" class="error">{{ error }}</div>
             <div v-if="ok" class="chip">Venta registrada correctamente</div>
         </div>
 
-        <!-- Modal Fiado / Deudores -->
-        <div v-if="showDebtorModal" class="modal-overlay" @click.self="showDebtorModal = false">
-            <div class="modal-content">
-                <h3>Venta a Crédito (Fiado)</h3>
-                <p>Selecciona un deudor existente o crea uno nuevo para anotar esta venta por <strong>{{ money(total) }}</strong>.</p>
-                
-                <div class="form-group" style="margin-top: 1rem;">
-                    <label>Deudores Existentes:</label>
-                    <select v-model="selectedDebtorId" class="input">
-                        <option :value="null">-- Crear Nuevo Deudor --</option>
-                        <option v-for="d in debtors" :key="d.id" :value="d.id">
-                            {{ d.nombre }} (Adeuda: {{ money(d.totalAdeudado) }})
-                        </option>
-                    </select>
+        <div v-if="showDebtorModal" class="modal-overlay" @click.self="closeDebtorModal">
+            <div class="debtor-modal" role="dialog" aria-modal="true" aria-labelledby="debtor-modal-title">
+                <div class="debtor-modal-header">
+                    <div>
+                        <p class="debtor-modal-kicker">Tab sale</p>
+                        <h3 id="debtor-modal-title">Put on Tab</h3>
+                    </div>
+                    <strong class="debtor-modal-total">{{ money(total) }}</strong>
                 </div>
+                <p class="debtor-modal-copy">Enter the person's name and the backend will find or create the debtor.</p>
 
-                <div v-if="selectedDebtorId === null" class="form-group" style="margin-top: 1rem;">
-                    <label>Nombre del Nuevo Deudor:</label>
-                    <input v-model.trim="newDebtorName" type="text" class="input" placeholder="Ej. Juan Pérez" />
-                </div>
+                <label class="debtor-field">
+                    <span>Person's Name</span>
+                    <input
+                        v-model.trim="newDebtorName"
+                        type="text"
+                        class="debtor-control"
+                        placeholder="Juan Perez"
+                        ref="debtorNameInputRef"
+                    />
+                </label>
 
-                <div class="modal-actions" style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
-                    <button type="button" class="btn btn-ghost" @click="showDebtorModal = false">Cancelar</button>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" @click="closeDebtorModal">Cancelar</button>
                     <button type="button" class="btn btn-primary" @click="processTabSale" :disabled="saving">
-                        Confirmar Fiado
+                        <span v-if="!saving">Confirm Tab</span>
+                        <span v-else>Procesando...</span>
                     </button>
                 </div>
             </div>
         </div>
+        <CameraScanner :show="showScanner" @close="showScanner = false" @scan="searchAndAddProduct" />
     </section>
 </template>
 
 <script setup>
-import { reactive, ref, computed, onMounted, watch, onUnmounted, nextTick } from "vue"
+import { reactive, ref, shallowRef, computed, onMounted, watch, onUnmounted, nextTick } from "vue"
 import { fetchWithAuth } from "../../services/authService"
 import { API_BASE } from "../../services/api"
+import CameraScanner from "../../components/CameraScanner.vue"
+
+const showScanner = ref(false)
 
 const today = new Date().toISOString().slice(0, 10)
 const sale = reactive({
@@ -156,19 +169,18 @@ const sale = reactive({
 })
 
 const products = ref([])
-const productQuery = ref("")
-const barcodeInput = ref("")
+const productQuery = shallowRef("")
+const barcodeInput = shallowRef("")
 const barcodeInputRef = ref(null)
+const debtorNameInputRef = ref(null)
 
-const debtors = ref([])
-const showDebtorModal = ref(false)
-const selectedDebtorId = ref(null)
-const newDebtorName = ref("")
+const showDebtorModal = shallowRef(false)
+const newDebtorName = shallowRef("")
 
-const loading = ref(false)
-const saving = ref(false)
-const error = ref("")
-const ok = ref(false)
+const loading = shallowRef(false)
+const saving = shallowRef(false)
+const error = shallowRef("")
+const ok = shallowRef(false)
 
 let productAborter = null
 let productDebounce = null
@@ -193,24 +205,21 @@ function seedFromCatalog(i) {
     }
 }
 
-async function searchAndAddProduct() {
-    const code = barcodeInput.value.trim()
+async function searchAndAddProduct(scannedCode = barcodeInput.value) {
+    const code = String(scannedCode ?? "").trim()
     if (!code) return
 
     error.value = ""
     ok.value = false
-    
+
     try {
-        // Buscar en backend
         const res = await fetchWithAuth(`${API_BASE}/productos/search?barcode=${encodeURIComponent(code)}`)
-        
+
         if (res && res.id) {
-            // Verificar si ya está en la lista de items
-            const existingItem = items.value.find(it => it.product_id === res.id)
+            const existingItem = items.value.find((it) => it.product_id === res.id)
             if (existingItem) {
                 existingItem.qty += 1
             } else {
-                // Agregar como nuevo item (limpiando filas vacías)
                 if (items.value.length === 1 && items.value[0].product_id === 0) {
                     items.value = []
                 }
@@ -219,20 +228,19 @@ async function searchAndAddProduct() {
                     qty: 1,
                     unit_price: res.precio || 0,
                     tax_rate: res.tasaIva || 10,
-                    nombre_temp: res.nombre
+                    nombre_temp: res.nombre,
                 })
             }
             barcodeInput.value = ""
         } else {
-            error.value = "Producto no encontrado por código: " + code
+            error.value = "Producto no encontrado por codigo: " + code
             barcodeInput.value = ""
         }
     } catch (e) {
-        error.value = "Producto no encontrado."
+        error.value = e?.message || "Producto no encontrado."
         barcodeInput.value = ""
     }
-    
-    // Devolver el foco al lector
+
     nextTick(() => {
         barcodeInputRef.value?.focus()
     })
@@ -283,15 +291,6 @@ async function fetchProductos() {
     }
 }
 
-async function fetchDebtors() {
-    try {
-        const data = await fetchWithAuth(`${API_BASE}/deudores/0/100`)
-        debtors.value = Array.isArray(data?.content) ? data.content : []
-    } catch (e) {
-        console.error("Error cargando deudores", e)
-    }
-}
-
 watch(productQuery, () => {
     clearTimeout(productDebounce)
     productDebounce = setTimeout(() => {
@@ -311,12 +310,12 @@ function validate() {
         return false
     }
     if (!items.value.length) {
-        error.value = "Agrega al menos un ítem."
+        error.value = "Agrega al menos un item."
         return false
     }
     for (const it of items.value) {
         if (!it.product_id) {
-            error.value = "Selecciona un producto en cada ítem."
+            error.value = "Selecciona un producto en cada item."
             return false
         }
         if ((it.qty || 0) <= 0) {
@@ -324,11 +323,11 @@ function validate() {
             return false
         }
         if ((it.unit_price || 0) < 0 || it.unit_price == null) {
-            error.value = "Precio unitario inválido."
+            error.value = "Precio unitario invalido."
             return false
         }
         if ((it.tax_rate || 0) < 0) {
-            error.value = "IVA inválido."
+            error.value = "IVA invalido."
             return false
         }
     }
@@ -348,45 +347,30 @@ function saveDraft() {
 function openDebtorModal() {
     if (!validate()) return
     error.value = ""
-    fetchDebtors()
-    selectedDebtorId.value = null
     newDebtorName.value = ""
     showDebtorModal.value = true
+    nextTick(() => {
+        debtorNameInputRef.value?.focus()
+    })
+}
+
+function closeDebtorModal() {
+    if (saving.value) return
+    showDebtorModal.value = false
 }
 
 async function processTabSale() {
-    let finalDebtorId = selectedDebtorId.value
-
-    if (!finalDebtorId) {
-        if (!newDebtorName.value.trim()) {
-            alert("Debes seleccionar un deudor o ingresar un nombre nuevo.")
-            return
-        }
-        saving.value = true
-        try {
-            const res = await fetchWithAuth(`${API_BASE}/deudores`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nombre: newDebtorName.value.trim() })
-            })
-            if (!res || !res.id) {
-                saving.value = false
-                alert("Respuesta inválida del servidor al crear deudor.")
-                return
-            }
-            finalDebtorId = res.id
-        } catch (e) {
-            saving.value = false
-            alert("Error creando el nuevo deudor.")
-            return
-        }
+    const debtorName = newDebtorName.value.trim()
+    if (!debtorName) {
+        alert("Debes ingresar el nombre de la persona.")
+        return
     }
 
     showDebtorModal.value = false
-    await confirmSale('FIADO', finalDebtorId)
+    await confirmSale("FIADO", debtorName)
 }
 
-async function confirmSale(estadoPago = 'PAGADO', deudorId = null) {
+async function confirmSale(estadoPago = "PAGADO", deudorNombre = null) {
     if (!validate()) return
     ok.value = false
     error.value = ""
@@ -394,9 +378,9 @@ async function confirmSale(estadoPago = 'PAGADO', deudorId = null) {
 
     try {
         const payload = {
-            fechaVenta: new Date(sale.date + 'T00:00:00').toISOString(),
-            estadoPago: estadoPago,
-            deudorId: deudorId,
+            fechaVenta: new Date(sale.date + "T00:00:00").toISOString(),
+            estadoPago,
+            deudorNombre: estadoPago === "FIADO" ? (deudorNombre?.trim() || null) : null,
             subtotal: Number(subtotal.value.toFixed(2)),
             iva: Number(tax.value.toFixed(2)),
             total: Number(total.value.toFixed(2)),
@@ -433,7 +417,11 @@ onMounted(() => {
     if (items.value.length === 0) {
         addItem()
     }
+    nextTick(() => {
+        barcodeInputRef.value?.focus()
+    })
 })
+
 onUnmounted(() => {
     if (productAborter) productAborter.abort()
     clearTimeout(productDebounce)
@@ -443,24 +431,115 @@ onUnmounted(() => {
 <style scoped>
 .modal-overlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
+    inset: 0;
+    padding: 20px;
+    background: rgba(20, 18, 14, 0.58);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
-.modal-content {
-    background: var(--bg-card);
-    padding: 2rem;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+
+.debtor-modal {
+    width: min(520px, 100%);
+    max-height: calc(100vh - 40px);
+    overflow: auto;
+    background: var(--panel, #fff);
+    border: 1px solid var(--border, #ddd7c8);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 24px 64px rgba(24, 20, 12, 0.28);
 }
-.modal-content h3 {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    font-size: 1.25rem;
+
+.debtor-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.debtor-modal-kicker {
+    margin: 0 0 4px;
+    color: var(--muted, #6d6a62);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.debtor-modal h3 {
+    margin: 0;
+    font-size: 22px;
+    line-height: 1.15;
+}
+
+.debtor-modal-total {
+    flex: 0 0 auto;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: #fff7dc;
+    color: var(--primary-text, #2b2108);
+    border: 1px solid rgba(220, 167, 45, 0.35);
+}
+
+.debtor-modal-copy {
+    margin: 0 0 18px;
+    color: var(--muted, #6d6a62);
+    line-height: 1.45;
+}
+
+.debtor-field {
+    display: grid;
+    gap: 7px;
+    margin-top: 14px;
+    color: var(--muted, #6d6a62);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.debtor-control {
+    width: 100%;
+    min-height: 48px;
+    border: 1px solid var(--border, #ddd7c8);
+    border-radius: 12px;
+    padding: 0 12px;
+    background: #fff;
+    color: var(--text, #1f2328);
+}
+
+.modal-actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn-secondary {
+    background: linear-gradient(180deg, #f5e3a5 0%, #e2b83f 100%);
+    border-color: #c49b24;
+    color: var(--primary-text, #2b2108);
+    box-shadow: 0 12px 24px rgba(194, 151, 35, 0.18);
+}
+
+@media (max-width: 640px) {
+    .modal-overlay {
+        align-items: flex-end;
+        padding: 12px;
+    }
+
+    .debtor-modal {
+        border-radius: 16px;
+        padding: 18px;
+    }
+
+    .debtor-modal-header {
+        display: grid;
+    }
+
+    .debtor-modal-total {
+        justify-self: start;
+    }
 }
 </style>

@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface DeudorRepository extends JpaRepository<Deudor, Long> {
     Page<Deudor> findByNombreContainingIgnoreCaseAndActivoTrue(String nombre, Pageable pageable);
     Page<Deudor> findByActivoTrue(Pageable pageable);
+    Optional<Deudor> findByNombreIgnoreCaseAndActivoTrue(String nombre);
     
     @Query("SELECT d FROM Deudor d WHERE d.totalAdeudado > 0 AND d.activo = true")
     Page<Deudor> findConDeuda(Pageable pageable);
