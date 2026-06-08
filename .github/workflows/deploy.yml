@@ -66,3 +66,9 @@ jobs:
         run: |
           docker image prune -af --filter "until=168h"
           docker builder prune -af
+    
+      - name: Dar permisos de ejecución al Maven Wrapper
+        run: chmod +x ./Seguridad/mvnw
+
+      - name: Compilar proyecto
+        run: ./Seguridad/mvnw -q -DskipTests package
