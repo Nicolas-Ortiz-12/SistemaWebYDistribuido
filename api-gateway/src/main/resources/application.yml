@@ -4,39 +4,53 @@ server:
 spring:
   application:
     name: msvc-gateway
+  # Secretos (JWT_SECRET) fuera del repo; las variables de entorno tienen prioridad
+  config:
+    import: optional:file:${SISTEMAWEB_SECRETS:${user.home}/.sistemaweb/secrets.properties}
   cloud:
     gateway:
       server:
         webmvc:
+          # Todos los microservicios corren como WAR dentro del Tomcat de microservicios
+          # (contextos /Seguridad, /Venta y /Compra). MS_URL apunta a ese Tomcat.
           routes:
             - id: auth
-              uri: http://localhost:8083
+              uri: ${MS_URL:http://localhost:8083}
               predicates:
                 - Path=/auth/**
               filters:
                 - PrefixPath=/Seguridad
 
             - id: seguridad-path
-              uri: http://localhost:8083
+              uri: ${MS_URL:http://localhost:8083}
               predicates:
                 - Path=/Seguridad/**
 
             - id: ventas
-              uri: http://localhost:8083
+              uri: ${MS_URL:http://localhost:8083}
               predicates:
-                - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**
+                - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**,/usuarios/**,/roles/**
               filters:
                 - PrefixPath=/Venta
 
             - id: compras
-              uri: http://localhost:8083
+              uri: ${MS_URL:http://localhost:8083}
               predicates:
                 - Path=/compras/**
               filters:
                 - PrefixPath=/Compra
 
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+
+# Orígenes permitidos (patrones separados por coma). Incluye el Apache balanceador.
+cors:
+  allowed-origins: ${CORS_ORIGINS:http://localhost*,http://127.0.0.1*,http://192.168.*,http://172.20.10.2*}
+
 security:
   jwt:
-    secret: "cambia-esto-por-un-secret-muy-largo-y-aleatorio"
+    secret: ${JWT_SECRET}
     issuer: "proyectodistri"
     expiration-minutes: 60

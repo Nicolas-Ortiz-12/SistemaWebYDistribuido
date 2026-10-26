@@ -11,7 +11,7 @@ public class RestAccessDeniedHandler implements org.springframework.security.web
     @Override public void handle(HttpServletRequest req, HttpServletResponse res,
                                  org.springframework.security.access.AccessDeniedException ex) throws IOException {
         res.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        res.setContentType("application/json");
+        res.setContentType("application/json;charset=UTF-8");
         res.getWriter().write("{\"error\":\"forbidden\",\"message\":\"No tiene permisos para este recurso\"}");
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j // 👈 Activa el logger "log"
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
 @RequestMapping("/clientes")
 @RequiredArgsConstructor
@@ -27,8 +26,11 @@ public class ClienteController {
     public ResponseEntity<Page<ClienteDTO>> list(
             @PathVariable int page ,
             @PathVariable int size,
-            @PathVariable(required = false) String q
+            @PathVariable(name = "q", required = false) String qPath,
+            // ?q= admite cualquier texto; en la ruta, una "/" o un ".." se rechazan
+            @RequestParam(name = "q", required = false) String qQuery
     ) {
+        String q = qPath != null ? qPath : qQuery;
         log.info("GET /clientes?page={}&size={} q={}", page, size, q);
         Page<ClienteDTO> result = service.list(q, page, size);
         log.debug("Clientes encontrados: {}", result.getTotalElements());

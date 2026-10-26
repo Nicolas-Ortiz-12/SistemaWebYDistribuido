@@ -11,7 +11,7 @@ public class RestAuthEntryPoint implements org.springframework.security.web.Auth
     @Override public void commence(HttpServletRequest req, HttpServletResponse res,
                                    org.springframework.security.core.AuthenticationException ex) throws IOException {
         res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        res.setContentType("application/json");
+        res.setContentType("application/json;charset=UTF-8");
         res.getWriter().write("{\"error\":\"unauthorized\",\"message\":\"Credenciales inválidas o ausentes\"}");
     }
 }

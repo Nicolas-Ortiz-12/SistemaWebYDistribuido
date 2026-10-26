@@ -26,8 +26,13 @@ public class UserController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> create(@Valid @RequestBody UserDTO body) {
-        if (userRepo.findByUsernameAndEnabledTrue(body.username()).isPresent()) {
+        // Incluye usuarios deshabilitados: el username es único en la tabla
+        if (userRepo.existsByUsername(body.username())) {
             return ResponseEntity.badRequest().body("Username already exists");
+        }
+        var role = roleRepo.findByName(body.role()).orElse(null);
+        if (role == null) {
+            return ResponseEntity.badRequest().body("Role not found");
         }
 
         var user = new UserAccount();
@@ -37,7 +42,6 @@ public class UserController {
         user.setEnabled(true);
 
         // asignar roles
-        var role = roleRepo.findByName(body.role()).orElseThrow();
         user.getRoles().add(role);
 
         userRepo.save(user);

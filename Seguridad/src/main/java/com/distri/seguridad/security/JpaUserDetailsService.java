@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 public class JpaUserDetailsService implements UserDetailsService {
     private final UserRepo userRepo;
 
+    // Solo se usa en el login. No se cachea: el UserDetails lleva el hash de la contraseña
+    // y no debe quedar en Redis. Para cada request autenticado se usa RolesCache.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var u = userRepo.findByUsernameAndEnabledTrue(username)

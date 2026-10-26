@@ -27,7 +27,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (h != null && h.startsWith("Bearer ")) {
             String token = h.substring(7);
             try {
-                var jws = jwt.parse(token);
+                var jws = jwt.parseAccess(token);
                 var body = jws.getBody();
                 String username = body.getSubject();
                 @SuppressWarnings("unchecked")

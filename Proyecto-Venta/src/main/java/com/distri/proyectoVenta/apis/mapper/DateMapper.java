@@ -20,7 +20,8 @@ public class DateMapper {
     @Named("asLocalDateTime")
     public LocalDateTime asLocalDateTime(OffsetDateTime offsetDateTime) {
         if (offsetDateTime == null) return null;
-        return offsetDateTime.toLocalDateTime();
+        // Se guarda en UTC, igual que asOffsetDateTime lo devuelve
+        return offsetDateTime.withOffsetSameInstant(ZoneOffset.UTC).toLocalDateTime();
     }
     // --- NUEVOS para LocalDate ---
     @Named("asLocalDate")

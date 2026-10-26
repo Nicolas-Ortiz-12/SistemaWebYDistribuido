@@ -1,0 +1,12 @@
+# Secretos: nunca se commitean (ver README, sección "Secretos")
+.env
+*.env
+secrets.properties
+
+# Logs generados por los servicios
+logs/
+*.log
+*.log.*.gz
+
+# Build
+target/

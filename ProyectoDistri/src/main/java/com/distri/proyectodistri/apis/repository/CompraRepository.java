@@ -18,6 +18,9 @@ public interface CompraRepository extends JpaRepository<Compra, Long> {
     // Usa el nombre EXACTO del campo en la entidad:
     Page<Compra> findByFechaEmisionBetween(LocalDate desde, LocalDate hasta, Pageable pageable);
 
+   // Comprobante ya cargado para ese proveedor (la restricción única de la tabla no lo frena porque "serie" va en NULL)
+   boolean existsByProveedor_IdAndNumero(Long proveedorId, String numero);
+
    Optional<Compra> findByIdAndActivoTrue(@Param("id") Long id);
 
     Page<Compra> findByProveedor_IdAndFechaEmisionBetween(Long proveedorId, LocalDate desde, LocalDate hasta, Pageable pageable);

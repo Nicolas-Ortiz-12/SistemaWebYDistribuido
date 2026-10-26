@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j // 👈 Activa el logger "log"
 @RestController
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RequestMapping("/productos")
 @RequiredArgsConstructor
 public class ProductoController {

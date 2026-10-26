@@ -7,11 +7,13 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.time.Instant;
-import java.util.Date;
 
 @Service
 public class JwtService {
+
+    // Debe coincidir con el claim que emite el servicio de Seguridad
+    private static final String TYPE_CLAIM = "typ";
+    private static final String ACCESS = "access";
 
     @Value("${security.jwt.secret}")
     private String secret;
@@ -19,32 +21,20 @@ public class JwtService {
     @Value("${security.jwt.issuer}")
     private String issuer;
 
-    @Value("${security.jwt.expiration-minutes}")
-    private long expirationMinutes;
-
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
+    /** Valida firma, expiración, issuer y que sea un access token (un refresh token no sirve para llamar a la API). */
     public Jws<Claims> parse(String token) throws JwtException {
-        return Jwts.parserBuilder()
+        Jws<Claims> jws = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .requireIssuer(issuer)
                 .build()
                 .parseClaimsJws(token);
-    }
-
-    // Solo de ejemplo, por si quisieras generar tokens desde el gateway
-    public String createToken(String subject) {
-        Instant now = Instant.now();
-        Instant exp = now.plusSeconds(expirationMinutes * 60);
-
-        return Jwts.builder()
-                .setSubject(subject)
-                .setIssuer(issuer)
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(exp))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
+        if (!ACCESS.equals(jws.getBody().get(TYPE_CLAIM, String.class))) {
+            throw new JwtException("Tipo de token inválido");
+        }
+        return jws;
     }
 }

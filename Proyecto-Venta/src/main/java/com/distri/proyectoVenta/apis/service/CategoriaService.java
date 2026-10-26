@@ -27,7 +27,7 @@ public class CategoriaService {
     @Transactional(readOnly = true)
     public Page<CategoriaDTO> list(String q, int page, int size) {
         log.info("Listando categorias con filtro='{}', página={}, tamaño={}", q, page, size);
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Pageable pageable = Paginas.of(page, size, Sort.by("id").descending());
         Page<Categoria> data = (q == null || q.isBlank())
                 ? repo.findAll(pageable)
                 : repo.findByNombreContainingIgnoreCase(q.trim(), pageable);

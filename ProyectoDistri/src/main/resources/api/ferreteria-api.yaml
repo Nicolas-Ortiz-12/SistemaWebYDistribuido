@@ -600,6 +600,7 @@ components:
               nullable: true
             correo:
               type: string
+              format: email
               maxLength: 200
               nullable: true
             direccion:
@@ -626,6 +627,7 @@ components:
               nullable: true
             correo:
               type: string
+              format: email
               maxLength: 200
               nullable: true
             direccion:

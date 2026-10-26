@@ -26,7 +26,7 @@ public class RolService {
     @Transactional(readOnly = true)
     public Page<RolDTO> list(String q, int page, int size) {
         log.info("Listado de Roles con filtro='{}', página={}, tamaño={}", q, page, size);
-        var pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        var pageable = Paginas.of(page, size, Sort.by("id").descending());
         var pageEntities = (q == null || q.isBlank())
                 ? repo.findAll(pageable)
                 : repo.findByNombreContainingIgnoreCase(q.trim(), pageable);

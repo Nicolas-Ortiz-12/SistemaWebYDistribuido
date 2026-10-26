@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j // 👈 Activa el logger "log"
 @RestController
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RequestMapping("/proveedores")
 @RequiredArgsConstructor
 public class ProveedorController {
@@ -27,8 +26,11 @@ public class ProveedorController {
     public ResponseEntity<Page<ProveedorDTO>> list(
             @PathVariable int page ,
             @PathVariable int size,
-            @PathVariable(required = false) String q
+            @PathVariable(name = "q", required = false) String qPath,
+            // ?q= admite cualquier texto; en la ruta, una "/" o un ".." se rechazan
+            @RequestParam(name = "q", required = false) String qQuery
     ) {
+        String q = qPath != null ? qPath : qQuery;
         log.info("GET /proveedores?page={}&size={}&q={}", page, size, q);
         Page<ProveedorDTO> result = service.list(q, page, size);
         log.debug("Proveedores encontrados: {}", result.getTotalElements());

@@ -38,18 +38,24 @@ public class RedisCacheConfig {
     private ObjectMapper buildRedisObjectMapper() {
         ObjectMapper om = new ObjectMapper();
 
-        // Soporte de fechas java.time
+        // Para las fechas
         om.registerModule(new JavaTimeModule());
 
-        // Importante para usar nombres de parámetros de constructores
         om.registerModule(new ParameterNamesModule());
 
-        // Serializar fechas como texto y no timestamps
+        // Serializar fechas como texto
         om.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        // Tipado polimórfico para poder deserializar colecciones, PageImpl, Pageable, Sort, etc.
+        // Solo se aceptan tipos conocidos: con allowIfBaseType(Object.class) un valor escrito en Redis
+        // podría instanciar cualquier clase del classpath (deserialization gadget → ejecución remota).
         BasicPolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
-                .allowIfBaseType(Object.class)
+                .allowIfSubType("com.distri.")
+                .allowIfSubType("java.lang.")
+                .allowIfSubType("java.util.")
+                .allowIfSubType("java.time.")
+                .allowIfSubType("java.math.")
+                .allowIfSubType("org.springframework.data.domain.")
+                .allowIfSubTypeIsArray()
                 .build();
         om.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.EVERYTHING, JsonTypeInfo.As.PROPERTY);
 

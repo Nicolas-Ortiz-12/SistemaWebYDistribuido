@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ public class UsuarioService {
     private final UsuarioMapper mapper;
     private final RolMapper rolMapper;
     private final RolRepository rolRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
 
@@ -38,7 +40,7 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Page<UsuarioDTO> list(String q, int page, int size) {
         log.info("Listado de Usuarios con filtro='{}', página={}, tamaño={}", q, page, size);
-        var pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        var pageable = Paginas.of(page, size, Sort.by("id").descending());
         var pageEntities = (q == null || q.isBlank())
                 ? repo.findAll(pageable)
                 : repo.findByUsuarioContainingIgnoreCaseOrNombreCompletoContainingIgnoreCase(q.trim(), q.trim(), pageable);
@@ -79,7 +81,7 @@ public class UsuarioService {
         Usuario e = new Usuario();
         e.setUsuario(username);
         e.setNombreCompleto(in.getNombreCompleto().trim());
-        e.setPassword(in.getPassword()); // hash
+        e.setPassword(passwordEncoder.encode(in.getPassword())); // BCrypt, nunca en texto plano
         e.setRoles(roles);
 
         Usuario saved = repo.save(e);

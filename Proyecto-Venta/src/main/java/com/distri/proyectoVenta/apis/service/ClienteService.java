@@ -30,7 +30,7 @@ public class ClienteService {
     @Transactional(readOnly = true)
     public Page<ClienteDTO> list(String q, int page, int size) {
         log.info("Listado de clientes con filtro='{}', página={}, tamaño={}", q, page, size);
-        var pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        var pageable = Paginas.of(page, size, Sort.by("id").descending());
         var pageEntities = (q == null || q.isBlank())
                 ? repo.findAll(pageable)
                 : repo.findByNombreContainingIgnoreCaseOrRucContainingIgnoreCase(q.trim(), q.trim(), pageable);

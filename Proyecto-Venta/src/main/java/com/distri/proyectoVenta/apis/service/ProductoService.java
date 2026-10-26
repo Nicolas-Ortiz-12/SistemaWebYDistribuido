@@ -26,7 +26,7 @@ public class ProductoService {
     @Transactional(readOnly = true)
     public Page<ProductoDTO> list(String q, Long categoriaId, int page, int size) {
         log.info("Listado de producto con filtro='{}', página={}, tamaño={}", q, page, size);
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Pageable pageable = Paginas.of(page, size, Sort.by("id").descending());
         Page<Producto> data;
 
         if (categoriaId != null)
@@ -80,7 +80,7 @@ public class ProductoService {
     }
 
     @Transactional
-    @CacheEvict(value = "sd", key = "'api_venta_' + #id")
+    @CacheEvict(value = "sd", key = "'api_producto_' + #id")
     public void delete(Long id) {
         log.info("Eliminando producto con id {}", id);
         Producto e = repo.findByIdAndActivoTrue(id)

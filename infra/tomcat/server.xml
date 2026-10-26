@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  server.xml compartido por las 3 instancias de Tomcat del cluster (ui1, ui2, ms).
+  Cada instancia define sus valores en bin/setenv.bat (lo genera infra/cluster.ps1):
+    shutdown.port  http.port  ajp.port  jvmRoute  cluster.address  cluster.port  ajp.secret
+-->
+<Server port="${shutdown.port}" shutdown="SHUTDOWN">
+  <Listener className="org.apache.catalina.startup.VersionLoggerListener" />
+  <Listener className="org.apache.catalina.core.AprLifecycleListener" />
+  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+  <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
+
+  <Service name="Catalina">
+
+    <!-- HTTP directo (pruebas / gateway -> microservicios) -->
+    <Connector port="${http.port}" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               maxParameterCount="1000" />
+
+    <!-- AJP: por aquí entra el Apache balanceador (mod_proxy_ajp) -->
+    <Connector protocol="AJP/1.3"
+               address="0.0.0.0"
+               port="${ajp.port}"
+               secret="${ajp.secret}"
+               maxParameterCount="1000" />
+
+    <!-- jvmRoute identifica a la instancia: Apache lo usa para el sticky session -->
+    <Engine name="Catalina" defaultHost="localhost" jvmRoute="${jvmRoute}">
+
+      <!-- Cluster: replicación de sesiones entre todos los Tomcats -->
+      <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster"
+               channelSendOptions="8">
+
+        <Manager className="org.apache.catalina.ha.session.DeltaManager"
+                 expireSessionsOnShutdown="false"
+                 notifyListenersOnReplication="true" />
+
+        <Channel className="org.apache.catalina.tribes.group.GroupChannel">
+          <!-- Descubrimiento de miembros por multicast en la red local -->
+          <Membership className="org.apache.catalina.tribes.membership.McastService"
+                      address="228.0.0.4"
+                      port="45564"
+                      frequency="500"
+                      dropTime="3000"
+                      bind="${cluster.address}" />
+          <Receiver className="org.apache.catalina.tribes.transport.nio.NioReceiver"
+                    address="${cluster.address}"
+                    port="${cluster.port}"
+                    autoBind="100"
+                    selectorTimeout="5000"
+                    maxThreads="6" />
+          <Sender className="org.apache.catalina.tribes.transport.ReplicationTransmitter">
+            <Transport className="org.apache.catalina.tribes.transport.nio.PooledParallelSender" />
+          </Sender>
+          <Interceptor className="org.apache.catalina.tribes.group.interceptors.TcpFailureDetector" />
+          <Interceptor className="org.apache.catalina.tribes.group.interceptors.MessageDispatchInterceptor" />
+        </Channel>
+
+        <Valve className="org.apache.catalina.ha.tcp.ReplicationValve" filter="" />
+        <Valve className="org.apache.catalina.ha.session.JvmRouteBinderValve" />
+        <ClusterListener className="org.apache.catalina.ha.session.ClusterSessionListener" />
+      </Cluster>
+
+      <Host name="localhost" appBase="webapps"
+            unpackWARs="true" autoDeploy="true">
+        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
+               prefix="localhost_access_log" suffix=".txt"
+               pattern="%h %l %u %t &quot;%r&quot; %s %b" />
+      </Host>
+    </Engine>
+  </Service>
+</Server>

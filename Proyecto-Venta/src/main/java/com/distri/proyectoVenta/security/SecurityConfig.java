@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.http.HttpMethod;
@@ -21,24 +23,30 @@ public class SecurityConfig {
     private final RestAccessDeniedHandler deniedHandler;
 
     @Bean
+    PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
+
+    @Bean
     SecurityFilterChain filter(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(e -> e.authenticationEntryPoint(entryPoint).accessDeniedHandler(deniedHandler))
                 .authorizeHttpRequests(reg -> reg
-                        // públicos del micro (ajustá lo que necesites)
-                        .requestMatchers("/actuator/health", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        // públicos del micro
+                        .requestMatchers("/error", "/actuator/health", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
 
-                        // EJEMPLOS de reglas:
-                        .requestMatchers(HttpMethod.POST, "/ventas/**").hasAnyRole("ADMIN","VENDEDOR")
-                        .requestMatchers(HttpMethod.PUT,  "/ventas/**").hasAnyRole("ADMIN","VENDEDOR")
-                        .requestMatchers(HttpMethod.DELETE,"/ventas/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET,  "/ventas/**").hasAnyRole("ADMIN","VENDEDOR","USER")
+                        // administración de usuarios y roles: solo ADMIN
+                        .requestMatchers("/usuarios/**", "/roles/**").hasRole("ADMIN")
 
-                        // categorías/productos si viven en este micro:
-                        // .requestMatchers(HttpMethod.GET, "/productos/**").hasAnyRole("ADMIN","USER","VENDEDOR")
-                        // .requestMatchers(HttpMethod.POST,"/productos/**").hasRole("ADMIN")
+                        // ventas: anular solo ADMIN
+                        .requestMatchers(HttpMethod.DELETE, "/ventas/**").hasRole("ADMIN")
+                        .requestMatchers("/ventas/**").hasAnyRole("ADMIN","VENDEDOR")
+
+                        // proveedores: consultar ADMIN/VENDEDOR, modificar solo ADMIN
+                        .requestMatchers(HttpMethod.GET, "/proveedores/**").hasAnyRole("ADMIN","VENDEDOR")
+                        .requestMatchers("/proveedores/**").hasRole("ADMIN")
+
+                        .requestMatchers("/categorias/**", "/clientes/**", "/productos/**").hasAnyRole("ADMIN","VENDEDOR")
 
                         .anyRequest().authenticated()
                 )

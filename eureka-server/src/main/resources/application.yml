@@ -1,14 +1,19 @@
 server:
   port: 8761
+  address: 0.0.0.0
 
 spring:
   application:
     name: eureka-server
   cloud:
     config:
-      enabled: false
+      enabled: false          # Desactiva el cliente de Config Server
+      import-check:
+        enabled: false        # Desactiva la verificación de spring.config.import
 
 eureka:
+  instance:
+    hostname: ${EUREKA_HOST:localhost}
   client:
     register-with-eureka: false
     fetch-registry: false

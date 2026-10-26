@@ -8,11 +8,11 @@ import org.mapstruct.*;
 @Mapper(config = MapperCentralConfig.class)
 public interface CompraRequestMapper {
 
-    /*@Mapping(target = "proveedor", ignore = true)
+    @Mapping(target = "proveedor", ignore = true)
     @Mapping(target = "detalles", ignore = true) // detalles se arman en el service
     @Mapping(target = "subtotal", ignore = true)
     @Mapping(target = "iva", ignore = true)
-    @Mapping(target = "total", ignore = true)*/
+    @Mapping(target = "total", ignore = true)
     Compra toEntity(CompraRequestDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

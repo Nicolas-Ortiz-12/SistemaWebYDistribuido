@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Where;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Entity
@@ -28,13 +30,15 @@ public class Producto extends EntidadBase {
     private Long categoriaId;
 
     @Column(nullable = false, columnDefinition = "NUMERIC(14,2) DEFAULT 0")
-    private Double costo = 0d;
+    private BigDecimal costo = BigDecimal.ZERO;
 
     @Column(nullable = false, columnDefinition = "NUMERIC(14,2) DEFAULT 0")
-    private Double precio = 0d;
+    private BigDecimal precio = BigDecimal.ZERO;
 
+    // OJO: pese al nombre, es el stock ACTUAL (ventas lo descuentan, compras lo suman).
+    // Se mantiene el nombre porque lo usan la columna, la API y el front.
     @Column(name = "stock_minimo", nullable = false, columnDefinition = "NUMERIC(14,3) DEFAULT 0")
-    private Double stockMinimo = 0d;
+    private BigDecimal stockMinimo = BigDecimal.ZERO;
 
     // Campos que antes tenías en detalle_producto (ahora dentro de producto)
     @Column(length = 250)
