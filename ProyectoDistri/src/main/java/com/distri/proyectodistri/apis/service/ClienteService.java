@@ -1,6 +1,5 @@
 package com.distri.proyectodistri.apis.service;
 
-import com.distri.proyectodistri.apis.entities.inventario.Categoria;
 import com.distri.proyectodistri.apis.mapper.ClienteMapper;
 import com.distri.proyectodistri.apis.repository.ClienteRepository;
 import com.distri.proyectodistri.apis.entities.cliente.Cliente;

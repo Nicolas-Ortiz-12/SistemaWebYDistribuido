@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.JwtException;
@@ -34,6 +35,14 @@ public class JwtGatewayFilter extends OncePerRequestFilter {
     // El gateway no tiene el firewall de Spring Security: una URI como "/swagger-ui/../ventas"
     // pasaría la lista blanca y se enrutaría a /ventas. Se rechazan las URIs no canónicas.
     private static final Pattern NON_CANONICAL = Pattern.compile("(^|/)\\.\\.?(/|$)|//|;|\\\\|%2e|%2f|%5c|%3b");
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        boolean preflight = HttpMethod.OPTIONS.matches(request.getMethod())
+                && request.getHeader("Origin") != null
+                && request.getHeader("Access-Control-Request-Method") != null;
+        return preflight;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)

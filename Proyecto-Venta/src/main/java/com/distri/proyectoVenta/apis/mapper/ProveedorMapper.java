@@ -1,9 +1,7 @@
 package com.distri.proyectoVenta.apis.mapper;
 import com.distri.proyectoVenta.apis.entities.cliente.Proveedor;
-import com.distri.proyectoVenta.apis.entities.inventario.Categoria;
 import com.distri.proyectoVenta.apis.entities.seguridad.Rol;
 import com.distri.proyectoVenta.apis.mapper.MapperCentralConfig;
-import com.distri.proyectoVenta.dto.CategoriaDTO;
 import com.distri.proyectoVenta.dto.ProveedorDTO;
 import com.distri.proyectoVenta.dto.RolDTO;
 import org.mapstruct.*;

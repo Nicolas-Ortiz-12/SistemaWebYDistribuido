@@ -61,6 +61,7 @@ public class JwtService {
                 .compact();
     }
 
+<<<<<<< HEAD
     /** Valida firma, expiración, issuer y que sea un access token. */
     public Jws<Claims> parseAccess(String token) {
         return parse(token, ACCESS);
@@ -81,5 +82,14 @@ public class JwtService {
             throw new JwtException("Tipo de token inválido");
         }
         return jws;
+=======
+    public Jws<Claims> parse(String token) {
+        return Jwts.parserBuilder()
+                .requireIssuer(issuer)
+                .setAllowedClockSkewSeconds(60) // Permitir desincronización de relojes
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token);
+>>>>>>> d97f1f3ffd27942626cc5cf3ba1628e04ecdc0fb
     }
 }

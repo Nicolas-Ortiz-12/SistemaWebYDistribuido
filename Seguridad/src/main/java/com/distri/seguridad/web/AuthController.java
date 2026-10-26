@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Value;
 import java.util.Map;
 
 @RestController
@@ -25,10 +26,15 @@ public class AuthController {
     private final AuthenticationManager authManager; // ← cambia a AuthenticationManager
     private final UserService userService;
     private final JwtService jwt;
+<<<<<<< HEAD
     private final LoginAttemptService attempts;
 
     @Value("${security.jwt.expiration-minutes}")
     private long expirationMinutes;
+=======
+    @Value("${security.jwt.expiration-minutes:60}")
+    private long expMin;
+>>>>>>> d97f1f3ffd27942626cc5cf3ba1628e04ecdc0fb
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginReq req) {
@@ -57,7 +63,11 @@ public class AuthController {
                 "access_token", access,
                 "refresh_token", refresh,
                 "token_type", "Bearer",
+<<<<<<< HEAD
                 "expires_in_minutes", expirationMinutes
+=======
+                "expires_in_minutes", expMin
+>>>>>>> d97f1f3ffd27942626cc5cf3ba1628e04ecdc0fb
         ));
     }
 
@@ -72,8 +82,17 @@ public class AuthController {
             if (u == null) return ResponseEntity.status(401).body(Map.of("error","invalid_refresh"));
             var roles = u.getRoles().stream().map(Role::getName).toList();
             String access = jwt.generateAccessToken(username, roles);
+<<<<<<< HEAD
             return ResponseEntity.ok(Map.of("access_token", access, "token_type", "Bearer"));
         } catch (JwtException | IllegalArgumentException e) {
+=======
+            return ResponseEntity.ok(Map.of(
+                    "access_token", access,
+                    "token_type", "Bearer",
+                    "expires_in_minutes", expMin
+            ));
+        } catch (Exception e) {
+>>>>>>> d97f1f3ffd27942626cc5cf3ba1628e04ecdc0fb
             return ResponseEntity.status(401).body(Map.of("error","invalid_refresh"));
         }
     }

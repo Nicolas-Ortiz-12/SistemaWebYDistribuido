@@ -38,7 +38,7 @@ public class ProveedorService {
 
     // OBTENER POR ID
     @Transactional(readOnly = true)
-    @Cacheable(value = "sd", key = "'api_proveedor_' + #id")
+    @Cacheable(value = "proveedores", key = "'api_proveedor_' + #id")
     public ProveedorDTO get(Long id) {
         log.info("Buscando Proveedor con ID: {}", id);
         Proveedor e = repo.findById(id)
@@ -52,7 +52,7 @@ public class ProveedorService {
 
     // CREAR
     @Transactional
-    @CachePut(value = "sd", key = "'api_proveedor_' + #result.id", unless = "#result == null")
+    @CachePut(value = "proveedores", key = "'api_proveedor_' + #result.id", unless = "#result == null")
     public ProveedorDTO create(ProveedorDTO dto) {
         log.info("Creando Proveedor con ID: {}", dto.getId());
         if (dto.getRuc() != null && !dto.getRuc().isBlank() && repo.existsByRuc(dto.getRuc().trim())) {
@@ -67,7 +67,7 @@ public class ProveedorService {
 
     // ACTUALIZAR
     @Transactional
-    @CachePut(value = "sd", key = "'api_proveedor_' + #result.id", unless = "#result == null")
+    @CachePut(value = "proveedores", key = "'api_proveedor_' + #result.id", unless = "#result == null")
     public ProveedorDTO update(Long id, ProveedorDTO dto) {
         log.info("Actualizando Proveedor con ID: {}", id);
         Proveedor e = repo.findById(id)
@@ -91,7 +91,7 @@ public class ProveedorService {
 
     // ELIMINAR
     @Transactional
-    @CacheEvict(value = "sd", key = "'api_proveedor_' + #id")
+    @CacheEvict(value = "proveedores", key = "'api_proveedor_' + #id")
     public void delete(Long id) {
         log.info("Eliminando Proveedor con ID: {}", id);
         Proveedor e = repo.findByIdAndActivoTrue(id)

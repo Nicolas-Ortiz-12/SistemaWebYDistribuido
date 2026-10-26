@@ -1,12 +1,35 @@
 # Secretos: nunca se commitean (ver README, sección "Secretos")
 .env
 *.env
+.env.docker
 secrets.properties
 
-# Logs generados por los servicios
+# Logs generados por los servicios y front
 logs/
+logs
 *.log
 *.log.*.gz
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # Build
 target/
+node_modules
+dist
+dist-ssr
+*.local
+.vite-cache/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

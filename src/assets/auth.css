@@ -1,0 +1,55 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-page .card {
+  width: min(420px, 100%);
+  padding: 28px;
+}
+
+.login-page .title {
+  margin: 0 0 16px;
+  font-size: 22px;
+}
+
+.login-page .form {
+  display: grid;
+  gap: 12px;
+}
+
+.login-page .label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.login-page .row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.login-page .remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.login-page .error {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.login-page .small {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--muted);
+}

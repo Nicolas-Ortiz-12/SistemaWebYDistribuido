@@ -32,12 +32,19 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(e -> e.authenticationEntryPoint(entryPoint).accessDeniedHandler(deniedHandler))
                 .authorizeHttpRequests(reg -> reg
+<<<<<<< HEAD
                         // públicos del micro
                         .requestMatchers("/error", "/actuator/health", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+=======
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // públicos del micro (ajustá lo que necesites)
+                        .requestMatchers("/actuator/health", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+>>>>>>> d97f1f3ffd27942626cc5cf3ba1628e04ecdc0fb
 
                         // administración de usuarios y roles: solo ADMIN
                         .requestMatchers("/usuarios/**", "/roles/**").hasRole("ADMIN")
 
+<<<<<<< HEAD
                         // ventas: anular solo ADMIN
                         .requestMatchers(HttpMethod.DELETE, "/ventas/**").hasRole("ADMIN")
                         .requestMatchers("/ventas/**").hasAnyRole("ADMIN","VENDEDOR")
@@ -47,6 +54,15 @@ public class SecurityConfig {
                         .requestMatchers("/proveedores/**").hasRole("ADMIN")
 
                         .requestMatchers("/categorias/**", "/clientes/**", "/productos/**").hasAnyRole("ADMIN","VENDEDOR")
+=======
+                        .requestMatchers(HttpMethod.GET,  "/deudores/**").hasAnyRole("ADMIN","VENDEDOR")
+                        .requestMatchers(HttpMethod.POST, "/deudores/**").hasAnyRole("ADMIN","VENDEDOR")
+                        .requestMatchers(HttpMethod.PUT,  "/deudores/**").hasAnyRole("ADMIN","VENDEDOR")
+
+                        // categorías/productos si viven en este micro:
+                        // .requestMatchers(HttpMethod.GET, "/productos/**").hasAnyRole("ADMIN","USER","VENDEDOR")
+                        // .requestMatchers(HttpMethod.POST,"/productos/**").hasRole("ADMIN")
+>>>>>>> d97f1f3ffd27942626cc5cf3ba1628e04ecdc0fb
 
                         .anyRequest().authenticated()
                 )

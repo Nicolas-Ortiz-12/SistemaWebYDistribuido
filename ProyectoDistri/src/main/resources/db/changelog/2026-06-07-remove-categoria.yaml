@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-06-07-remove-categoria
+      author: Nicolas
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: producto
+            constraintName: fk_producto_categoria
+        - dropColumn:
+            tableName: producto
+            columnName: categoria_id
+        - dropTable:
+            tableName: categoria
+      rollback:
+        - createTable:
+            tableName: categoria
+            columns:
+              - column: { name: id, type: BIGINT, autoIncrement: true, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: nombre, type: VARCHAR(120), constraints: { nullable: false, unique: true } }
+        - addColumn:
+            tableName: producto
+            columns:
+              - column: { name: categoria_id, type: BIGINT }
+        - addForeignKeyConstraint:
+            baseTableName: producto
+            baseColumnNames: categoria_id
+            constraintName: fk_producto_categoria
+            referencedTableName: categoria
+            referencedColumnNames: id
+            onUpdate: CASCADE
+            onDelete: SET NULL

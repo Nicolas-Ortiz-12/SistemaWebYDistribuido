@@ -40,7 +40,12 @@ public class SecurityConfig {
                         .authenticationEntryPoint(entryPoint)
                         .accessDeniedHandler(deniedHandler))
                 .authorizeHttpRequests(reg -> reg
+<<<<<<< HEAD
                         .requestMatchers("/error", "/auth/login", "/auth/refresh", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+=======
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/auth/login", "/auth/refresh", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+>>>>>>> d97f1f3ffd27942626cc5cf3ba1628e04ecdc0fb
                         .requestMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

@@ -17,7 +17,7 @@ spring:
             - id: auth
               uri: ${MS_URL:http://localhost:8083}
               predicates:
-                - Path=/auth/**
+                - Path=/auth/**,/users/**
               filters:
                 - PrefixPath=/Seguridad
 
@@ -29,7 +29,7 @@ spring:
             - id: ventas
               uri: ${MS_URL:http://localhost:8083}
               predicates:
-                - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**,/usuarios/**,/roles/**
+                - Path=/ventas/**,/categorias/**,/clientes/**,/productos/**,/proveedores/**,/usuarios/**,/roles/**,/deudores/**
               filters:
                 - PrefixPath=/Venta
 
@@ -51,6 +51,6 @@ cors:
 
 security:
   jwt:
-    secret: ${JWT_SECRET}
-    issuer: "proyectodistri"
-    expiration-minutes: 60
+    secret: ${JWT_SECRET:cambia-esto-por-un-secret-muy-largo-y-aleatorio}
+    issuer: ${JWT_ISSUER:proyectodistri}
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:60}

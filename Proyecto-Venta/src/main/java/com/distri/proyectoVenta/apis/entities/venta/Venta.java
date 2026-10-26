@@ -45,4 +45,11 @@ public class Venta extends EntidadBase {
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VentaDetalle> detalles = new ArrayList<>();
 
+    @Column(name = "estado_pago", length = 20, nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'PAGADO'")
+    private String estadoPago = "PAGADO";
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deudor_id")
+    private Deudor deudor;
+
 }

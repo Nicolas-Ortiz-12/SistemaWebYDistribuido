@@ -15,7 +15,7 @@ public interface UsuarioMapper {
     UsuarioDTO toDto(Usuario entity);
 
     // En create/upgrade de entidad, el service setea password y roles
-    //@Mapping(target = "roles", ignore = true)
+    @Mapping(target = "roles", ignore = true)
 
     Usuario toEntity(UsuarioDTO dto);
 

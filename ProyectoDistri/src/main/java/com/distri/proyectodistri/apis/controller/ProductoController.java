@@ -23,11 +23,10 @@ public class ProductoController {
     public ResponseEntity<Page<ProductoDTO>> list(
             @PathVariable int page,
             @PathVariable int size,
-            @PathVariable(required = false) Long categoriaId,
             @PathVariable(required = false) String q
     ) {
-        log.info("GET /productos?page={}&size={} q={} categoriaId={}", page, size, q, categoriaId);
-        Page<ProductoDTO> result = service.list(q, categoriaId, page, size);
+        log.info("GET /productos?page={}&size={} q={}", page, size, q);
+        Page<ProductoDTO> result = service.list(q, page, size);
         log.debug("Productos encontrados: {}", result.getTotalElements());
         return ResponseEntity.ok(result);
     }

@@ -11,7 +11,10 @@ import com.distri.proyectodistri.apis.repository.*;
 import com.distri.proyectodistri.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+<<<<<<< HEAD
 import org.springframework.cache.Cache;
+=======
+>>>>>>> d97f1f3ffd27942626cc5cf3ba1628e04ecdc0fb
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -56,11 +59,15 @@ public class CompraService {
     private final ProductoRepository productoRepository;
     private final CompraRequestMapper compraRequestMapper;
     private final CompraResponseMapper compraResponseMapper;
+<<<<<<< HEAD
     private final CacheManager cacheManager;
+=======
+    private final CacheManager redisCacheManager;
+>>>>>>> d97f1f3ffd27942626cc5cf3ba1628e04ecdc0fb
 
     // CREATE
     @Transactional
-    @CachePut(value = "sd", key = "'api_compra_' + #result.id", unless = "#result == null")
+    @CachePut(value = "compras", key = "'api_compra_' + #result.id", unless = "#result == null")
     public CompraResponseDTO crear(CompraRequestDTO req) {
         log.info("Creando nueva compra con proveedorId={}", req.getProveedorId());
         validarItems(req.getDetalles());
@@ -80,6 +87,7 @@ public class CompraService {
         aplicarItems(compra, req.getDetalles(), true, tocados);
 
         compra = compraRepository.save(compra);
+        clearProductCache();
         log.debug("Compra registrada: {}", compra);
         evictProductosAfterCommit(tocados.keySet());
         return compraResponseMapper.toDto(compra);
@@ -87,7 +95,7 @@ public class CompraService {
 
     // GET BY ID
     @Transactional(readOnly = true)
-    @Cacheable(value = "sd", key = "'api_compra_' + #id")
+    @Cacheable(value = "compras", key = "'api_compra_' + #id")
     public CompraResponseDTO obtenerPorId(Long id) {
         log.debug("Obteniendo compra por id: {}", id);
         Compra c = compraRepository.findById(id)
@@ -124,7 +132,7 @@ public class CompraService {
 
     // UPDATE (revertir stock anterior y aplicar nuevos ítems)
     @Transactional
-    @CachePut(value = "sd", key = "'api_compra_' + #result.id", unless = "#result == null")
+    @CachePut(value = "compras", key = "'api_compra_' + #result.id", unless = "#result == null")
     public CompraResponseDTO actualizar(Long id, CompraRequestDTO req) {
         log.info("Actualizando compra con Id={}", id);
         validarItems(req.getDetalles());
@@ -261,6 +269,7 @@ public class CompraService {
         compra.setSubtotal(subtotal);
         compra.setIva(iva);
         compra.setTotal(subtotal.add(iva));
+<<<<<<< HEAD
     }
 
     private void verificarStockNoNegativo(Iterable<Producto> productos) {
@@ -326,4 +335,54 @@ public class CompraService {
 
     private static BigDecimal toBD(Number n) { return n == null ? BigDecimal.ZERO : new BigDecimal(n.toString()); }
     private static BigDecimal nz(BigDecimal d) { return d == null ? BigDecimal.ZERO : d; }
+=======
+
+        compra = compraRepository.save(compra);
+        clearProductCache();
+        log.debug("Compra actualizada correctamente con id: {}", compra.getId());
+        return compraResponseMapper.toDto(compra);
+    }
+
+    // DELETE (Quita stock previo de la compra)
+    @Transactional
+    @CacheEvict(value = "compras", key = "'api_compra_' + #id")
+    public void eliminar(Long id) {
+        log.debug("Eliminando compra con id={}", id);
+        // Trae SOLO Compras activas
+        Compra compra = compraRepository.findByIdAndActivoTrue(id)
+                .orElseThrow(() -> {
+                    log.error("Compra no encontrada o inactiva: {}", id);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND,"Compra no encontrada: " + id);
+                });
+        // Quitar de stock
+        log.debug("Quitando stock de productos comprados id={}", id);
+        if (compra.getDetalles() != null) {
+            for (CompraDetalle det : compra.getDetalles()) {
+                Producto p = productoRepository.findByIdForUpdate(det.getProducto().getId())
+                        .orElseThrow();
+                // Usa tu misma lógica de stock
+                p.setStockMinimo(nz(p.getStockMinimo()) - det.getCantidad().doubleValue());
+                // Si CompraDetalle también tiene 'activo', lo marcamos inactivo:
+                try {
+                    det.setActivo(false);
+                } catch (Exception ignore) { /* si no existe el setter, no pasa nada */ }
+            }
+        }
+        // Soft delete: marcar compra como inactiva
+        compra.setActivo(false);
+        compraRepository.save(compra);
+        clearProductCache();
+        log.info("Compra marcada como inactiva id={}", id);
+    }
+
+    // helpers
+    private BigDecimal toBD(Number n) { return n == null ? BigDecimal.ZERO : new BigDecimal(n.toString()); }
+    private double nz(Double d) { return d == null ? 0d : d; }
+    private void clearProductCache() {
+        var cache = redisCacheManager.getCache("productos");
+        if (cache != null) {
+            cache.clear();
+        }
+    }
+>>>>>>> d97f1f3ffd27942626cc5cf3ba1628e04ecdc0fb
 }

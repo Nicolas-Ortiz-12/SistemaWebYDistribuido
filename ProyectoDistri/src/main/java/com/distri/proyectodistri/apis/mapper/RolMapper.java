@@ -11,7 +11,7 @@ public interface RolMapper extends BaseMapper<Rol, RolDTO> {
     Rol toEntity(RolDTO dto);
 
     @Override
-    //@Mapping(source = "nombre", target = "nombre")
+    @Mapping(source = "nombre", target = "nombre")
     RolDTO toDto(Rol entity);
 
     @Override

@@ -26,6 +26,7 @@ public class ProductoController {
     public ResponseEntity<Page<ProductoDTO>> list(
             @PathVariable int page,
             @PathVariable int size,
+<<<<<<< HEAD
             @PathVariable(required = false) Long categoriaId,
             @PathVariable(name = "q", required = false) String qPath,
             // ?q= admite cualquier texto; en la ruta, una "/" o un ".." se rechazan
@@ -34,8 +35,22 @@ public class ProductoController {
         String q = qPath != null ? qPath : qQuery;
         log.info("GET /productos?page={}&size={} q={} categoriaId={}", page, size, q, categoriaId);
         Page<ProductoDTO> result = service.list(q, categoriaId, page, size);
+=======
+            @PathVariable(required = false) String q
+    ) {
+        log.info("GET /productos?page={}&size={} q={}", page, size, q);
+        Page<ProductoDTO> result = service.list(q, page, size);
+>>>>>>> d97f1f3ffd27942626cc5cf3ba1628e04ecdc0fb
         log.debug("Productos encontrados: {}", result.getTotalElements());
         return ResponseEntity.ok(result);
+    }
+
+    // -------- BUSCAR POR CODIGO DE BARRAS --------
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('ADMIN','VENDEDOR')")
+    public ResponseEntity<ProductoDTO> searchByBarcode(@RequestParam String barcode) {
+        log.info("GET /productos/search?barcode={}", barcode);
+        return ResponseEntity.ok(service.findByBarcode(barcode));
     }
 
     // -------- CREAR --------

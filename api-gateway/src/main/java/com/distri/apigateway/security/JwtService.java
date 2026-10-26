@@ -30,6 +30,7 @@ public class JwtService {
         Jws<Claims> jws = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .requireIssuer(issuer)
+                .setAllowedClockSkewSeconds(60)
                 .build()
                 .parseClaimsJws(token);
         if (!ACCESS.equals(jws.getBody().get(TYPE_CLAIM, String.class))) {
